@@ -23,7 +23,7 @@
     </modules>
 
     <properties>
-        <quarkus.version>2.2.3.Final</quarkus.version>
+        <quarkus.version>2.4.1.Final</quarkus.version>
         <zeebe.version>1.2.4</zeebe.version>
         <zeebe.testcontainers.version>3.0.0</zeebe.testcontainers.version>
         <maven.compiler.source>11</maven.compiler.source>
