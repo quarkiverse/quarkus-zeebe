@@ -57,7 +57,7 @@ quarkus.zeebe.security.cert-path=
 
 # job configuration
 quarkus.zeebe.job.timeout=PT5M
-quarkus.zeebe.job.pool-interval="PT0.100S
+quarkus.zeebe.job.pool-interval=PT0.100S
 
 # overwrite job handler annotation
 quarkus.zeebe.workers.<type>.name=
