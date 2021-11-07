@@ -11,7 +11,7 @@ import io.zeebe.containers.ZeebeDefaults;
 
 public class ZeebeResource implements QuarkusTestResourceLifecycleManager {
 
-    public static String ZEEBE_VERSION = "1.2.2";
+    public static String ZEEBE_VERSION = "1.2.4";
 
     public ZeebeContainer zeebe = new ZeebeContainer(
             DockerImageName.parse(ZeebeDefaults.getInstance().getDefaultImage()).withTag(ZEEBE_VERSION));
