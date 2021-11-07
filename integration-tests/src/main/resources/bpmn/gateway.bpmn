@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1wnq42y" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <bpmn:process id="gateway" name="gateway" processType="None" isClosed="false" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements />
+      <bpmn:outgoing>Flow_1jr7aiu</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1jr7aiu" sourceRef="StartEvent_1" targetRef="read_data" />
+    <bpmn:serviceTask id="read_data" name="Read data">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="gateway-read-data" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1jr7aiu</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zo86lh</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0zo86lh" sourceRef="read_data" targetRef="gateway1" />
+    <bpmn:sequenceFlow id="Flow_1fbbpje" name="Check empty data" sourceRef="gateway1" targetRef="update-data">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=is defined(data)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0h0usfi" sourceRef="gateway1" targetRef="empty-data">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=not(is defined(data))</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="gateway2" name="gateway2">
+      <bpmn:incoming>Flow_1otf8lj</bpmn:incoming>
+      <bpmn:incoming>Flow_027nbx8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fo08f9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1otf8lj" sourceRef="update-data" targetRef="gateway2" />
+    <bpmn:sequenceFlow id="Flow_027nbx8" sourceRef="empty-data" targetRef="gateway2" />
+    <bpmn:sequenceFlow id="Flow_1fo08f9" sourceRef="gateway2" targetRef="show-data" />
+    <bpmn:endEvent id="Event_1nsgr30">
+      <bpmn:incoming>Flow_1v6bt32</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1v6bt32" sourceRef="show-data" targetRef="Event_1nsgr30" />
+    <bpmn:serviceTask id="empty-data" name="Empty data">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="gateway-empty-data" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0h0usfi</bpmn:incoming>
+      <bpmn:outgoing>Flow_027nbx8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="update-data" name="Update data">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="gateway-update-data" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fbbpje</bpmn:incoming>
+      <bpmn:outgoing>Flow_1otf8lj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="show-data" name="Show data">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="gateway-show-data" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1fo08f9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v6bt32</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gateway1" name="gateway1">
+      <bpmn:incoming>Flow_0zo86lh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fbbpje</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0h0usfi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="gateway">
+      <bpmndi:BPMNEdge id="Flow_1v6bt32_di" bpmnElement="Flow_1v6bt32">
+        <di:waypoint x="1170" y="120" />
+        <di:waypoint x="1302" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fo08f9_di" bpmnElement="Flow_1fo08f9">
+        <di:waypoint x="945" y="120" />
+        <di:waypoint x="1070" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_027nbx8_di" bpmnElement="Flow_027nbx8">
+        <di:waypoint x="770" y="230" />
+        <di:waypoint x="920" y="230" />
+        <di:waypoint x="920" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1otf8lj_di" bpmnElement="Flow_1otf8lj">
+        <di:waypoint x="770" y="120" />
+        <di:waypoint x="895" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h0usfi_di" bpmnElement="Flow_0h0usfi">
+        <di:waypoint x="520" y="145" />
+        <di:waypoint x="520" y="230" />
+        <di:waypoint x="670" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fbbpje_di" bpmnElement="Flow_1fbbpje">
+        <di:waypoint x="545" y="120" />
+        <di:waypoint x="670" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="576" y="86" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zo86lh_di" bpmnElement="Flow_0zo86lh">
+        <di:waypoint x="370" y="120" />
+        <di:waypoint x="495" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jr7aiu_di" bpmnElement="Flow_1jr7aiu">
+        <di:waypoint x="215" y="120" />
+        <di:waypoint x="270" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yhdp5n_di" bpmnElement="read_data">
+        <dc:Bounds x="270" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_04cwh67_di" bpmnElement="gateway2" isMarkerVisible="true">
+        <dc:Bounds x="895" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="897" y="65" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1nsgr30_di" bpmnElement="Event_1nsgr30">
+        <dc:Bounds x="1302" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10r293h_di" bpmnElement="empty-data">
+        <dc:Bounds x="670" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0n5u2hu_di" bpmnElement="update-data">
+        <dc:Bounds x="670" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0a2qlsu_di" bpmnElement="show-data">
+        <dc:Bounds x="1070" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1f37ews_di" bpmnElement="gateway1" isMarkerVisible="true">
+        <dc:Bounds x="495" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="497" y="65" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

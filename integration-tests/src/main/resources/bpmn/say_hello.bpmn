@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" exporter="Zeebe Modeler" exporterVersion="0.9.0" expressionLanguage="http://www.w3.org/1999/XPath" id="Definitions_1wnq42y" targetNamespace="http://bpmn.io/schema/bpmn" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <bpmn:process id="hello_process" isClosed="false" isExecutable="true" processType="None">
+    <bpmn:startEvent id="StartEvent_1" isInterrupting="true" parallelMultiple="false">
+      <bpmn:outgoing>Flow_1ri14jw</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1ta52dy">
+      <bpmn:incoming>Flow_1apo43s</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1apo43s" sourceRef="Activity_0apsury" targetRef="Event_1ta52dy"/>
+    <bpmn:sequenceFlow id="Flow_1ri14jw" sourceRef="StartEvent_1" targetRef="Activity_0apsury"/>
+    <bpmn:serviceTask completionQuantity="1" id="Activity_0apsury" implementation="##WebService" isForCompensation="false" name="Say hello" startQuantity="1">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="hello_task"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=name" target="name"/>
+          <zeebe:output source="=message" target="message"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ri14jw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1apo43s</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane bpmnElement="hello_process" id="BPMNPlane_1">
+      <bpmndi:BPMNEdge bpmnElement="Flow_1apo43s" id="Flow_1apo43s_di">
+        <di:waypoint x="400" y="117"/>
+        <di:waypoint x="452" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_1ri14jw" id="Flow_1ri14jw_di">
+        <di:waypoint x="215" y="117"/>
+        <di:waypoint x="300" y="117"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="StartEvent_1" id="_BPMNShape_StartEvent_2">
+        <dc:Bounds height="36" width="36" x="179" y="99"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Event_1ta52dy" id="Event_1ta52dy_di">
+        <dc:Bounds height="36" width="36" x="452" y="99"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Activity_0apsury" id="Activity_1jva10n_di">
+        <dc:Bounds height="80" width="100" x="300" y="77"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
