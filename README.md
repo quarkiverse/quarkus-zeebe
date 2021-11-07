@@ -59,7 +59,7 @@ quarkus.zeebe.security.cert-path=
 quarkus.zeebe.job.timeout=PT5M
 quarkus.zeebe.job.pool-interval="PT0.100S
 
-# overwrite @ZeebeWorker(...)
+# overwrite job handler annotation
 quarkus.zeebe.workers.<type>.name=
 quarkus.zeebe.workers.<type>.timeout=
 quarkus.zeebe.workers.<type>.max-jobs-active=
