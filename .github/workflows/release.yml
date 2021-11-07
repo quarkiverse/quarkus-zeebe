@@ -52,7 +52,7 @@ jobs:
           git commit -am "Update stable version for documentation"
           git checkout ${{github.base_ref}}
           git rebase release
-          mvn -B release:perform -Darguments=-DperformRelease -Prelease -s maven-settings.xml
+          mvn -B release:perform -Darguments=-DperformRelease -DperformRelease -Prelease -s maven-settings.xml
       - name: Push changes to ${{github.base_ref}}
         uses: ad-m/github-push-action@v0.6.0
         with:
