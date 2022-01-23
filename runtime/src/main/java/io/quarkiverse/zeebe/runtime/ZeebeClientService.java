@@ -24,6 +24,7 @@ import io.camunda.zeebe.client.api.command.SetVariablesCommandStep1;
 import io.camunda.zeebe.client.api.command.ThrowErrorCommandStep1;
 import io.camunda.zeebe.client.api.command.TopologyRequestStep1;
 import io.camunda.zeebe.client.api.command.UpdateRetriesJobCommandStep1;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1;
 import io.quarkiverse.zeebe.ZeebeClientInterceptor;
 import io.quarkus.runtime.ShutdownEvent;
@@ -110,6 +111,11 @@ public class ZeebeClientService implements ZeebeClient {
     }
 
     @Override
+    public UpdateRetriesJobCommandStep1 newUpdateRetriesCommand(ActivatedJob job) {
+        return client.newUpdateRetriesCommand(job);
+    }
+
+    @Override
     public JobWorkerBuilderStep1 newWorker() {
         return client.newWorker();
     }
@@ -125,12 +131,27 @@ public class ZeebeClientService implements ZeebeClient {
     }
 
     @Override
+    public CompleteJobCommandStep1 newCompleteCommand(ActivatedJob job) {
+        return client.newCompleteCommand(job);
+    }
+
+    @Override
     public FailJobCommandStep1 newFailCommand(long jobKey) {
         return client.newFailCommand(jobKey);
     }
 
     @Override
+    public FailJobCommandStep1 newFailCommand(ActivatedJob job) {
+        return client.newFailCommand(job);
+    }
+
+    @Override
     public ThrowErrorCommandStep1 newThrowErrorCommand(long jobKey) {
         return client.newThrowErrorCommand(jobKey);
+    }
+
+    @Override
+    public ThrowErrorCommandStep1 newThrowErrorCommand(ActivatedJob job) {
+        return client.newThrowErrorCommand(job);
     }
 }
