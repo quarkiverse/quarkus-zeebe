@@ -1,7 +1,7 @@
 package io.quarkiverse.zeebe.it.gateway;
 
-import io.quarkus.test.junit.NativeImageTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-@NativeImageTest
+@QuarkusIntegrationTest
 public class GatewayIT extends GatewayTest {
 }

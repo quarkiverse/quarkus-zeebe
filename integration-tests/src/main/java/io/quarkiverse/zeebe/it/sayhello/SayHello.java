@@ -9,7 +9,6 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.quarkiverse.zeebe.ZeebeWorker;
-import io.quarkiverse.zeebe.it.ResultService;
 
 @ZeebeWorker(type = "hello_task")
 public class SayHello implements JobHandler {
@@ -25,9 +24,6 @@ public class SayHello implements JobHandler {
         SayHelloParameter p = job.getVariablesAsType(SayHelloParameter.class);
         log.info("Parameter: {}", p);
         p.message = service.hello(p.name);
-
         client.newCompleteCommand(job.getKey()).variables(p).send().join();
-
-        ResultService.addResult(job.getProcessInstanceKey(), p);
     }
 }

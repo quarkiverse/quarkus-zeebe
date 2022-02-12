@@ -7,7 +7,6 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.quarkiverse.zeebe.ZeebeWorker;
-import io.quarkiverse.zeebe.it.ResultService;
 
 @ZeebeWorker(type = "gateway-show-data")
 public class ShowData implements JobHandler {
@@ -19,7 +18,5 @@ public class ShowData implements JobHandler {
         Parameter p = job.getVariablesAsType(Parameter.class);
         log.info("Parameter {} / {}", p.data, p.info);
         client.newCompleteCommand(job.getKey()).send().join();
-
-        ResultService.addResult(job.getProcessInstanceKey(), p);
     }
 }
