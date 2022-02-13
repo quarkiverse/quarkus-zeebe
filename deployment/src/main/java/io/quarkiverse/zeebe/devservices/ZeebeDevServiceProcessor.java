@@ -30,8 +30,7 @@ import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerLocator;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.configuration.ConfigUtils;
-import io.zeebe.containers.ZeebeContainer;
-import io.zeebe.containers.ZeebeDefaults;
+import io.zeebe.containers.*;
 
 public class ZeebeDevServiceProcessor {
 
@@ -41,7 +40,8 @@ public class ZeebeDevServiceProcessor {
      * This allows other applications to discover the running service and use it instead of starting a new instance.
      */
     private static final String DEV_SERVICE_LABEL = "quarkus-dev-service-zeebe";
-    public static final int DEFAULT_ZEEBE_PORT = 26500;
+    public static final int DEFAULT_ZEEBE_PORT = ZeebePort.GATEWAY.getPort();
+    public static final int DEFAULT_HAZELCAST_PORT = 5701;
     private static final String QUARKUS = "quarkus.";
     private static final String DOT = ".";
 
@@ -97,7 +97,7 @@ public class ZeebeDevServiceProcessor {
             currentCloseables.add(startResult.closeable);
 
             System.setProperty("quarkus.zeebe.devservices.test.hazelcast", startResult.hazelcast);
-            System.setProperty("quarkus.zeebe.devservices.test.gateway-address", startResult.gateway);
+            System.setProperty("quarkus.zeebe.devservices.test.gateway-address", startResult.client);
             devConfigProducer
                     .produce(new DevServicesConfigResultBuildItem(getConfigPrefix() + "broker.gateway-address",
                             startResult.gateway));
@@ -176,16 +176,17 @@ public class ZeebeDevServiceProcessor {
                     devServicesConfig.hazelcast.enabled);
             timeout.ifPresent(zeebeContainer::withStartupTimeout);
             zeebeContainer.start();
-            String gateway = zeebeContainer.getHost() + ":" + zeebeContainer.getPort();
+            String gateway = zeebeContainer.getGatewayHost() + ":" + zeebeContainer.getPort();
+            String client = zeebeContainer.getExternalAddress(DEFAULT_ZEEBE_PORT);
             String hazelcast = "";
             if (devServicesConfig.hazelcast.enabled) {
-                hazelcast = zeebeContainer.getExternalAddress(5701);
+                hazelcast = zeebeContainer.getExternalAddress(DEFAULT_HAZELCAST_PORT);
             }
-            return new ZeebeDevServicesStartResult(gateway, hazelcast, zeebeContainer::close);
+            return new ZeebeDevServicesStartResult(gateway, client, hazelcast, zeebeContainer::close);
         };
 
         return zeebeContainerLocator.locateContainer(devServicesConfig.serviceName, devServicesConfig.shared, launchMode)
-                .map(containerAddress -> new ZeebeDevServicesStartResult(containerAddress.getUrl(), null, null))
+                .map(containerAddress -> new ZeebeDevServicesStartResult(containerAddress.getUrl(), null, null, null))
                 .orElseGet(defaultZeebeServerSupplier);
 
     }
@@ -211,8 +212,8 @@ public class ZeebeDevServiceProcessor {
                 withLabel(DEV_SERVICE_LABEL, serviceName);
             }
             if (hazelcast) {
-                addExposedPort(5701);
-                addExposedPort(9600);
+                addExposedPort(DEFAULT_HAZELCAST_PORT);
+                addExposedPort(ZeebePort.MONITORING.getPort());
             }
         }
 
@@ -222,6 +223,7 @@ public class ZeebeDevServiceProcessor {
 
             if (useSharedNetwork) {
                 hostName = ConfigureUtil.configureSharedNetwork(this, "zeebe");
+                withEnv("ZEEBE_BROKER_NETWORK_ADVERTISEDHOST", hostName);
                 return;
             }
 
@@ -243,8 +245,7 @@ public class ZeebeDevServiceProcessor {
             return super.getFirstMappedPort();
         }
 
-        @Override
-        public String getHost() {
+        public String getGatewayHost() {
             return useSharedNetwork ? hostName : super.getHost();
         }
     }

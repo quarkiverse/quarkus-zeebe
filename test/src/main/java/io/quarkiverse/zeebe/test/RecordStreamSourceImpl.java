@@ -51,8 +51,6 @@ public class RecordStreamSourceImpl implements RecordStreamSource, AutoCloseable
     private final List<Record<ProcessMessageSubscriptionRecordValue>> processMessageSubscriptions = new CopyOnWriteArrayList<>();
 
     public RecordStreamSourceImpl(String address) {
-        //        String address = System.getProperty("quarkus.zeebe.devservices.test.hazelcast", "localhost:5701");
-        System.out.println("-------------------------------\n" + address + "\n-------------------------------");
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.getNetworkConfig().addAddress(address);
         HazelcastInstance hz = HazelcastClient.newHazelcastClient(clientConfig);
