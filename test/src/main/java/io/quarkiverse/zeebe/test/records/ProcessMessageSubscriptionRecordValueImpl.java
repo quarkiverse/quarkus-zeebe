@@ -44,7 +44,7 @@ public class ProcessMessageSubscriptionRecordValueImpl extends RecordValueImpl
 
     @Override
     public String getCorrelationKey() {
-        return getCorrelationKey();
+        return record.getCorrelationKey();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ProcessMessageSubscriptionRecordValueImpl extends RecordValueImpl
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 }

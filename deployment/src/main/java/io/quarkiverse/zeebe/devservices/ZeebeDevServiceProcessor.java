@@ -11,6 +11,7 @@ import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 import org.jboss.logging.Logger;
+import org.testcontainers.containers.Network;
 import org.testcontainers.utility.DockerImageName;
 
 import io.quarkiverse.zeebe.ZeebeDevServiceBuildTimeConfig;
@@ -96,15 +97,19 @@ public class ZeebeDevServiceProcessor {
             }
             currentCloseables.add(startResult.closeable);
 
-            System.setProperty("quarkus.zeebe.devservices.test.hazelcast", startResult.hazelcast);
-            System.setProperty("quarkus.zeebe.devservices.test.gateway-address", startResult.client);
+            if (launchMode.isTest()) {
+                System.setProperty("quarkiverse.zeebe.devservices.test.hazelcast", startResult.hazelcast);
+                System.setProperty("quarkiverse.zeebe.devservices.test.gateway-address", startResult.client);
+            }
             devConfigProducer
                     .produce(new DevServicesConfigResultBuildItem(getConfigPrefix() + "broker.gateway-address",
                             startResult.gateway));
-            log.infof("The zeebe server is ready to accept connections on %s", startResult.gateway);
-            startResultProducer.produce(new ZeebeDevServicesProviderBuildItem(startResult));
+            if (zeebeConfig.monitor.enabled) {
+                startResultProducer.produce(new ZeebeDevServicesProviderBuildItem(startResult));
+            }
 
             compressor.close();
+            log.infof("The zeebe broker is ready to accept connections on %s", startResult.gateway);
         } catch (Throwable t) {
             compressor.closeAndDumpCaptured();
             throw new RuntimeException(t);
@@ -162,7 +167,7 @@ public class ZeebeDevServiceProcessor {
 
         Optional<DockerImageName> image;
         if (devServicesConfig.hazelcast.enabled) {
-            image = devServicesConfig.hazelcast.imageName.map(DockerImageName::parse);
+            image = Optional.of(DockerImageName.parse(devServicesConfig.hazelcast.imageName));
         } else {
             image = devServicesConfig.imageName.map(DockerImageName::parse);
         }
@@ -179,14 +184,20 @@ public class ZeebeDevServiceProcessor {
             String gateway = zeebeContainer.getGatewayHost() + ":" + zeebeContainer.getPort();
             String client = zeebeContainer.getExternalAddress(DEFAULT_ZEEBE_PORT);
             String hazelcast = "";
+            String internalBroker = "";
+            String internalHazelcast = "";
             if (devServicesConfig.hazelcast.enabled) {
                 hazelcast = zeebeContainer.getExternalAddress(DEFAULT_HAZELCAST_PORT);
+                internalBroker = zeebeContainer.getInternalAddress(DEFAULT_ZEEBE_PORT);
+                internalHazelcast = zeebeContainer.getInternalAddress(DEFAULT_HAZELCAST_PORT);
             }
-            return new ZeebeDevServicesStartResult(gateway, client, hazelcast, zeebeContainer::close);
+            return new ZeebeDevServicesStartResult(gateway, client, hazelcast, zeebeContainer::close, internalBroker,
+                    internalHazelcast);
         };
 
         return zeebeContainerLocator.locateContainer(devServicesConfig.serviceName, devServicesConfig.shared, launchMode)
-                .map(containerAddress -> new ZeebeDevServicesStartResult(containerAddress.getUrl(), null, null, null))
+                .map(containerAddress -> new ZeebeDevServicesStartResult(containerAddress.getUrl(), null, null, null, null,
+                        null))
                 .orElseGet(defaultZeebeServerSupplier);
 
     }
@@ -225,6 +236,8 @@ public class ZeebeDevServiceProcessor {
                 hostName = ConfigureUtil.configureSharedNetwork(this, "zeebe");
                 withEnv("ZEEBE_BROKER_NETWORK_ADVERTISEDHOST", hostName);
                 return;
+            } else {
+                withNetwork(Network.SHARED);
             }
 
             if (fixedExposedPort.isPresent()) {
@@ -247,6 +260,25 @@ public class ZeebeDevServiceProcessor {
 
         public String getGatewayHost() {
             return useSharedNetwork ? hostName : super.getHost();
+        }
+    }
+
+    public static class ZeebeDevServicesStartResult {
+        public final String gateway;
+        public final String client;
+        public final String hazelcast;
+        public final String internalBroker;
+        public final String internalHazelcast;
+        final Closeable closeable;
+
+        public ZeebeDevServicesStartResult(String gateway, String client, String hazelcast, Closeable closeable,
+                String internalBroker, String internalHazelcast) {
+            this.gateway = gateway;
+            this.client = client;
+            this.hazelcast = hazelcast;
+            this.internalBroker = internalBroker;
+            this.internalHazelcast = internalHazelcast;
+            this.closeable = closeable;
         }
     }
 

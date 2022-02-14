@@ -50,7 +50,7 @@ public class MessageRecordValueImpl extends RecordValueImpl implements MessageRe
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 }

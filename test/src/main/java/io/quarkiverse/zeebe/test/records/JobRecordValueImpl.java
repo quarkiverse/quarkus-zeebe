@@ -105,7 +105,7 @@ public class JobRecordValueImpl extends RecordValueImpl implements JobRecordValu
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 

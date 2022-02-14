@@ -6,7 +6,7 @@ import io.zeebe.exporter.proto.Schema;
 
 public abstract class RecordValueImpl implements RecordValue {
 
-    public abstract Schema.RecordMetadata getMetadata();
+    abstract Schema.RecordMetadata getMetadata();
 
     @Override
     public String toJson() {

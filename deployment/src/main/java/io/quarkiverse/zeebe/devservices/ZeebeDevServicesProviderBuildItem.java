@@ -4,9 +4,9 @@ import io.quarkus.builder.item.SimpleBuildItem;
 
 public final class ZeebeDevServicesProviderBuildItem extends SimpleBuildItem {
 
-    public ZeebeDevServicesStartResult result;
+    public ZeebeDevServiceProcessor.ZeebeDevServicesStartResult result;
 
-    public ZeebeDevServicesProviderBuildItem(ZeebeDevServicesStartResult result) {
+    public ZeebeDevServicesProviderBuildItem(ZeebeDevServiceProcessor.ZeebeDevServicesStartResult result) {
         this.result = result;
     }
 

@@ -67,6 +67,12 @@ public class ZeebeDevServicesConfig {
     @ConfigItem(name = "hazelcast")
     public HazelcastConfig hazelcast = new HazelcastConfig();
 
+    /**
+     * Zeebe simple monitor configuration
+     */
+    @ConfigItem(name = "monitor")
+    public MonitorConfig monitor = new MonitorConfig();
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -94,21 +100,54 @@ public class ZeebeDevServicesConfig {
         /**
          * Enable or disable hazelcast exporter for devservices.
          */
-        @ConfigItem(defaultValue = "true")
+        @ConfigItem(defaultValue = "false")
         public boolean enabled;
-
-        /**
-         * Optional fixed port the hazelcast will listen to.
-         * <p>
-         * If not defined, the port will be chosen randomly.
-         */
-        @ConfigItem
-        public OptionalInt port;
 
         /**
          * The container image name to use, for container based zeebe broker hazelcast providers.
          */
         @ConfigItem(name = "image-name", defaultValue = "ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:1.3.3-1.1.1-SNAPSHOT")
-        public Optional<String> imageName;
+        public String imageName;
     }
+
+    /**
+     * Zeebe simple monitor configuration.
+     */
+    @ConfigGroup
+    public static class MonitorConfig {
+
+        /**
+         * Enable or disable simple monitor for devservices.
+         */
+        @ConfigItem(name = "enabled", defaultValue = "false")
+        public boolean enabled;
+
+        /**
+         * Optional fixed port the simple monitor will listen to.
+         * <p>
+         * If not defined, the port will be chosen randomly.
+         */
+        @ConfigItem(name = "port")
+        public OptionalInt port;
+
+        /**
+         * The container image name to use, for container based zeebe simple monitor.
+         */
+        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.3.0")
+        public String imageName;
+
+        /**
+         * The value of the {@code quarkus-dev-service-zeebe} label attached to the started container.
+         * This property is used when {@code shared} is set to {@code true}.
+         * In this case, before starting a container, Dev Services for Zeebe looks for a container with the
+         * {@code quarkus-dev-service-zeebe} label
+         * set to the configured value. If found, it will use this container instead of starting a new one. Otherwise, it
+         * starts a new container with the {@code quarkus-dev-service-zeebe} label set to the specified value.
+         * <p>
+         * This property is used when you need multiple shared Zeebe servers.
+         */
+        @ConfigItem(defaultValue = "zeebe-simple-monitor")
+        public String serviceName;
+    }
+
 }

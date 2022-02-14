@@ -42,7 +42,7 @@ public class DeploymentRecordValueImpl extends RecordValueImpl implements Deploy
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 

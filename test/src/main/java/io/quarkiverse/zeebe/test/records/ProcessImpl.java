@@ -49,7 +49,7 @@ public class ProcessImpl extends RecordValueImpl implements Process {
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 }

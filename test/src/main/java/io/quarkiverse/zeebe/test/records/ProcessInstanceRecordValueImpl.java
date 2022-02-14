@@ -13,7 +13,7 @@ public class ProcessInstanceRecordValueImpl extends RecordValueImpl implements P
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 

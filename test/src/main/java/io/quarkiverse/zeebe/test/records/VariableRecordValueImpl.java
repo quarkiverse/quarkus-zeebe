@@ -12,7 +12,7 @@ public class VariableRecordValueImpl extends RecordValueImpl implements Variable
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 

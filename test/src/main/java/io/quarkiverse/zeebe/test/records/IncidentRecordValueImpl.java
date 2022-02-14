@@ -58,7 +58,7 @@ public class IncidentRecordValueImpl extends RecordValueImpl implements Incident
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 }

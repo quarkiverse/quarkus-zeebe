@@ -2,6 +2,8 @@ package io.quarkiverse.zeebe.test;
 
 import java.util.Map;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.ZeebeClientBuilder;
 import io.quarkiverse.zeebe.runtime.ZeebeClientBuilderFactory;
@@ -17,7 +19,8 @@ public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager {
     @Override
     public Map<String, String> start() {
 
-        String gateway = System.getProperty("quarkus.zeebe.devservices.test.gateway-address");
+        String gateway = ConfigProvider.getConfig().getValue("quarkiverse.zeebe.devservices.test.gateway-address",
+                String.class);
         if (gateway != null) {
             ZeebeRuntimeConfig config = new ZeebeRuntimeConfig();
             config.broker.gatewayAddress = gateway;
@@ -25,7 +28,7 @@ public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager {
             CLIENT = builder.build();
         }
 
-        String address = System.getProperty("quarkus.zeebe.devservices.test.hazelcast");
+        String address = ConfigProvider.getConfig().getValue("quarkiverse.zeebe.devservices.test.hazelcast", String.class);
         if (address != null) {
             RECORDS = new RecordStreamSourceImpl(address);
             BpmnAssert.init(RECORDS);

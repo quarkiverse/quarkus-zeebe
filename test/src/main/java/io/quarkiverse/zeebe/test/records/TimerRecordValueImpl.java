@@ -42,7 +42,7 @@ public class TimerRecordValueImpl extends RecordValueImpl implements TimerRecord
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 }

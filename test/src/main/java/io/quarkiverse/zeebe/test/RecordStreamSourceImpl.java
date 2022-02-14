@@ -22,7 +22,7 @@ public class RecordStreamSourceImpl implements RecordStreamSource, AutoCloseable
 
     public static ZeebeHazelcast zeebeHazelcast;
 
-    private final List<Record<?>> records = new ArrayList<>();
+    private final List<Record<?>> records = new CopyOnWriteArrayList<>();
 
     private final List<Record<ProcessInstanceRecordValue>> processInstances = new CopyOnWriteArrayList<>();
 
@@ -165,7 +165,7 @@ public class RecordStreamSourceImpl implements RecordStreamSource, AutoCloseable
         if (compact) {
             new CompactRecordLogger(recordsList).log();
         } else {
-            System.out.println("===== records (count: ${count()}) =====");
+            System.out.println("===== records (count: " + records.size() + ") =====");
             recordsList.forEach(record -> System.out.println(record.toJson()));
             System.out.println("---------------------------");
         }

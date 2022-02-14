@@ -40,7 +40,7 @@ public class VariableDocumentRecordValueImpl extends RecordValueImpl implements 
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 }

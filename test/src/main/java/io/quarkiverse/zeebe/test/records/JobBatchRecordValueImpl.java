@@ -57,7 +57,7 @@ public class JobBatchRecordValueImpl extends RecordValueImpl implements JobBatch
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 

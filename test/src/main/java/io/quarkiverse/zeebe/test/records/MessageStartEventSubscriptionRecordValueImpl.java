@@ -61,7 +61,7 @@ public class MessageStartEventSubscriptionRecordValueImpl extends RecordValueImp
     }
 
     @Override
-    public Schema.RecordMetadata getMetadata() {
+    Schema.RecordMetadata getMetadata() {
         return record.getMetadata();
     }
 }
