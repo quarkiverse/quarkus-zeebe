@@ -19,6 +19,7 @@
         <module>runtime</module>
         <module>test</module>
         <module>integration-tests</module>
+        <module>examples</module>
     </modules>
 
     <properties>

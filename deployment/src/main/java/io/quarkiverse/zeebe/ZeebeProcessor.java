@@ -31,6 +31,7 @@ import org.jboss.jandex.IndexView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.quarkiverse.zeebe.opentracing.ZeebeOpentracingInterceptor;
 import io.quarkiverse.zeebe.runtime.ZeebeBuildTimeConfig;
 import io.quarkiverse.zeebe.runtime.ZeebeClientService;
 import io.quarkiverse.zeebe.runtime.ZeebeRecorder;
@@ -42,6 +43,8 @@ import io.quarkiverse.zeebe.runtime.health.ZeebeTopologyHealthCheck;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.BeanArchiveIndexBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
+import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.Record;
@@ -68,6 +71,14 @@ public class ZeebeProcessor {
     static final DotName WORKER_ANNOTATION_SCOPE = DotName.createSimple(ApplicationScoped.class.getName());
 
     static final DotName CLIENT_INTERCEPTOR_ANNOTATION = DotName.createSimple(ZeebeInterceptor.class.getName());
+
+    @BuildStep
+    void addOpentracing(ZeebeBuildTimeConfig config, Capabilities capabilities,
+            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
+        if (config.opentracing.enabled && capabilities.isPresent(Capability.SMALLRYE_OPENTRACING)) {
+            additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpentracingInterceptor.class));
+        }
+    }
 
     @BuildStep
     void addIndex(BuildProducer<AdditionalIndexedClassesBuildItem> add) {
