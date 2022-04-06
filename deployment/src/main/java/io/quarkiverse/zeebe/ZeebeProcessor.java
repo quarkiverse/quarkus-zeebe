@@ -31,6 +31,7 @@ import org.jboss.jandex.IndexView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.quarkiverse.zeebe.opentelemetry.ZeebeOpenTelemetryInterceptor;
 import io.quarkiverse.zeebe.opentracing.ZeebeOpentracingInterceptor;
 import io.quarkiverse.zeebe.runtime.ZeebeBuildTimeConfig;
 import io.quarkiverse.zeebe.runtime.ZeebeClientService;
@@ -60,8 +61,6 @@ public class ZeebeProcessor {
 
     static final String FEATURE_NAME = "zeebe";
 
-    ZeebeBuildTimeConfig buildConfig;
-
     private static final Logger log = LoggerFactory.getLogger(ZeebeProcessor.class);
 
     private static final String JAR_RESOURCE_PROTOCOL = "jar";
@@ -78,6 +77,15 @@ public class ZeebeProcessor {
         if (config.opentracing.enabled && capabilities.isPresent(Capability.SMALLRYE_OPENTRACING)) {
             additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpentracingInterceptor.class));
         }
+    }
+
+    @BuildStep
+    void addOpenTelemetry(ZeebeBuildTimeConfig config, Capabilities capabilities,
+            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
+        if (!config.openTelemetry.enabled || !capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
+            return;
+        }
+        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpenTelemetryInterceptor.class));
     }
 
     @BuildStep
@@ -99,6 +107,7 @@ public class ZeebeProcessor {
 
     @BuildStep
     void build(
+            ZeebeBuildTimeConfig config,
             BuildProducer<BeanDefiningAnnotationBuildItem> b,
             BuildProducer<ReflectiveClassBuildItem> reflective,
             BuildProducer<AdditionalBeanBuildItem> additionalBeans,
@@ -130,7 +139,7 @@ public class ZeebeProcessor {
         b.produce(new BeanDefiningAnnotationBuildItem(WORKER_ANNOTATION, WORKER_ANNOTATION_SCOPE));
         b.produce(new BeanDefiningAnnotationBuildItem(CLIENT_INTERCEPTOR_ANNOTATION, WORKER_ANNOTATION_SCOPE));
 
-        Collection<String> resources = discoverResources(buildConfig.resources.location);
+        Collection<String> resources = discoverResources(config.resources.location);
         if (!resources.isEmpty()) {
             resource.produce(new NativeImageResourceBuildItem(resources.toArray(new String[0])));
         }

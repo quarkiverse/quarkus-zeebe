@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.examples.opentracing;
+package io.quarkiverse.zeebe.examples.opentelemetry;
 
 import java.util.Map;
 

@@ -27,6 +27,12 @@ public class ZeebeBuildTimeConfig {
     public OpentracingConfig opentracing = new OpentracingConfig();
 
     /**
+     * OpenTelemetry configuration.
+     */
+    @ConfigItem(name = "opentelemetry")
+    public OpenTelemetryConfig openTelemetry = new OpenTelemetryConfig();
+
+    /**
      * Health check configuration.
      */
     @ConfigGroup
@@ -56,6 +62,18 @@ public class ZeebeBuildTimeConfig {
      */
     @ConfigGroup
     public static class OpentracingConfig {
+        /**
+         * Whether or not an opentracing is published in case the smallrye-opentracing extension is present.
+         */
+        @ConfigItem(name = "enabled")
+        public boolean enabled;
+    }
+
+    /**
+     * OpenTelemetry configuration.
+     */
+    @ConfigGroup
+    public static class OpenTelemetryConfig {
         /**
          * Whether or not an opentracing is published in case the smallrye-opentracing extension is present.
          */

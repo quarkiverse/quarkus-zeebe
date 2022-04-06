@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.examples.opentracing.test1;
+package io.quarkiverse.zeebe.examples.opentelemetry.test1;
 
 import javax.inject.Inject;
 
@@ -17,6 +17,7 @@ public class Step1 implements JobHandler {
 
     @Override
     public void handle(JobClient client, ActivatedJob job) throws Exception {
+        System.out.println("### " + job.getVariablesAsMap());
         Parameter p = job.getVariablesAsType(Parameter.class);
         p.info = "step1";
         p.data = service.getParam();

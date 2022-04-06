@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.opentracing;
+package io.quarkiverse.zeebe;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;

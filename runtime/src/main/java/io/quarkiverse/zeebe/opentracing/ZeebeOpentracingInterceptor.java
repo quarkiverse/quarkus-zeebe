@@ -20,6 +20,7 @@ import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
+import io.quarkiverse.zeebe.ZeebeTraced;
 
 @ZeebeTraced
 @Interceptor
@@ -45,7 +46,7 @@ public class ZeebeOpentracingInterceptor {
     }
 
     public static Span createSpan(Tracer tracer, String clazz, ActivatedJob job) {
-        Tracer.SpanBuilder spanBuilder = tracer.buildSpan("handle")
+        Tracer.SpanBuilder spanBuilder = tracer.buildSpan(job.getType())
                 .withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
         SpanContext parentContext = extract(tracer, job.getVariablesAsMap());
         if (parentContext != null) {
@@ -54,9 +55,13 @@ public class ZeebeOpentracingInterceptor {
         Span span = spanBuilder.start();
         span.setTag("bpmn-class", clazz);
         span.setTag("bpmn-component", "zeebe-worker");
-        span.setOperationName("handle");
-        addTraceInfo(span, job);
-
+        span.setTag("bpmn-process-id", job.getBpmnProcessId());
+        span.setTag("bpmn-process-instance-key", job.getProcessInstanceKey());
+        span.setTag("bpmn-process-element-id", job.getElementId());
+        span.setTag("bpmn-process-element-instance-key", job.getElementInstanceKey());
+        span.setTag("bpmn-process-def-key", job.getProcessDefinitionKey());
+        span.setTag("bpmn-process-def-ver", job.getProcessDefinitionVersion());
+        span.setTag("bpmn-retries", job.getRetries());
         return span;
     }
 
@@ -91,13 +96,13 @@ public class ZeebeOpentracingInterceptor {
         return null;
     }
 
-    private static void addTraceInfo(Span span, ActivatedJob job) {
-        span.setOperationName(job.getType());
-        span.setTag("bpmn-process-id", job.getBpmnProcessId());
-        span.setTag("bpmn-process-instance-key", job.getProcessInstanceKey());
-        span.setTag("bpmn-process-element-id", job.getElementId());
-        span.setTag("bpmn-process-element-instance-key", job.getElementInstanceKey());
-        span.setTag("bpmn-process-def-key", job.getProcessDefinitionKey());
-        span.setTag("bpmn-process-def-ver", job.getProcessDefinitionVersion());
-    }
+    //    private static void addTraceInfo(Span span, ActivatedJob job) {
+    //        span.setOperationName(job.getType());
+    //        span.setTag("bpmn-process-id", job.getBpmnProcessId());
+    //        span.setTag("bpmn-process-instance-key", job.getProcessInstanceKey());
+    //        span.setTag("bpmn-process-element-id", job.getElementId());
+    //        span.setTag("bpmn-process-element-instance-key", job.getElementInstanceKey());
+    //        span.setTag("bpmn-process-def-key", job.getProcessDefinitionKey());
+    //        span.setTag("bpmn-process-def-ver", job.getProcessDefinitionVersion());
+    //    }
 }
