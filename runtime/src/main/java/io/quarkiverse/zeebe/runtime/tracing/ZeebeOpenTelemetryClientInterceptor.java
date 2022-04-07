@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.examples.opentelemetry;
+package io.quarkiverse.zeebe.runtime.tracing;
 
 import java.util.Map;
 
@@ -18,17 +18,15 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.quarkiverse.zeebe.ZeebeClientInterceptor;
-import io.quarkiverse.zeebe.ZeebeInterceptor;
 
-@ZeebeInterceptor
-public class TestClientInterceptor implements ZeebeClientInterceptor {
+public class ZeebeOpenTelemetryClientInterceptor implements ZeebeClientInterceptor {
 
     private final OpenTelemetry openTelemetry;
 
     @Inject
     JsonMapper mapper;
 
-    public TestClientInterceptor(OpenTelemetry openTelemetry) {
+    public ZeebeOpenTelemetryClientInterceptor(OpenTelemetry openTelemetry) {
         this.openTelemetry = openTelemetry;
     }
 
@@ -64,14 +62,14 @@ public class TestClientInterceptor implements ZeebeClientInterceptor {
     private <ReqT> void throwErrorRequest(Span span, ReqT message) {
         GatewayOuterClass.ThrowErrorRequest request = (GatewayOuterClass.ThrowErrorRequest) message;
         span.setStatus(StatusCode.ERROR)
-                .setAttribute("bpmn-throw-error-message", request.getErrorMessage())
-                .setAttribute("bpmn-throw-error-code", request.getErrorCode());
+                .setAttribute(ZeebeTracing.THROW_ERROR_MESSAGE, request.getErrorMessage())
+                .setAttribute(ZeebeTracing.THROW_ERROR_CODE, request.getErrorCode());
     }
 
     private <ReqT> void failJobRequest(Span span, ReqT message) {
         GatewayOuterClass.FailJobRequest request = (GatewayOuterClass.FailJobRequest) message;
         span.setStatus(StatusCode.ERROR)
-                .setAttribute("bpmn-fail-message", request.getErrorMessage().substring(0, 10));
+                .setAttribute(ZeebeTracing.FAIL_MESSAGE, request.getErrorMessage().substring(0, 10));
     }
 
     private <ReqT> ReqT createProcessInstance(ReqT message) {

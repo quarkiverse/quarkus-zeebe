@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.examples.opentracing;
+package io.quarkiverse.zeebe.runtime.tracing;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -17,10 +17,8 @@ import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
 import io.quarkiverse.zeebe.ZeebeClientInterceptor;
-import io.quarkiverse.zeebe.ZeebeInterceptor;
 
-@ZeebeInterceptor
-public class TestClientInterceptor implements ZeebeClientInterceptor {
+public class ZeebeOpentracingClientInterceptor implements ZeebeClientInterceptor {
 
     @Inject
     JsonMapper mapper;
@@ -35,7 +33,7 @@ public class TestClientInterceptor implements ZeebeClientInterceptor {
         return new ForwardingClientCall.SimpleForwardingClientCall<>(next.newCall(method, callOptions)) {
             @Override
             public void sendMessage(ReqT message) {
-                System.out.println("### " + message.getClass().getName());
+
                 if (tracer == null) {
                     super.sendMessage(message);
                     return;
@@ -60,14 +58,14 @@ public class TestClientInterceptor implements ZeebeClientInterceptor {
     private <ReqT> void throwErrorRequest(ReqT message) {
         GatewayOuterClass.ThrowErrorRequest request = (GatewayOuterClass.ThrowErrorRequest) message;
         tracer.activeSpan().setTag(Tags.ERROR.getKey(), true)
-                .setTag("bpmn-throw-error-message", request.getErrorMessage())
-                .setTag("bpmn-throw-error-code", request.getErrorCode());
+                .setTag(ZeebeTracing.THROW_ERROR_MESSAGE, request.getErrorMessage())
+                .setTag(ZeebeTracing.THROW_ERROR_CODE, request.getErrorCode());
     }
 
     private <ReqT> void failJobRequest(ReqT message) {
         GatewayOuterClass.FailJobRequest request = (GatewayOuterClass.FailJobRequest) message;
         tracer.activeSpan().setTag(Tags.ERROR.getKey(), true)
-                .setTag("bpmn-fail-message", request.getErrorMessage().substring(0, 10));
+                .setTag(ZeebeTracing.FAIL_MESSAGE, request.getErrorMessage().substring(0, 10));
     }
 
     private <ReqT> ReqT createProcessInstance(ReqT message) {

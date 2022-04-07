@@ -20,19 +20,19 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkiverse.zeebe.opentelemetry.ZeebeOpenTelemetryInterceptor;
-import io.quarkiverse.zeebe.opentracing.ZeebeOpentracingInterceptor;
 import io.quarkiverse.zeebe.runtime.ZeebeBuildTimeConfig;
 import io.quarkiverse.zeebe.runtime.ZeebeClientService;
 import io.quarkiverse.zeebe.runtime.ZeebeRecorder;
@@ -41,7 +41,12 @@ import io.quarkiverse.zeebe.runtime.ZeebeWorkerContainer;
 import io.quarkiverse.zeebe.runtime.ZeebeWorkerValue;
 import io.quarkiverse.zeebe.runtime.health.ZeebeHealthCheck;
 import io.quarkiverse.zeebe.runtime.health.ZeebeTopologyHealthCheck;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTelemetryClientInterceptor;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTelemetryInterceptor;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpentracingClientInterceptor;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpentracingInterceptor;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.AnnotationsTransformerBuildItem;
 import io.quarkus.arc.deployment.BeanArchiveIndexBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
 import io.quarkus.deployment.Capabilities;
@@ -71,21 +76,62 @@ public class ZeebeProcessor {
 
     static final DotName CLIENT_INTERCEPTOR_ANNOTATION = DotName.createSimple(ZeebeInterceptor.class.getName());
 
-    @BuildStep
-    void addOpentracing(ZeebeBuildTimeConfig config, Capabilities capabilities,
-            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
-        if (config.opentracing.enabled && capabilities.isPresent(Capability.SMALLRYE_OPENTRACING)) {
-            additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpentracingInterceptor.class));
+    static class OpenTracingEnabled implements BooleanSupplier {
+
+        ZeebeBuildTimeConfig config;
+
+        @Override
+        public boolean getAsBoolean() {
+            return config.opentracing.enabled;
         }
     }
 
-    @BuildStep
-    void addOpenTelemetry(ZeebeBuildTimeConfig config, Capabilities capabilities,
-            BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
-        if (!config.openTelemetry.enabled || !capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
+    @BuildStep(onlyIf = OpenTracingEnabled.class)
+    void addOpentracing(Capabilities capabilities, BuildProducer<AdditionalBeanBuildItem> additionalBeans,
+            BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer) {
+        if (!capabilities.isPresent(Capability.SMALLRYE_OPENTRACING)) {
             return;
         }
+        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpentracingInterceptor.class));
+        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpentracingClientInterceptor.class));
+        annotationsTransformer.produce(new AnnotationsTransformerBuildItem(transformationContext -> {
+            AnnotationTarget target = transformationContext.getTarget();
+            if (target.kind().equals(AnnotationTarget.Kind.CLASS)) {
+                if (target.asClass().name().equals(DotName.createSimple(ZeebeOpentracingClientInterceptor.class.getName()))) {
+                    transformationContext.transform().add(DotName.createSimple(ZeebeInterceptor.class.getName())).done();
+                }
+            }
+        }));
+
+    }
+
+    static class OpenTelemetryEnabled implements BooleanSupplier {
+
+        ZeebeBuildTimeConfig config;
+
+        @Override
+        public boolean getAsBoolean() {
+            return config.openTelemetry.enabled;
+        }
+    }
+
+    @BuildStep(onlyIf = OpenTelemetryEnabled.class)
+    void addOpenTelemetry(Capabilities capabilities, BuildProducer<AdditionalBeanBuildItem> additionalBeans,
+            BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer) {
+        if (!capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
+            return;
+        }
+
         additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpenTelemetryInterceptor.class));
+        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpenTelemetryClientInterceptor.class));
+        annotationsTransformer.produce(new AnnotationsTransformerBuildItem(transformationContext -> {
+            AnnotationTarget target = transformationContext.getTarget();
+            if (target.kind().equals(AnnotationTarget.Kind.CLASS)) {
+                if (target.asClass().name().equals(DotName.createSimple(ZeebeOpenTelemetryClientInterceptor.class.getName()))) {
+                    transformationContext.transform().add(DotName.createSimple(ZeebeInterceptor.class.getName())).done();
+                }
+            }
+        }));
     }
 
     @BuildStep
