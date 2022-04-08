@@ -5,10 +5,8 @@ import javax.inject.Inject;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
-import io.quarkiverse.zeebe.ZeebeTraced;
 import io.quarkiverse.zeebe.ZeebeWorker;
 
-@ZeebeTraced
 @ZeebeWorker(type = "step1")
 public class Step1 implements JobHandler {
 

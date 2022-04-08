@@ -65,8 +65,8 @@ public class ZeebeBuildTimeConfig {
         /**
          * Whether or not an opentracing is published in case the smallrye-opentracing extension is present.
          */
-        @ConfigItem(name = "enabled")
-        public boolean enabled;
+        @ConfigItem(name = "enabled", defaultValue = "true")
+        public boolean enabled = true;
     }
 
     /**

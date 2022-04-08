@@ -21,9 +21,8 @@ import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapPropagator;
-import io.quarkiverse.zeebe.ZeebeTraced;
 
-@ZeebeTraced
+@SuppressWarnings("CdiInterceptorInspection")
 @Interceptor
 @Priority(value = Interceptor.Priority.LIBRARY_BEFORE + 1)
 public class ZeebeOpenTelemetryInterceptor {
@@ -36,8 +35,9 @@ public class ZeebeOpenTelemetryInterceptor {
 
     @AroundInvoke
     public Object wrap(InvocationContext ctx) throws Exception {
-        Span span = createSpan(openTelemetry, ZeebeTracing.getName(ctx.getTarget().getClass()),
-                (ActivatedJob) ctx.getParameters()[1]);
+        ActivatedJob job = (ActivatedJob) ctx.getParameters()[1];
+        Span span = createSpan(openTelemetry, ZeebeTracing.getClass(ctx.getTarget().getClass()),
+                ZeebeTracing.getSpanName(job, ctx.getMethod()), job);
         try (Scope ignored = span.makeCurrent()) {
             return ctx.proceed();
         } catch (Throwable e) {
@@ -49,7 +49,7 @@ public class ZeebeOpenTelemetryInterceptor {
         }
     }
 
-    private static Span createSpan(OpenTelemetry openTelemetry, String clazz, ActivatedJob job) {
+    private static Span createSpan(OpenTelemetry openTelemetry, String clazz, String spanName, ActivatedJob job) {
         ContextPropagators propagators = openTelemetry.getPropagators();
         TextMapPropagator textMapPropagator = propagators.getTextMapPropagator();
 
@@ -73,19 +73,21 @@ public class ZeebeOpenTelemetryInterceptor {
             }
         });
 
-        return openTelemetry.getTracer(INSTRUMENTATION_NAME)
-                .spanBuilder(job.getType())
-                .setParent(context)
-                .setSpanKind(SpanKind.CONSUMER)
-                .setAttribute(ZeebeTracing.CLASS, clazz)
-                .setAttribute(ZeebeTracing.COMPONENT, ZeebeTracing.COMPONENT_NAME)
-                .setAttribute(ZeebeTracing.PROCESS_ID, job.getBpmnProcessId())
-                .setAttribute(ZeebeTracing.PROCESS_INSTANCE_KEY, job.getProcessInstanceKey())
-                .setAttribute(ZeebeTracing.PROCESS_ELEMENT_ID, job.getElementId())
-                .setAttribute(ZeebeTracing.PROCESS_ELEMENT_INSTANCE_KEY, job.getElementInstanceKey())
-                .setAttribute(ZeebeTracing.PROCESS_DEF_KEY, job.getProcessDefinitionKey())
-                .setAttribute(ZeebeTracing.PROCESS_DEF_VER, job.getProcessDefinitionVersion())
-                .setAttribute(ZeebeTracing.RETRIES, job.getRetries())
-                .startSpan();
+        Span span = openTelemetry.getTracer(INSTRUMENTATION_NAME).spanBuilder(spanName).setParent(context)
+                .setSpanKind(SpanKind.CONSUMER).startSpan();
+
+        ZeebeTracing.setAttributes(clazz, job, new ZeebeTracing.AttributeCallback() {
+            @Override
+            public void setAttribute(String key, long value) {
+                span.setAttribute(key, value);
+            }
+
+            @Override
+            public void setAttribute(String key, String value) {
+                span.setAttribute(key, value);
+            }
+        });
+
+        return span;
     }
 }

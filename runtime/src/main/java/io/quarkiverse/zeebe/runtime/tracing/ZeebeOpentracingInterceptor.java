@@ -20,9 +20,8 @@ import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
-import io.quarkiverse.zeebe.ZeebeTraced;
 
-@ZeebeTraced
+@SuppressWarnings("CdiInterceptorInspection")
 @Interceptor
 @Priority(value = Interceptor.Priority.LIBRARY_BEFORE + 1)
 public class ZeebeOpentracingInterceptor {
@@ -32,8 +31,10 @@ public class ZeebeOpentracingInterceptor {
 
     @AroundInvoke
     public Object wrap(InvocationContext ctx) throws Exception {
-        Span span = createSpan(tracer, ZeebeTracing.getName(ctx.getTarget().getClass()),
-                (ActivatedJob) ctx.getParameters()[1]);
+        ActivatedJob job = (ActivatedJob) ctx.getParameters()[1];
+        Span span = createSpan(tracer, ZeebeTracing.getClass(ctx.getTarget().getClass()),
+                ZeebeTracing.getSpanName(job, ctx.getMethod()),
+                job);
         try (Scope scope = tracer.scopeManager().activate(span)) {
             return ctx.proceed();
         } catch (Throwable e) {
@@ -45,23 +46,26 @@ public class ZeebeOpentracingInterceptor {
         }
     }
 
-    private static Span createSpan(Tracer tracer, String clazz, ActivatedJob job) {
-        Tracer.SpanBuilder spanBuilder = tracer.buildSpan(job.getType())
+    private static Span createSpan(Tracer tracer, String clazz, String spanName, ActivatedJob job) {
+        Tracer.SpanBuilder spanBuilder = tracer.buildSpan(spanName)
                 .withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CONSUMER);
         SpanContext parentContext = extract(tracer, job.getVariablesAsMap());
         if (parentContext != null) {
             spanBuilder.asChildOf(parentContext);
         }
-        spanBuilder.withTag(ZeebeTracing.CLASS, clazz);
-        spanBuilder.withTag(ZeebeTracing.COMPONENT, ZeebeTracing.COMPONENT_NAME);
-        spanBuilder.withTag(ZeebeTracing.PROCESS_ID, job.getBpmnProcessId());
-        spanBuilder.withTag(ZeebeTracing.PROCESS_INSTANCE_KEY, job.getProcessInstanceKey());
-        spanBuilder.withTag(ZeebeTracing.PROCESS_ELEMENT_ID, job.getElementId());
-        spanBuilder.withTag(ZeebeTracing.PROCESS_ELEMENT_INSTANCE_KEY, job.getElementInstanceKey());
-        spanBuilder.withTag(ZeebeTracing.PROCESS_DEF_KEY, job.getProcessDefinitionKey());
-        spanBuilder.withTag(ZeebeTracing.PROCESS_DEF_VER, job.getProcessDefinitionVersion());
-        spanBuilder.withTag(ZeebeTracing.RETRIES, job.getRetries());
-        return spanBuilder.start();
+        Span span = spanBuilder.start();
+        ZeebeTracing.setAttributes(clazz, job, new ZeebeTracing.AttributeCallback() {
+            @Override
+            public void setAttribute(String key, long value) {
+                span.setTag(key, value);
+            }
+
+            @Override
+            public void setAttribute(String key, String value) {
+                span.setTag(key, value);
+            }
+        });
+        return span;
     }
 
     private static SpanContext extract(Tracer tracer, Map<String, Object> parameters) {

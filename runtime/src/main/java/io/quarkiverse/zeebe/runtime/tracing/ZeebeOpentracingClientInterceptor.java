@@ -45,27 +45,19 @@ public class ZeebeOpentracingClientInterceptor implements ZeebeClientInterceptor
                 }
 
                 if (message instanceof GatewayOuterClass.FailJobRequest) {
-                    failJobRequest(message);
+                    GatewayOuterClass.FailJobRequest request = (GatewayOuterClass.FailJobRequest) message;
+                    tracer.activeSpan().setTag(Tags.ERROR.getKey(), true)
+                            .setTag(ZeebeTracing.FAIL_MESSAGE, request.getErrorMessage().substring(0, 10));
                 }
                 if (message instanceof GatewayOuterClass.ThrowErrorRequest) {
-                    throwErrorRequest(message);
+                    GatewayOuterClass.ThrowErrorRequest request = (GatewayOuterClass.ThrowErrorRequest) message;
+                    tracer.activeSpan().setTag(Tags.ERROR.getKey(), true)
+                            .setTag(ZeebeTracing.THROW_ERROR_MESSAGE, request.getErrorMessage())
+                            .setTag(ZeebeTracing.THROW_ERROR_CODE, request.getErrorCode());
                 }
                 super.sendMessage(message);
             }
         };
-    }
-
-    private <ReqT> void throwErrorRequest(ReqT message) {
-        GatewayOuterClass.ThrowErrorRequest request = (GatewayOuterClass.ThrowErrorRequest) message;
-        tracer.activeSpan().setTag(Tags.ERROR.getKey(), true)
-                .setTag(ZeebeTracing.THROW_ERROR_MESSAGE, request.getErrorMessage())
-                .setTag(ZeebeTracing.THROW_ERROR_CODE, request.getErrorCode());
-    }
-
-    private <ReqT> void failJobRequest(ReqT message) {
-        GatewayOuterClass.FailJobRequest request = (GatewayOuterClass.FailJobRequest) message;
-        tracer.activeSpan().setTag(Tags.ERROR.getKey(), true)
-                .setTag(ZeebeTracing.FAIL_MESSAGE, request.getErrorMessage().substring(0, 10));
     }
 
     private <ReqT> ReqT createProcessInstance(ReqT message) {
