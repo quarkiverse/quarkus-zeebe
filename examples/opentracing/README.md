@@ -10,9 +10,10 @@ Start example application
 mvn clean compile quarkus:dev
 ```
 
-## Opentracing test1
+## Opentracing test
 
-Start `test1` process instance.
+Start `test` process instances.
+
 ```shell
-curl -X POST -H "Content-Type: application/json" -d '{"data":"1"}' http://localhost:8080/process/start/test1
+curl http://localhost:8080/process/test
 ```

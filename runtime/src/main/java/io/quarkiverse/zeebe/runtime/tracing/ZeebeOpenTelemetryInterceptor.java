@@ -42,7 +42,7 @@ public class ZeebeOpenTelemetryInterceptor {
             return ctx.proceed();
         } catch (Throwable e) {
             span.setStatus(StatusCode.ERROR);
-            span.setAttribute(ZeebeTracing.WORKER_EXCEPTION, e.getMessage());
+            span.setAttribute(ZeebeTracing.JOB_EXCEPTION, e.getMessage());
             throw e;
         } finally {
             span.end();
@@ -76,7 +76,7 @@ public class ZeebeOpenTelemetryInterceptor {
         Span span = openTelemetry.getTracer(INSTRUMENTATION_NAME).spanBuilder(spanName).setParent(context)
                 .setSpanKind(SpanKind.CONSUMER).startSpan();
 
-        ZeebeTracing.setAttributes(clazz, job, new ZeebeTracing.AttributeCallback() {
+        ZeebeTracing.setAttributes(clazz, job, new ZeebeTracing.AttributeConfigCallback() {
             @Override
             public void setAttribute(String key, long value) {
                 span.setAttribute(key, value);

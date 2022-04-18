@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.examples.opentracing.test1;
+package io.quarkiverse.zeebe.examples.opentracing;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 

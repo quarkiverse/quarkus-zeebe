@@ -38,8 +38,7 @@ public class ZeebeOpentracingInterceptor {
         try (Scope scope = tracer.scopeManager().activate(span)) {
             return ctx.proceed();
         } catch (Throwable e) {
-            Tags.ERROR.set(span, true);
-            span.setTag(ZeebeTracing.WORKER_EXCEPTION, e.getMessage());
+            span.setTag(Tags.ERROR, true).setTag(ZeebeTracing.JOB_EXCEPTION, e.getMessage());
             throw e;
         } finally {
             span.finish();
@@ -54,7 +53,7 @@ public class ZeebeOpentracingInterceptor {
             spanBuilder.asChildOf(parentContext);
         }
         Span span = spanBuilder.start();
-        ZeebeTracing.setAttributes(clazz, job, new ZeebeTracing.AttributeCallback() {
+        ZeebeTracing.setAttributes(clazz, job, new ZeebeTracing.AttributeConfigCallback() {
             @Override
             public void setAttribute(String key, long value) {
                 span.setTag(key, value);

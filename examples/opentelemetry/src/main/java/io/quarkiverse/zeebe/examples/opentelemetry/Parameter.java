@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.examples.opentelemetry.test1;
+package io.quarkiverse.zeebe.examples.opentelemetry;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 

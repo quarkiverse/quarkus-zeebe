@@ -10,11 +10,39 @@ import io.quarkiverse.zeebe.ZeebeWorker;
 
 public class ZeebeTracing {
 
+    static String REQUEST_TIMEOUT = "bpmn-request-timeout";
+
+    static String DEPLOY_RESOURCES = "bpmn-deploy-resources";
+
     static String COMPONENT_NAME = "zeebe-worker";
 
-    static String WORKER_EXCEPTION = "bpmn-worker-exception";
+    static String CLIENT_EXCEPTION = "bpmn-client-exception";
 
-    static String WORKER_TYPE = "bpmn-worker-type";
+    static String JOB_EXCEPTION = "bpmn-job-exception";
+
+    static String JOB_TYPE = "bpmn-job-type";
+
+    static String JOB_KEY = "bpmn-job-key";
+
+    static String JOB_RETRIES = "bpmn-job-retries";
+
+    static String JOB_VARIABLES = "bpmn-job-variables";
+
+    static String PROCESS_VARIABLES = "bpmn-process-variables";
+
+    static String PROCESS_VARIABLES_SCOPE = "bpmn-process-variables-scope";
+
+    static String INCIDENT_KEY = "bpmn-incident-key";
+
+    static String MESSAGE_CORRELATION_KEY = "bpmn-message-correlation-key";
+
+    static String MESSAGE_ID = "bpmn-message-id";
+
+    static String MESSAGE_NAME = "bpmn-message-name";
+
+    static String MESSAGE_VARIABLES = "bpmn-message-variables";
+
+    static String MESSAGE_TIME_TO_LIVE = "bpmn-message-time-to-live";
 
     static String CLASS = "bpmn-class";
 
@@ -46,7 +74,7 @@ public class ZeebeTracing {
 
     static Set<String> ATTRIBUTES = new HashSet<>(List.of(
             PROCESS_ID, PROCESS_INSTANCE_KEY, PROCESS_ELEMENT_ID, PROCESS_ELEMENT_INSTANCE_KEY,
-            PROCESS_DEF_KEY, PROCESS_DEF_VER, RETRIES, COMPONENT, WORKER_TYPE, CLASS));
+            PROCESS_DEF_KEY, PROCESS_DEF_VER, RETRIES, COMPONENT, JOB_TYPE, JOB_KEY, JOB_VARIABLES, CLASS));
 
     public static void setAttributes(List<String> attributes) {
         ATTRIBUTES = new HashSet<>(attributes);
@@ -60,10 +88,12 @@ public class ZeebeTracing {
         return job.getType();
     }
 
-    static void setAttributes(String clazz, ActivatedJob job, AttributeCallback call) {
+    static void setAttributes(String clazz, ActivatedJob job, AttributeConfigCallback call) {
         call.setAttributeCheck(CLASS, clazz);
-        call.setAttributeCheck(WORKER_TYPE, job.getType());
+        call.setAttributeCheck(JOB_TYPE, job.getType());
         call.setAttributeCheck(COMPONENT, COMPONENT_NAME);
+        call.setAttributeCheck(JOB_KEY, job.getKey());
+        call.setAttributeCheck(JOB_VARIABLES, job.getVariables());
         call.setAttributeCheck(PROCESS_ID, job.getBpmnProcessId());
         call.setAttributeCheck(PROCESS_INSTANCE_KEY, job.getProcessInstanceKey());
         call.setAttributeCheck(PROCESS_ELEMENT_ID, job.getElementId());
@@ -73,7 +103,7 @@ public class ZeebeTracing {
         call.setAttributeCheck(RETRIES, job.getRetries());
     }
 
-    public abstract static class AttributeCallback {
+    public abstract static class AttributeConfigCallback {
 
         void setAttributeCheck(String key, long value) {
             if (ATTRIBUTES.contains(key)) {
@@ -91,4 +121,5 @@ public class ZeebeTracing {
 
         abstract void setAttribute(String key, String value);
     }
+
 }

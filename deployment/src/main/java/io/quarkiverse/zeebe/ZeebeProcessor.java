@@ -76,17 +76,7 @@ public class ZeebeProcessor {
     static final DotName WORKER_ANNOTATION = DotName.createSimple(ZeebeWorker.class.getName());
     static final DotName WORKER_ANNOTATION_SCOPE = DotName.createSimple(ApplicationScoped.class.getName());
 
-    static class OpenTracingEnabled implements BooleanSupplier {
-
-        ZeebeBuildTimeConfig config;
-
-        @Override
-        public boolean getAsBoolean() {
-            return config.opentracing.enabled;
-        }
-    }
-
-    @BuildStep(onlyIf = OpenTracingEnabled.class)
+    @BuildStep(onlyIf = TracingEnabled.class)
     void addOpentracing(Capabilities capabilities, BuildProducer<AdditionalBeanBuildItem> additionalBeans,
             BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer,
             BuildProducer<InterceptorBindingRegistrarBuildItem> interceptorBindingRegistrar) {
@@ -97,17 +87,17 @@ public class ZeebeProcessor {
                 ZeebeOpentracingInterceptor.class, ZeebeOpentracingClientInterceptor.class);
     }
 
-    static class OpenTelemetryEnabled implements BooleanSupplier {
+    static class TracingEnabled implements BooleanSupplier {
 
         ZeebeBuildTimeConfig config;
 
         @Override
         public boolean getAsBoolean() {
-            return config.openTelemetry.enabled;
+            return config.tracing.enabled;
         }
     }
 
-    @BuildStep(onlyIf = OpenTelemetryEnabled.class)
+    @BuildStep(onlyIf = TracingEnabled.class)
     void addOpenTelemetry(Capabilities capabilities, BuildProducer<AdditionalBeanBuildItem> additionalBeans,
             BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer,
             BuildProducer<InterceptorBindingRegistrarBuildItem> interceptorBindingRegistrar) {

@@ -10,8 +10,9 @@ import io.camunda.zeebe.gateway.protocol.GatewayOuterClass;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
-import io.grpc.ForwardingClientCall;
 import io.grpc.MethodDescriptor;
+import io.opentracing.Scope;
+import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
@@ -30,57 +31,93 @@ public class ZeebeOpentracingClientInterceptor implements ZeebeClientInterceptor
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method, CallOptions callOptions,
             Channel next) {
 
-        return new ForwardingClientCall.SimpleForwardingClientCall<>(next.newCall(method, callOptions)) {
+        // ignore if span is not activate
+        if (tracer == null) {
+            return next.newCall(method, callOptions);
+        }
+
+        return new ZeebeForwardingClient<ReqT, RespT>(next.newCall(method, callOptions)) {
+
             @Override
-            public void sendMessage(ReqT message) {
+            protected void createTracingMessage(ReqT message) {
+                Span span = tracer.activeSpan();
+                Span callSpan = tracer.buildSpan(message.getClass().getSimpleName())
+                        .withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CLIENT)
+                        .asChildOf(span).start();
+                try (Scope scope = tracer.scopeManager().activate(callSpan)) {
+                    sendTracingMessage(message, callback(span), callback(callSpan));
+                } catch (Throwable e) {
+                    callSpan.setTag(Tags.ERROR, true).setTag(ZeebeTracing.JOB_EXCEPTION, e.getMessage());
+                    throw e;
+                } finally {
+                    callSpan.finish();
+                }
+            }
 
-                if (tracer == null) {
-                    super.sendMessage(message);
-                    return;
-                }
+            @Override
+            GatewayOuterClass.CreateProcessInstanceRequest convert(GatewayOuterClass.CreateProcessInstanceRequest request) {
+                GatewayOuterClass.CreateProcessInstanceRequest.Builder builder = GatewayOuterClass.CreateProcessInstanceRequest
+                        .newBuilder(request);
+                Map<String, Object> variables = mapper.fromJsonAsMap(builder.getVariables());
+                tracer.inject(tracer.activeSpan().context(), Format.Builtin.TEXT_MAP, new TextMap() {
 
-                if (message instanceof GatewayOuterClass.CreateProcessInstanceRequest) {
-                    super.sendMessage(createProcessInstance(message));
-                    return;
-                }
+                    @Override
+                    public void put(String key, String value) {
+                        variables.put(key, value);
+                    }
 
-                if (message instanceof GatewayOuterClass.FailJobRequest) {
-                    GatewayOuterClass.FailJobRequest request = (GatewayOuterClass.FailJobRequest) message;
-                    tracer.activeSpan().setTag(Tags.ERROR.getKey(), true)
-                            .setTag(ZeebeTracing.FAIL_MESSAGE, request.getErrorMessage().substring(0, 10));
-                }
-                if (message instanceof GatewayOuterClass.ThrowErrorRequest) {
-                    GatewayOuterClass.ThrowErrorRequest request = (GatewayOuterClass.ThrowErrorRequest) message;
-                    tracer.activeSpan().setTag(Tags.ERROR.getKey(), true)
-                            .setTag(ZeebeTracing.THROW_ERROR_MESSAGE, request.getErrorMessage())
-                            .setTag(ZeebeTracing.THROW_ERROR_CODE, request.getErrorCode());
-                }
-                super.sendMessage(message);
+                    @Override
+                    public Iterator<Map.Entry<String, String>> iterator() {
+                        throw new UnsupportedOperationException("iterator should never be used with Tracer.inject()");
+                    }
+                });
+                builder.setVariables(mapper.toJson(variables));
+                return builder.build();
             }
         };
+
     }
 
-    private <ReqT> ReqT createProcessInstance(ReqT message) {
-        GatewayOuterClass.CreateProcessInstanceRequest.Builder builder = GatewayOuterClass.CreateProcessInstanceRequest
-                .newBuilder((GatewayOuterClass.CreateProcessInstanceRequest) message);
+    private static ZeebeForwardingClient.AttributeCallback callback(Span span) {
+        return new OpenTracingAttributeCallback(span);
+    }
 
-        Map<String, Object> variables = mapper.fromJsonAsMap(builder.getVariables());
-        tracer.inject(tracer.activeSpan().context(), Format.Builtin.TEXT_MAP, new TextMap() {
+    private static final class OpenTracingAttributeCallback implements ZeebeForwardingClient.AttributeCallback {
 
-            @Override
-            public void put(String key, String value) {
-                variables.put(key, value);
-            }
+        private final Span span;
 
-            @Override
-            public Iterator<Map.Entry<String, String>> iterator() {
-                throw new UnsupportedOperationException("iterator should never be used with Tracer.inject()");
-            }
-        });
-        builder.setVariables(mapper.toJson(variables));
+        OpenTracingAttributeCallback(Span span) {
+            this.span = span;
+        }
 
-        @SuppressWarnings("unchecked")
-        ReqT request = (ReqT) builder.build();
-        return request;
+        @Override
+        public ZeebeForwardingClient.AttributeCallback setError() {
+            Tags.ERROR.set(span, true);
+            return this;
+        }
+
+        @Override
+        public ZeebeForwardingClient.AttributeCallback setAttribute(String key, String value) {
+            this.span.setTag(key, value);
+            return this;
+        }
+
+        @Override
+        public ZeebeForwardingClient.AttributeCallback setAttribute(String key, int value) {
+            this.span.setTag(key, value);
+            return this;
+        }
+
+        @Override
+        public ZeebeForwardingClient.AttributeCallback setAttribute(String key, long value) {
+            this.span.setTag(key, value);
+            return this;
+        }
+
+        @Override
+        public ZeebeForwardingClient.AttributeCallback setAttribute(String key, boolean value) {
+            this.span.setTag(key, value);
+            return this;
+        }
     }
 }

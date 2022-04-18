@@ -48,7 +48,6 @@ public class ZeebeRecorder {
         ZeebeClientService client = Arc.container().instance(ZeebeClientService.class).get();
         client.initialize(config);
         // tracing configuration
-        System.out.println("### " + config.tracing.attributes);
         if (config.tracing.attributes.isPresent()) {
             List<String> attrs = config.tracing.attributes.get();
             if (!attrs.isEmpty()) {

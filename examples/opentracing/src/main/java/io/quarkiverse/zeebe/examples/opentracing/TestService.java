@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.examples.opentracing.test1;
+package io.quarkiverse.zeebe.examples.opentracing;
 
 import java.util.UUID;
 
@@ -6,10 +6,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.opentracing.Traced;
 
-@Traced
 @ApplicationScoped
-public class Step1Service {
+public class TestService {
 
+    @Traced
     public String getParam() {
         return UUID.randomUUID().toString();
     }

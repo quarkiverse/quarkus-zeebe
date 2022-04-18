@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.examples.opentelemetry.test1;
+package io.quarkiverse.zeebe.examples.opentelemetry;
 
 import java.util.UUID;
 
@@ -7,7 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import io.opentelemetry.extension.annotations.WithSpan;
 
 @ApplicationScoped
-public class Step1Service {
+public class TestService {
 
     @WithSpan
     public String getParam() {
