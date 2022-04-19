@@ -78,7 +78,13 @@ bpmn-job-type,bpmn-job-key,bpmn-class
 
 ## Tracing
 
-### Opentelemetry
+Whether `zeebe` tracing is enabled or not is done by `quarkus.zeebe.tracing.enabled` build time property. The default is `true`, but shown here to indicate how it can be disabled.
+```properties
+quarkus.zeebe.tracing.enabled=true
+```
+![OpenTelemetry](./docs/opentelemetry.png)
+
+### OpenTelemetry
 
 If you already have your Quarkus project configured, you can add the `quarkus-opentelemetry-exporter-otlp` extension to your project.
 ```xml
@@ -87,14 +93,11 @@ If you already have your Quarkus project configured, you can add the `quarkus-op
     <artifactId>quarkus-opentelemetry-exporter-otlp</artifactId>
 </dependency>
 ```
-Whether `zeebe` OpenTelemetry is enabled or not is done by `quarkus.zeebe.tracing.enabled` property. The default is `true`, but shown here to indicate how it can be disabled.
-```properties
-quarkus.zeebe.tracing.enabled=true
-```
+
 [Zeebe example](examples/opentelemetry)  
 [Quarkus OpenTelemetry](https://quarkus.io/guides/opentelemetry)
 
-### Opentracing
+### OpenTracing
 
 If you already have your Quarkus project configured, you can add the `smallrye-opentracing` extension to your project.
 ```xml
@@ -103,10 +106,7 @@ If you already have your Quarkus project configured, you can add the `smallrye-o
     <artifactId>quarkus-smallrye-opentracing</artifactId>
 </dependency>
 ```
-Whether `zeebe` OpenTelemetry is enabled or not is done by `quarkus.zeebe.tracing.enabled` property. The default is `true`, but shown here to indicate how it can be disabled.
-```properties
-quarkus.zeebe.tracing.enabled=true
-```
+
 [Zeebe example](examples/opentracing)  
 [Quarkus OpenTracing](https://quarkus.io/guides/opentracing)
 
