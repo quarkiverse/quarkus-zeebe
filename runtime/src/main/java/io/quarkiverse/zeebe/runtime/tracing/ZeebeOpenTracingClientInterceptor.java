@@ -19,7 +19,7 @@ import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
 import io.quarkiverse.zeebe.ZeebeClientInterceptor;
 
-public class ZeebeOpentracingClientInterceptor implements ZeebeClientInterceptor {
+public class ZeebeOpenTracingClientInterceptor implements ZeebeClientInterceptor {
 
     @Inject
     JsonMapper mapper;
@@ -92,31 +92,41 @@ public class ZeebeOpentracingClientInterceptor implements ZeebeClientInterceptor
 
         @Override
         public ZeebeForwardingClient.AttributeCallback setError() {
-            Tags.ERROR.set(span, true);
+            if (span != null) {
+                Tags.ERROR.set(span, true);
+            }
             return this;
         }
 
         @Override
         public ZeebeForwardingClient.AttributeCallback setAttribute(String key, String value) {
-            this.span.setTag(key, value);
+            if (span != null) {
+                this.span.setTag(key, value);
+            }
             return this;
         }
 
         @Override
         public ZeebeForwardingClient.AttributeCallback setAttribute(String key, int value) {
-            this.span.setTag(key, value);
+            if (span != null) {
+                this.span.setTag(key, value);
+            }
             return this;
         }
 
         @Override
         public ZeebeForwardingClient.AttributeCallback setAttribute(String key, long value) {
-            this.span.setTag(key, value);
+            if (span != null) {
+                this.span.setTag(key, value);
+            }
             return this;
         }
 
         @Override
         public ZeebeForwardingClient.AttributeCallback setAttribute(String key, boolean value) {
-            this.span.setTag(key, value);
+            if (span != null) {
+                this.span.setTag(key, value);
+            }
             return this;
         }
     }

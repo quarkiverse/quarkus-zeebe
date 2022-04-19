@@ -24,7 +24,7 @@ import io.opentracing.tag.Tags;
 @SuppressWarnings("CdiInterceptorInspection")
 @Interceptor
 @Priority(value = Interceptor.Priority.LIBRARY_BEFORE + 1)
-public class ZeebeOpentracingInterceptor {
+public class ZeebeOpenTracingInterceptor {
 
     @Inject
     Tracer tracer;

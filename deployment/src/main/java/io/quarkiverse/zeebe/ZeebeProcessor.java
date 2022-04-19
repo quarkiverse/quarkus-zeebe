@@ -43,8 +43,8 @@ import io.quarkiverse.zeebe.runtime.health.ZeebeHealthCheck;
 import io.quarkiverse.zeebe.runtime.health.ZeebeTopologyHealthCheck;
 import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTelemetryClientInterceptor;
 import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTelemetryInterceptor;
-import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpentracingClientInterceptor;
-import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpentracingInterceptor;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTracingClientInterceptor;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTracingInterceptor;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.deployment.AnnotationsTransformerBuildItem;
 import io.quarkus.arc.deployment.BeanArchiveIndexBuildItem;
@@ -84,7 +84,7 @@ public class ZeebeProcessor {
             return;
         }
         addTracing(annotationsTransformer, interceptorBindingRegistrar, additionalBeans,
-                ZeebeOpentracingInterceptor.class, ZeebeOpentracingClientInterceptor.class);
+                ZeebeOpenTracingInterceptor.class, ZeebeOpenTracingClientInterceptor.class);
     }
 
     static class TracingEnabled implements BooleanSupplier {

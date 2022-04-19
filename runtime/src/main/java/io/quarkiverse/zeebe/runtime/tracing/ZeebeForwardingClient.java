@@ -148,8 +148,8 @@ public abstract class ZeebeForwardingClient<ReqT, RespT> extends ForwardingClien
     abstract GatewayOuterClass.CreateProcessInstanceRequest convert(GatewayOuterClass.CreateProcessInstanceRequest request);
 
     interface AttributeCallback {
-        AttributeCallback setError();
 
+        AttributeCallback setError();
 
         AttributeCallback setAttribute(String key, String value);
 
