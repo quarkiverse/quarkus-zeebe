@@ -1,5 +1,7 @@
 package io.quarkiverse.zeebe.it.bpmn;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,9 +10,8 @@ import io.grpc.Channel;
 import io.grpc.ClientCall;
 import io.grpc.MethodDescriptor;
 import io.quarkiverse.zeebe.ZeebeClientInterceptor;
-import io.quarkiverse.zeebe.ZeebeInterceptor;
 
-@ZeebeInterceptor
+@ApplicationScoped
 public class TestClientInterceptor implements ZeebeClientInterceptor {
 
     static Logger log = LoggerFactory.getLogger(TestClientInterceptor.class);

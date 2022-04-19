@@ -71,6 +71,12 @@ public class ZeebeRuntimeConfig {
     public Duration requestTimeout = DEFAULT.getDefaultRequestTimeout();
 
     /**
+     * Zeebe client tracing configuration.
+     */
+    @ConfigItem(name = "tracing")
+    public TracingConfig tracing = new TracingConfig();
+
+    /**
      * Zeebe client broker configuration.
      */
     @ConfigGroup
@@ -271,46 +277,49 @@ public class ZeebeRuntimeConfig {
         public Optional<List<String>> fetchVariables;
 
         /**
-         * Sets the backoff supplier configuration.
-         */
-        @ConfigItem(name = "exponential-backoff")
-        public ExponentialBackoffConfig exponentialBackoff = new ExponentialBackoffConfig();
-    }
-
-    /**
-     * Sets the backoff supplier. The supplier is called to determine the retry delay after each failed request;
-     * the worker then waits until the returned delay has elapsed before sending the next request.
-     * Note that this is used only for the polling mechanism - failures in the JobHandler should be handled there,
-     * and retried there if need be.
-     */
-    @ConfigGroup
-    public static class ExponentialBackoffConfig {
-        /**
+         * Sets the backoff supplier. The supplier is called to determine the retry delay after each failed request;
+         * the worker then waits until the returned delay has elapsed before sending the next request.
+         * Note that this is used only for the polling mechanism - failures in the JobHandler should be handled there,
+         * and retried there if need be.
+         *
          * Sets the backoff multiplication factor. The previous delay is multiplied by this factor. Default is 1.6.
          */
-        @ConfigItem(name = "backoff-factor")
-        public Optional<Double> backoffFactor;
+        @ConfigItem(name = "exp-backoff-factor")
+        public Optional<Double> expBackoffFactor;
 
         /**
          * Sets the jitter factor. The next delay is changed randomly within a range of +/- this factor.
          * For example, if the next delay is calculated to be 1s and the jitterFactor is 0.1 then the actual next
          * delay can be somewhere between 0.9 and 1.1s. Default is 0.1
          */
-        @ConfigItem(name = "jitter-factor")
-        public Optional<Double> jitterFactor;
+        @ConfigItem(name = "exp-jitter-factor")
+        public Optional<Double> expJitterFactor;
 
         /**
          * Sets the maximum retry delay.
          * Note that the jitter may push the retry delay over this maximum. Default is 5000ms.
          */
-        @ConfigItem(name = "max-delay")
-        public Optional<Long> maxDelay;
+        @ConfigItem(name = "exp-max-delay")
+        public Optional<Long> expMaxDelay;
 
         /**
          * Sets the minimum retry delay.
          * Note that the jitter may push the retry delay below this minimum. Default is 50ms.
          */
-        @ConfigItem(name = "min-delay")
-        public Optional<Long> minDelay;
+        @ConfigItem(name = "exp-min-delay")
+        public Optional<Long> expMinDelay;
+    }
+
+    /**
+     * Zeebe client tracing configuration.
+     */
+    @ConfigGroup
+    public static class TracingConfig {
+
+        /**
+         * List of span names
+         */
+        @ConfigItem(name = "attributes")
+        public Optional<List<String>> attributes;
     }
 }

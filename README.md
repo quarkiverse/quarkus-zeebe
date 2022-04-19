@@ -20,48 +20,95 @@ To use the extension, add the dependency to the target project:
 
 ## Configuration
 
+Build configuration
 ```properties
 # src/main/resources/bpmn 
 quarkus.zeebe.resources.location=bpmn
-# enable health check
-quarkus.zeebe.health.enabled=true|false
-# broker configuration
-quarkus.zeebe.broker.gateway-address=localhost:26500
-quarkus.zeebe.broker.keep-alive=PT45S
-# cloud configuration
-quarkus.zeebe.cloud.cluster-id=
-quarkus.zeebe.cloud.client-id=
-quarkus.zeebe.cloud.client-secret=
-quarkus.zeebe.cloud.region=bru-2
-quarkus.zeebe.cloud.base-url=zeebe.camunda.io
-quarkus.zeebe.cloud.auth-url=https://login.cloud.camunda.io/oauth/token
-quarkus.zeebe.cloud.port=443
-quarkus.zeebe.cloud.credentials-cache-path=
-# worker configuration
-quarkus.zeebe.worker.max-jobs-active=32
-quarkus.zeebe.worker.threads=1
-quarkus.zeebe.worker.default-name=default
-quarkus.zeebe.worker.default-type=
-# message configuration
-quarkus.zeebe.message.time-to-live=PT1H
-# security configuration
-quarkus.zeebe.security.plaintext=true
-quarkus.zeebe.security.cert-path=
-# job configuration
-quarkus.zeebe.job.timeout=PT5M
-quarkus.zeebe.job.pool-interval=PT0.100S
-# overwrite job handler annotation
-quarkus.zeebe.workers.<type>.name=
-quarkus.zeebe.workers.<type>.timeout=
-quarkus.zeebe.workers.<type>.max-jobs-active=
-quarkus.zeebe.workers.<type>.request-timeout=
-quarkus.zeebe.workers.<type>.poll-interval=
-quarkus.zeebe.workers.<type>.fetch-variables=
-quarkus.zeebe.workers.<type>.exponential-backoff.backoff-factor=1.6
-quarkus.zeebe.workers.<type>.exponential-backoff.jitter-factor=0.1
-quarkus.zeebe.workers.<type>.exponential-backoff.max-delay=5000
-quarkus.zeebe.workers.<type>.exponential-backoff.min-delay=50
+# enable health check true|false
+quarkus.zeebe.health.enabled=false
+# enable opentracing true|false
+quarkus.zeebe.opentracing.enabled=true
+# enable opentelemetry true|false
+quarkus.zeebe.opentelemetry.enabled=true
 ```
+
+Runtime configuration
+```properties
+# broker configuration
+quarkus.zeebe.client.broker.gateway-address=localhost:26500
+quarkus.zeebe.client.broker.keep-alive=PT45S
+# cloud configuration
+quarkus.zeebe.client.cloud.cluster-id=
+quarkus.zeebe.client.cloud.client-id=
+quarkus.zeebe.client.cloud.client-secret=
+quarkus.zeebe.client.cloud.region=bru-2
+quarkus.zeebe.client.cloud.base-url=zeebe.camunda.io
+quarkus.zeebe.client.cloud.auth-url=https://login.cloud.camunda.io/oauth/token
+quarkus.zeebe.client.cloud.port=443
+quarkus.zeebe.client.cloud.credentials-cache-path=
+# worker configuration
+quarkus.zeebe.client.worker.max-jobs-active=32
+quarkus.zeebe.client.worker.threads=1
+quarkus.zeebe.client.worker.default-name=default
+quarkus.zeebe.client.worker.default-type=
+# message configuration
+quarkus.zeebe.client.message.time-to-live=PT1H
+# security configuration
+quarkus.zeebe.client.security.plaintext=true
+quarkus.zeebe.client.security.cert-path=
+# job configuration
+quarkus.zeebe.client.job.timeout=PT5M
+quarkus.zeebe.client.job.pool-interval=PT0.100S
+# overwrite job handler annotation
+quarkus.zeebe.client.workers.<type>.name=
+quarkus.zeebe.client.workers.<type>.timeout=
+quarkus.zeebe.client.workers.<type>.max-jobs-active=
+quarkus.zeebe.client.workers.<type>.request-timeout=
+quarkus.zeebe.client.workers.<type>.poll-interval=
+quarkus.zeebe.client.workers.<type>.fetch-variables=
+quarkus.zeebe.client.workers.<type>.exp-backoff-factor=1.6
+quarkus.zeebe.client.workers.<type>.exp-jitter-factor=0.1
+quarkus.zeebe.client.workers.<type>.exp-max-delay=5000
+quarkus.zeebe.client.workers.<type>.exp-min-delay=50
+# client tracing configuration
+quarkus.zeebe.client.tracing.attributes=bpmn-process-id,bpmn-process-instance-key,bpmn-process-element-id,
+bpmn-process-element-instance-key,bpmn-process-def-key,bpmn-process-def-ver,bpmn-retries,bpmn-component,
+bpmn-job-type,bpmn-job-key,bpmn-class
+```
+
+## Tracing
+
+### Opentelemetry
+
+If you already have your Quarkus project configured, you can add the `quarkus-opentelemetry-exporter-otlp` extension to your project.
+```xml
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-opentelemetry-exporter-otlp</artifactId>
+</dependency>
+```
+Whether `zeebe` OpenTelemetry is enabled or not is done by `quarkus.zeebe.tracing.enabled` property. The default is `true`, but shown here to indicate how it can be disabled.
+```properties
+quarkus.zeebe.tracing.enabled=true
+```
+[Zeebe example](examples/opentelemetry)  
+[Quarkus OpenTelemetry](https://quarkus.io/guides/opentelemetry)
+
+### Opentracing
+
+If you already have your Quarkus project configured, you can add the `smallrye-opentracing` extension to your project.
+```xml
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-smallrye-opentracing</artifactId>
+</dependency>
+```
+Whether `zeebe` OpenTelemetry is enabled or not is done by `quarkus.zeebe.tracing.enabled` property. The default is `true`, but shown here to indicate how it can be disabled.
+```properties
+quarkus.zeebe.tracing.enabled=true
+```
+[Zeebe example](examples/opentracing)  
+[Quarkus OpenTracing](https://quarkus.io/guides/opentracing)
 
 ## Dev-Services
 Dev Services for Zeebe is automatically enabled unless:

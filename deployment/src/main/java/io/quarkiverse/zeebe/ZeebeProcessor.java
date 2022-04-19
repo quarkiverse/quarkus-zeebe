@@ -20,12 +20,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
 import org.slf4j.Logger;
@@ -39,9 +41,18 @@ import io.quarkiverse.zeebe.runtime.ZeebeWorkerContainer;
 import io.quarkiverse.zeebe.runtime.ZeebeWorkerValue;
 import io.quarkiverse.zeebe.runtime.health.ZeebeHealthCheck;
 import io.quarkiverse.zeebe.runtime.health.ZeebeTopologyHealthCheck;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTelemetryClientInterceptor;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTelemetryInterceptor;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTracingClientInterceptor;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTracingInterceptor;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import io.quarkus.arc.deployment.AnnotationsTransformerBuildItem;
 import io.quarkus.arc.deployment.BeanArchiveIndexBuildItem;
 import io.quarkus.arc.deployment.BeanDefiningAnnotationBuildItem;
+import io.quarkus.arc.deployment.InterceptorBindingRegistrarBuildItem;
+import io.quarkus.arc.processor.InterceptorBindingRegistrar;
+import io.quarkus.deployment.Capabilities;
+import io.quarkus.deployment.Capability;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.Record;
@@ -57,8 +68,6 @@ public class ZeebeProcessor {
 
     static final String FEATURE_NAME = "zeebe";
 
-    ZeebeBuildTimeConfig buildConfig;
-
     private static final Logger log = LoggerFactory.getLogger(ZeebeProcessor.class);
 
     private static final String JAR_RESOURCE_PROTOCOL = "jar";
@@ -67,12 +76,77 @@ public class ZeebeProcessor {
     static final DotName WORKER_ANNOTATION = DotName.createSimple(ZeebeWorker.class.getName());
     static final DotName WORKER_ANNOTATION_SCOPE = DotName.createSimple(ApplicationScoped.class.getName());
 
-    static final DotName CLIENT_INTERCEPTOR_ANNOTATION = DotName.createSimple(ZeebeInterceptor.class.getName());
+    @BuildStep(onlyIf = TracingEnabled.class)
+    void addOpentracing(Capabilities capabilities, BuildProducer<AdditionalBeanBuildItem> additionalBeans,
+            BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer,
+            BuildProducer<InterceptorBindingRegistrarBuildItem> interceptorBindingRegistrar) {
+        if (!capabilities.isPresent(Capability.SMALLRYE_OPENTRACING)) {
+            return;
+        }
+        addTracing(annotationsTransformer, interceptorBindingRegistrar, additionalBeans,
+                ZeebeOpenTracingInterceptor.class, ZeebeOpenTracingClientInterceptor.class);
+    }
+
+    static class TracingEnabled implements BooleanSupplier {
+
+        ZeebeBuildTimeConfig config;
+
+        @Override
+        public boolean getAsBoolean() {
+            return config.tracing.enabled;
+        }
+    }
+
+    @BuildStep(onlyIf = TracingEnabled.class)
+    void addOpenTelemetry(Capabilities capabilities, BuildProducer<AdditionalBeanBuildItem> additionalBeans,
+            BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer,
+            BuildProducer<InterceptorBindingRegistrarBuildItem> interceptorBindingRegistrar) {
+
+        if (!capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
+            return;
+        }
+        addTracing(annotationsTransformer, interceptorBindingRegistrar, additionalBeans,
+                ZeebeOpenTelemetryInterceptor.class, ZeebeOpenTelemetryClientInterceptor.class);
+    }
+
+    void addTracing(BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer,
+            BuildProducer<InterceptorBindingRegistrarBuildItem> interceptorBindingRegistrar,
+            BuildProducer<AdditionalBeanBuildItem> additionalBeans,
+            Class<?> interceptor, Class<?> clientInterceptor) {
+        interceptorBindingRegistrar.produce(new InterceptorBindingRegistrarBuildItem(
+                new InterceptorBindingRegistrar() {
+                    @Override
+                    public List<InterceptorBinding> getAdditionalBindings() {
+                        return List.of(InterceptorBindingRegistrar.InterceptorBinding.of(ZeebeWorker.class, m -> true));
+                    }
+                }));
+
+        DotName ic = DotName.createSimple(interceptor.getName());
+        annotationsTransformer.produce(new AnnotationsTransformerBuildItem(transformationContext -> {
+            AnnotationTarget target = transformationContext.getTarget();
+            if (target.kind().equals(AnnotationTarget.Kind.CLASS)) {
+                if (target.asClass().name().equals(ic)) {
+                    transformationContext.transform().add(DotName.createSimple(ZeebeWorker.class.getName())).done();
+                }
+            }
+        }));
+        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(interceptor));
+
+        DotName ci = DotName.createSimple(clientInterceptor.getName());
+        annotationsTransformer.produce(new AnnotationsTransformerBuildItem(transformationContext -> {
+            AnnotationTarget target = transformationContext.getTarget();
+            if (target.kind().equals(AnnotationTarget.Kind.CLASS)) {
+                if (target.asClass().name().equals(ci)) {
+                    transformationContext.transform().add(WORKER_ANNOTATION_SCOPE).done();
+                }
+            }
+        }));
+        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(clientInterceptor));
+    }
 
     @BuildStep
     void addIndex(BuildProducer<AdditionalIndexedClassesBuildItem> add) {
         add.produce(new AdditionalIndexedClassesBuildItem(ZeebeWorker.class.getName()));
-        add.produce(new AdditionalIndexedClassesBuildItem(ZeebeWorker.ExponentialBackoff.class.getName()));
     }
 
     @BuildStep
@@ -88,6 +162,7 @@ public class ZeebeProcessor {
 
     @BuildStep
     void build(
+            ZeebeBuildTimeConfig config,
             BuildProducer<BeanDefiningAnnotationBuildItem> b,
             BuildProducer<ReflectiveClassBuildItem> reflective,
             BuildProducer<AdditionalBeanBuildItem> additionalBeans,
@@ -117,9 +192,8 @@ public class ZeebeProcessor {
                 "io.camunda.zeebe.client.impl.response.TopologyImpl"));
 
         b.produce(new BeanDefiningAnnotationBuildItem(WORKER_ANNOTATION, WORKER_ANNOTATION_SCOPE));
-        b.produce(new BeanDefiningAnnotationBuildItem(CLIENT_INTERCEPTOR_ANNOTATION, WORKER_ANNOTATION_SCOPE));
 
-        Collection<String> resources = discoverResources(buildConfig.resources.location);
+        Collection<String> resources = discoverResources(config.resources.location);
         if (!resources.isEmpty()) {
             resource.produce(new NativeImageResourceBuildItem(resources.toArray(new String[0])));
         }
@@ -158,11 +232,10 @@ public class ZeebeProcessor {
         zwv.requestTimeout = ai.valueWithDefault(index, "requestTimeout").asLong();
         zwv.pollInterval = ai.valueWithDefault(index, "pollInterval").asLong();
         zwv.fetchVariables = ai.valueWithDefault(index, "fetchVariables").asStringArray();
-        AnnotationInstance eb = ai.valueWithDefault(index, "exponentialBackoff").asNested();
-        zwv.expBackoffFactor = eb.valueWithDefault(index, "backoffFactor").asDouble();
-        zwv.expJitterFactor = eb.valueWithDefault(index, "jitterFactor").asDouble();
-        zwv.expMinDelay = eb.valueWithDefault(index, "minDelay").asLong();
-        zwv.expMaxDelay = eb.valueWithDefault(index, "maxDelay").asLong();
+        zwv.expBackoffFactor = ai.valueWithDefault(index, "expBackoffFactor").asDouble();
+        zwv.expJitterFactor = ai.valueWithDefault(index, "expJitterFactor").asDouble();
+        zwv.expMinDelay = ai.valueWithDefault(index, "expMinDelay").asLong();
+        zwv.expMaxDelay = ai.valueWithDefault(index, "expMaxDelay").asLong();
         return zwv;
     }
 

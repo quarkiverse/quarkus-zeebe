@@ -19,6 +19,7 @@ import io.camunda.zeebe.client.api.worker.BackoffSupplier;
 import io.camunda.zeebe.client.api.worker.ExponentialBackoffBuilder;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeTracing;
 import io.quarkus.arc.Arc;
 import io.quarkus.runtime.annotations.Recorder;
 
@@ -43,9 +44,16 @@ public class ZeebeRecorder {
      * @param config zeebe runtime configuration
      */
     public void init(ZeebeRuntimeConfig config) {
+        // client configuration
         ZeebeClientService client = Arc.container().instance(ZeebeClientService.class).get();
         client.initialize(config);
-
+        // tracing configuration
+        if (config.tracing.attributes.isPresent()) {
+            List<String> attrs = config.tracing.attributes.get();
+            if (!attrs.isEmpty()) {
+                ZeebeTracing.setAttributes(attrs);
+            }
+        }
         if (resources != null && !resources.isEmpty()) {
 
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -86,9 +94,6 @@ public class ZeebeRecorder {
 
                     JobHandler jobHandler = c.get(w.clazz);
 
-                    //                    Class<?> clazz = getClassForName(cl, w.clazz);
-                    //                    JobHandler jobHandler = (JobHandler) Arc.container().instance(clazz).get();
-
                     // check the worker type
                     String type = w.type;
                     if (type == null || type.isEmpty()) {
@@ -109,10 +114,10 @@ public class ZeebeRecorder {
                         hc.pollInterval.ifPresent(n -> w.pollInterval = n);
                         hc.requestTimeout.ifPresent(n -> w.requestTimeout = n);
                         hc.fetchVariables.ifPresent(n -> w.fetchVariables = n.toArray(new String[0]));
-                        hc.exponentialBackoff.backoffFactor.ifPresent(n -> w.expBackoffFactor = n);
-                        hc.exponentialBackoff.jitterFactor.ifPresent(n -> w.expJitterFactor = n);
-                        hc.exponentialBackoff.minDelay.ifPresent(n -> w.expMinDelay = n);
-                        hc.exponentialBackoff.maxDelay.ifPresent(n -> w.expMaxDelay = n);
+                        hc.expBackoffFactor.ifPresent(n -> w.expBackoffFactor = n);
+                        hc.expJitterFactor.ifPresent(n -> w.expJitterFactor = n);
+                        hc.expMinDelay.ifPresent(n -> w.expMinDelay = n);
+                        hc.expMaxDelay.ifPresent(n -> w.expMaxDelay = n);
                     }
 
                     // using defaults from config if null, 0 or negative

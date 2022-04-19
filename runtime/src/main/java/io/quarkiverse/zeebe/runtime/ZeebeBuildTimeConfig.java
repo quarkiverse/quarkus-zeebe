@@ -21,6 +21,12 @@ public class ZeebeBuildTimeConfig {
     public HealthCheckConfig health = new HealthCheckConfig();
 
     /**
+     * Tracing configuration.
+     */
+    @ConfigItem(name = "tracing")
+    public TracingConfig tracing = new TracingConfig();
+
+    /**
      * Health check configuration.
      */
     @ConfigGroup
@@ -44,4 +50,17 @@ public class ZeebeBuildTimeConfig {
         public String location;
 
     }
+
+    /**
+     * Tracing configuration.
+     */
+    @ConfigGroup
+    public static class TracingConfig {
+        /**
+         * Whether or not an opentracing is published in case the smallrye-opentracing extension is present.
+         */
+        @ConfigItem(name = "enabled", defaultValue = "true")
+        public boolean enabled = true;
+    }
+
 }
