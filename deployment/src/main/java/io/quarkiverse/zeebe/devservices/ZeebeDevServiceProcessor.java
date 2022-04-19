@@ -1,5 +1,6 @@
 package io.quarkiverse.zeebe.devservices;
 
+import static io.quarkiverse.zeebe.ZeebeProcessor.FEATURE_NAME;
 import static io.quarkus.runtime.LaunchMode.DEVELOPMENT;
 
 import java.io.Closeable;
@@ -20,7 +21,7 @@ import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CuratedApplicationShutdownBuildItem;
-import io.quarkus.deployment.builditem.DevServicesConfigResultBuildItem;
+import io.quarkus.deployment.builditem.DevServicesResultBuildItem;
 import io.quarkus.deployment.builditem.DevServicesSharedNetworkBuildItem;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
@@ -43,8 +44,7 @@ public class ZeebeDevServiceProcessor {
     private static final String DEV_SERVICE_LABEL = "quarkus-dev-service-zeebe";
     public static final int DEFAULT_ZEEBE_PORT = ZeebePort.GATEWAY.getPort();
     public static final int DEFAULT_HAZELCAST_PORT = 5701;
-    private static final String QUARKUS = "quarkus.";
-    private static final String DOT = ".";
+    static final String PROP_ZEEBE_GATEWAY_ADDRESS = "quarkus.zeebe.client.broker.gateway-address";
 
     private static final ContainerLocator zeebeContainerLocator = new ContainerLocator(DEV_SERVICE_LABEL, DEFAULT_ZEEBE_PORT);
     private static volatile List<Closeable> closeables;
@@ -55,7 +55,7 @@ public class ZeebeDevServiceProcessor {
     @BuildStep(onlyIfNot = IsNormal.class, onlyIf = { GlobalDevServicesConfig.Enabled.class })
     public void startZeebeContainers(LaunchModeBuildItem launchMode,
             List<DevServicesSharedNetworkBuildItem> devServicesSharedNetworkBuildItem,
-            BuildProducer<DevServicesConfigResultBuildItem> devConfigProducer,
+            BuildProducer<DevServicesResultBuildItem> devConfigProducer,
             ZeebeDevServiceBuildTimeConfig config,
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
@@ -95,15 +95,14 @@ public class ZeebeDevServiceProcessor {
                 compressor.close();
                 return;
             }
-            currentCloseables.add(startResult.closeable);
+            currentCloseables.add(startResult.getCloseable());
 
             if (launchMode.isTest()) {
                 System.setProperty("quarkiverse.zeebe.devservices.test.hazelcast", startResult.hazelcast);
                 System.setProperty("quarkiverse.zeebe.devservices.test.gateway-address", startResult.client);
             }
             devConfigProducer
-                    .produce(new DevServicesConfigResultBuildItem(getConfigPrefix() + "broker.gateway-address",
-                            startResult.gateway));
+                    .produce(startResult.toBuildItem());
             if (zeebeConfig.monitor.enabled) {
                 startResultProducer.produce(new ZeebeDevServicesProviderBuildItem(startResult));
             }
@@ -148,9 +147,7 @@ public class ZeebeDevServiceProcessor {
             return null;
         }
 
-        String configPrefix = getConfigPrefix();
-
-        boolean needToStart = !ConfigUtils.isPropertyPresent(configPrefix + "broker.gateway-address");
+        boolean needToStart = !ConfigUtils.isPropertyPresent(PROP_ZEEBE_GATEWAY_ADDRESS);
         if (!needToStart) {
             log.debug("Not starting devservices for Zeebe as 'broker.gateway-address' have been provided");
             return null;
@@ -191,19 +188,17 @@ public class ZeebeDevServiceProcessor {
                 internalBroker = zeebeContainer.getInternalAddress(DEFAULT_ZEEBE_PORT);
                 internalHazelcast = zeebeContainer.getInternalAddress(DEFAULT_HAZELCAST_PORT);
             }
-            return new ZeebeDevServicesStartResult(gateway, client, hazelcast, zeebeContainer::close, internalBroker,
+            return new ZeebeDevServicesStartResult(zeebeContainer.getContainerId(), gateway, client, hazelcast,
+                    zeebeContainer::close, internalBroker,
                     internalHazelcast);
         };
 
         return zeebeContainerLocator.locateContainer(devServicesConfig.serviceName, devServicesConfig.shared, launchMode)
-                .map(containerAddress -> new ZeebeDevServicesStartResult(containerAddress.getUrl(), null, null, null, null,
+                .map(containerAddress -> new ZeebeDevServicesStartResult(null, containerAddress.getUrl(), null, null, null,
+                        null,
                         null))
                 .orElseGet(defaultZeebeServerSupplier);
 
-    }
-
-    private String getConfigPrefix() {
-        return QUARKUS + "zeebe.client" + DOT;
     }
 
     private static class QuarkusZeebeContainer extends ZeebeContainer {
@@ -263,22 +258,22 @@ public class ZeebeDevServiceProcessor {
         }
     }
 
-    public static class ZeebeDevServicesStartResult {
+    public static class ZeebeDevServicesStartResult extends DevServicesResultBuildItem.RunningDevService {
         public final String gateway;
         public final String client;
         public final String hazelcast;
         public final String internalBroker;
         public final String internalHazelcast;
-        final Closeable closeable;
 
-        public ZeebeDevServicesStartResult(String gateway, String client, String hazelcast, Closeable closeable,
+        public ZeebeDevServicesStartResult(String containerId, String gateway, String client, String hazelcast,
+                Closeable closeable,
                 String internalBroker, String internalHazelcast) {
+            super(FEATURE_NAME, containerId, closeable, PROP_ZEEBE_GATEWAY_ADDRESS, gateway);
             this.gateway = gateway;
             this.client = client;
             this.hazelcast = hazelcast;
             this.internalBroker = internalBroker;
             this.internalHazelcast = internalHazelcast;
-            this.closeable = closeable;
         }
     }
 
