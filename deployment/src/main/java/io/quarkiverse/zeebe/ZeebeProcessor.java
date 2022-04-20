@@ -66,7 +66,7 @@ import io.quarkus.smallrye.health.deployment.spi.HealthBuildItem;
 
 public class ZeebeProcessor {
 
-    static final String FEATURE_NAME = "zeebe";
+    public static final String FEATURE_NAME = "zeebe";
 
     private static final Logger log = LoggerFactory.getLogger(ZeebeProcessor.class);
 

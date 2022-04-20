@@ -1,11 +1,13 @@
 package io.quarkiverse.zeebe.devservices;
 
+import static io.quarkiverse.zeebe.ZeebeProcessor.FEATURE_NAME;
 import static io.quarkus.runtime.LaunchMode.DEVELOPMENT;
 
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
@@ -21,7 +23,7 @@ import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.CuratedApplicationShutdownBuildItem;
-import io.quarkus.deployment.builditem.DevServicesConfigResultBuildItem;
+import io.quarkus.deployment.builditem.DevServicesResultBuildItem;
 import io.quarkus.deployment.builditem.DevServicesSharedNetworkBuildItem;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
@@ -55,7 +57,7 @@ public class ZeebeMonitorDevServiceProcessor {
     public void startZeebeMonitorContainers(LaunchModeBuildItem launchMode,
             List<DevServicesSharedNetworkBuildItem> devServicesSharedNetworkBuildItem,
             ZeebeDevServiceBuildTimeConfig config,
-            BuildProducer<DevServicesConfigResultBuildItem> devConfigProducer,
+            BuildProducer<DevServicesResultBuildItem> devConfigProducer,
             Optional<ConsoleInstalledBuildItem> consoleInstalledBuildItem,
             CuratedApplicationShutdownBuildItem closeBuildItem,
             Optional<ZeebeDevServicesProviderBuildItem> zeebeDevServiceBuildItem,
@@ -101,7 +103,7 @@ public class ZeebeMonitorDevServiceProcessor {
                 compressor.close();
                 return;
             }
-            currentCloseables.add(startResult.closeable);
+            currentCloseables.add(startResult.getCloseable());
 
             compressor.close();
             log.infof("The zeebe monitor is ready to accept connections on %s", startResult.url);
@@ -171,18 +173,18 @@ public class ZeebeMonitorDevServiceProcessor {
             timeout.ifPresent(zeebeContainer::withStartupTimeout);
             zeebeContainer.start();
 
-            String url = "http://" + zeebeContainer.getContainerIpAddress() + ":";
+            String url = "http://" + zeebeContainer.getHost() + ":";
             if (devServicesConfig.monitor.port.isPresent()) {
                 url = url + devServicesConfig.monitor.port;
             } else {
                 url = url + zeebeContainer.getMappedPort(DEFAULT_SIMPLE_MONITOR_PORT);
             }
-            return new ZeebeSimpleMonitorDevServicesStartResult(url, zeebeContainer::close);
+            return new ZeebeSimpleMonitorDevServicesStartResult(zeebeContainer.getContainerId(), url, zeebeContainer::close);
         };
 
         return zeebeMonitorContainerLocator
                 .locateContainer(devServicesConfig.monitor.serviceName, devServicesConfig.shared, launchMode)
-                .map(containerAddress -> new ZeebeSimpleMonitorDevServicesStartResult(containerAddress.getUrl(), null))
+                .map(containerAddress -> new ZeebeSimpleMonitorDevServicesStartResult(null, containerAddress.getUrl(), null))
                 .orElseGet(defaultZeebeServerSupplier);
 
     }
@@ -227,13 +229,12 @@ public class ZeebeMonitorDevServiceProcessor {
         }
     }
 
-    public static class ZeebeSimpleMonitorDevServicesStartResult {
+    public static class ZeebeSimpleMonitorDevServicesStartResult extends DevServicesResultBuildItem.RunningDevService {
         public final String url;
-        final Closeable closeable;
 
-        public ZeebeSimpleMonitorDevServicesStartResult(String url, Closeable closeable) {
+        public ZeebeSimpleMonitorDevServicesStartResult(String containerId, String url, Closeable closeable) {
+            super(FEATURE_NAME + "-simple-monitor", containerId, closeable, Map.of());
             this.url = url;
-            this.closeable = closeable;
         }
     }
 }
