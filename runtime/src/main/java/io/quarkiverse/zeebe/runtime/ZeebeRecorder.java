@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 import org.jboss.logging.Logger;
 
-import io.camunda.zeebe.client.api.command.DeployProcessCommandStep1;
+import io.camunda.zeebe.client.api.command.DeployResourceCommandStep1;
 import io.camunda.zeebe.client.api.response.DeploymentEvent;
 import io.camunda.zeebe.client.api.worker.BackoffSupplier;
 import io.camunda.zeebe.client.api.worker.ExponentialBackoffBuilder;
@@ -58,7 +58,7 @@ public class ZeebeRecorder {
 
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-            DeployProcessCommandStep1 cmd = client.newDeployCommand();
+            DeployResourceCommandStep1 cmd = client.newDeployResourceCommand();
             DeploymentEvent deploymentResult = resources
                     .stream()
                     .flatMap(name -> Stream.of(cl.getResource(name)))
