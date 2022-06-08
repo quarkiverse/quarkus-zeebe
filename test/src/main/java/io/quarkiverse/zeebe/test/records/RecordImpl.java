@@ -1,6 +1,5 @@
 package io.quarkiverse.zeebe.test.records;
 
-import io.camunda.zeebe.protocol.impl.encoding.MsgPackConverter;
 import io.camunda.zeebe.protocol.record.*;
 import io.camunda.zeebe.protocol.record.intent.Intent;
 
@@ -80,8 +79,4 @@ public class RecordImpl<T extends RecordValue> implements Record<T> {
         return this;
     }
 
-    @Override
-    public String toJson() {
-        return MsgPackConverter.convertJsonSerializableObjectToJson(this);
-    }
 }

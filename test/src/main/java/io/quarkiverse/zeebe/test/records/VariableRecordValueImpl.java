@@ -40,4 +40,9 @@ public class VariableRecordValueImpl extends RecordValueImpl implements Variable
     public long getProcessDefinitionKey() {
         return record.getProcessDefinitionKey();
     }
+
+    @Override
+    public String getBpmnProcessId() {
+        return null;
+    }
 }

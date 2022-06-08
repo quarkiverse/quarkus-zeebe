@@ -5,55 +5,55 @@ import io.camunda.zeebe.process.test.assertions.DeploymentAssert;
 import io.camunda.zeebe.process.test.assertions.JobAssert;
 import io.camunda.zeebe.process.test.assertions.MessageAssert;
 import io.camunda.zeebe.process.test.assertions.ProcessInstanceAssert;
+import io.camunda.zeebe.process.test.filters.RecordStream;
 import io.camunda.zeebe.process.test.inspections.model.InspectedProcessInstance;
-import io.camunda.zeebe.process.test.testengine.RecordStreamSource;
 
 public class BpmnAssert {
 
-    static RecordStreamSource recordStreamSource;
+    static RecordStream recordStreamSource;
 
-    public static void init(final RecordStreamSource recordStreamSource) {
+    public static void init(final RecordStream recordStreamSource) {
         BpmnAssert.recordStreamSource = recordStreamSource;
     }
 
-    public static RecordStreamSource getRecordStreamSource() {
+    public static RecordStream getRecordStream() {
         if (recordStreamSource == null) {
             throw new AssertionError(
-                    "No RecordStreamSource is set. Please make sure you are using the @ZeebeTestResource annotation.");
+                    "No RecordStream is set. Please make sure you are using the @ZeebeTestResource annotation.");
         }
         return recordStreamSource;
     }
 
     public static ProcessInstanceAssert assertThat(final ProcessInstanceEvent instanceEvent) {
         return new ProcessInstanceAssert(
-                instanceEvent.getProcessInstanceKey(), getRecordStreamSource());
+                instanceEvent.getProcessInstanceKey(), getRecordStream());
     }
 
     public static ProcessInstanceAssert assertThat(final ProcessInstanceResult instanceResult) {
         return new ProcessInstanceAssert(
-                instanceResult.getProcessInstanceKey(), getRecordStreamSource());
+                instanceResult.getProcessInstanceKey(), getRecordStream());
     }
 
     public static ProcessInstanceAssert assertThat(
             final InspectedProcessInstance inspectedProcessInstance) {
         return new ProcessInstanceAssert(
-                inspectedProcessInstance.getProcessInstanceKey(), getRecordStreamSource());
+                inspectedProcessInstance.getProcessInstanceKey(), getRecordStream());
     }
 
     public static JobAssert assertThat(final ActivatedJob activatedJob) {
-        return new JobAssert(activatedJob, getRecordStreamSource());
+        return new JobAssert(activatedJob, getRecordStream());
     }
 
     public static DeploymentAssert assertThat(final DeploymentEvent deploymentEvent) {
-        return new DeploymentAssert(deploymentEvent, getRecordStreamSource());
+        return new DeploymentAssert(deploymentEvent, getRecordStream());
     }
 
     public static MessageAssert assertThat(final PublishMessageResponse publishMessageResponse) {
-        return new MessageAssert2(publishMessageResponse, getRecordStreamSource());
+        return new MessageAssert2(publishMessageResponse, getRecordStream());
     }
 
-    public static class MessageAssert2 extends MessageAssert {
-        protected MessageAssert2(final PublishMessageResponse actual, final RecordStreamSource recordStreamSource) {
+    private static class MessageAssert2 extends MessageAssert {
+        protected MessageAssert2(final PublishMessageResponse actual, final RecordStream recordStreamSource) {
             super(actual, recordStreamSource);
         }
     }

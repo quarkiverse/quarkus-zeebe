@@ -12,7 +12,7 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager {
 
-    static RecordStreamSourceImpl RECORDS;
+    static RecordStreamImpl RECORDS;
 
     static ZeebeClient CLIENT;
 
@@ -30,8 +30,8 @@ public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager {
 
         String address = ConfigProvider.getConfig().getValue("quarkiverse.zeebe.devservices.test.hazelcast", String.class);
         if (address != null) {
-            RECORDS = new RecordStreamSourceImpl(address);
-            BpmnAssert.init(RECORDS);
+            RECORDS = new RecordStreamImpl(address);
+            BpmnAssert.init(RECORDS.getRecordStream());
         }
         return null;
     }
