@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.camunda.zeebe.protocol.record.value.DeploymentRecordValue;
+import io.camunda.zeebe.protocol.record.value.deployment.DecisionRecordValue;
+import io.camunda.zeebe.protocol.record.value.deployment.DecisionRequirementsMetadataValue;
 import io.camunda.zeebe.protocol.record.value.deployment.DeploymentResource;
 import io.camunda.zeebe.protocol.record.value.deployment.ProcessMetadataValue;
 import io.zeebe.exporter.proto.Schema;
@@ -39,6 +41,16 @@ public class DeploymentRecordValueImpl extends RecordValueImpl implements Deploy
             processMetadataValues = tmp;
         }
         return processMetadataValues;
+    }
+
+    @Override
+    public List<DecisionRecordValue> getDecisionsMetadata() {
+        return null;
+    }
+
+    @Override
+    public List<DecisionRequirementsMetadataValue> getDecisionRequirementsMetadata() {
+        return null;
     }
 
     @Override

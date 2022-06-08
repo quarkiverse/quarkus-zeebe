@@ -106,7 +106,7 @@ public class ZeebeDevServicesConfig {
         /**
          * The container image name to use, for container based zeebe broker hazelcast providers.
          */
-        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:1.3.3-1.1.1-SNAPSHOT")
+        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:8.0.3")
         public String imageName;
     }
 
