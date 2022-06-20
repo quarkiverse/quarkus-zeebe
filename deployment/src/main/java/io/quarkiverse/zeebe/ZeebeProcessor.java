@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -193,7 +194,7 @@ public class ZeebeProcessor {
 
         b.produce(new BeanDefiningAnnotationBuildItem(WORKER_ANNOTATION, WORKER_ANNOTATION_SCOPE));
 
-        Collection<String> resources = discoverResources(config.resources.location);
+        Collection<String> resources = discoverResources(config.resources);
         if (!resources.isEmpty()) {
             resource.produce(new NativeImageResourceBuildItem(resources.toArray(new String[0])));
         }
@@ -251,7 +252,11 @@ public class ZeebeProcessor {
         return builder.build();
     }
 
-    private Collection<String> discoverResources(String location) throws IOException, URISyntaxException {
+    private Collection<String> discoverResources(ZeebeBuildTimeConfig.ResourcesConfig resourcesConfig) throws IOException, URISyntaxException {
+        if(!resourcesConfig.enabled){
+            return Collections.emptySet();
+        }
+        String location = resourcesConfig.location;
         LinkedHashSet<String> result = new LinkedHashSet<>();
 
         location = normalizeLocation(location);

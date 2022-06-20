@@ -46,6 +46,11 @@ public class ZeebeBuildTimeConfig {
         /**
          * BPMN process root folder. Default bpmn
          */
+        @ConfigItem(name = "enabled", defaultValue = "true")
+        public Boolean enabled;
+        /**
+         * BPMN process root folder. Default bpmn
+         */
         @ConfigItem(name = "location", defaultValue = "bpmn")
         public String location;
 
