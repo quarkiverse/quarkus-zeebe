@@ -22,6 +22,8 @@ To use the extension, add the dependency to the target project:
 
 Build configuration
 ```properties
+# enable auto load bpmn resources true|false
+quarkus.zeebe.resources.enabled=true
 # src/main/resources/bpmn 
 quarkus.zeebe.resources.location=bpmn
 # enable health check true|false
