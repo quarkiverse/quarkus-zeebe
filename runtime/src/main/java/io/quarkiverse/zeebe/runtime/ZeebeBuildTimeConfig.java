@@ -44,7 +44,7 @@ public class ZeebeBuildTimeConfig {
     @ConfigGroup
     public static class ResourcesConfig {
         /**
-         * BPMN process root folder. Default bpmn
+         *  Whether or not an auto scan BPMN process folder. Default true
          */
         @ConfigItem(name = "enabled", defaultValue = "true")
         public Boolean enabled;
