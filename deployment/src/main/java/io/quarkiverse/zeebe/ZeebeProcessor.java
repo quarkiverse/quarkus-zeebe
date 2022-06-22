@@ -252,8 +252,9 @@ public class ZeebeProcessor {
         return builder.build();
     }
 
-    private Collection<String> discoverResources(ZeebeBuildTimeConfig.ResourcesConfig resourcesConfig) throws IOException, URISyntaxException {
-        if(!resourcesConfig.enabled){
+    private Collection<String> discoverResources(ZeebeBuildTimeConfig.ResourcesConfig resourcesConfig)
+            throws IOException, URISyntaxException {
+        if (!resourcesConfig.enabled) {
             return Collections.emptySet();
         }
         String location = resourcesConfig.location;
