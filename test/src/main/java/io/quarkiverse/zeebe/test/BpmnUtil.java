@@ -15,7 +15,7 @@ public class BpmnUtil {
 
     /**
      * Find child process instance.
-     * 
+     *
      * @param instanceEvent parent process instance
      * @param childProcessId child process id
      * @return the child process instance event or {@code null}
