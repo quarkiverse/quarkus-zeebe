@@ -27,7 +27,7 @@
         <zeebe.version>8.0.4</zeebe.version>
         <zeebe.testcontainers.version>3.4.0</zeebe.testcontainers.version>
         <zeebe.test.version>8.0.3</zeebe.test.version>
-        <zeebe.hazelcast.version>1.2.0</zeebe.hazelcast.version>
+        <zeebe.hazelcast.version>1.2.1</zeebe.hazelcast.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
