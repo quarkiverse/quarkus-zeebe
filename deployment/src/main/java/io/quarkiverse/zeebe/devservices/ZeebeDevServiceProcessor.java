@@ -6,7 +6,9 @@ import static io.quarkus.runtime.LaunchMode.DEVELOPMENT;
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
@@ -97,10 +99,6 @@ public class ZeebeDevServiceProcessor {
             }
             currentCloseables.add(startResult.getCloseable());
 
-            if (launchMode.isTest()) {
-                System.setProperty("quarkiverse.zeebe.devservices.test.hazelcast", startResult.hazelcast);
-                System.setProperty("quarkiverse.zeebe.devservices.test.gateway-address", startResult.client);
-            }
             devConfigProducer
                     .produce(startResult.toBuildItem());
             if (zeebeConfig.monitor.enabled) {
@@ -268,7 +266,7 @@ public class ZeebeDevServiceProcessor {
         public ZeebeDevServicesStartResult(String containerId, String gateway, String client, String hazelcast,
                 Closeable closeable,
                 String internalBroker, String internalHazelcast) {
-            super(FEATURE_NAME, containerId, closeable, PROP_ZEEBE_GATEWAY_ADDRESS, gateway);
+            super(FEATURE_NAME, containerId, closeable, configMap(gateway, client, hazelcast));
             this.gateway = gateway;
             this.client = client;
             this.hazelcast = hazelcast;
@@ -277,4 +275,15 @@ public class ZeebeDevServiceProcessor {
         }
     }
 
+    private static Map<String, String> configMap(String gateway, String client, String hazelcast) {
+        Map<String, String> config = new HashMap<>();
+        config.put(PROP_ZEEBE_GATEWAY_ADDRESS, gateway);
+        if (client != null) {
+            config.put("quarkiverse.zeebe.devservices.test.gateway-address", client);
+        }
+        if (hazelcast != null) {
+            config.put("quarkiverse.zeebe.devservices.test.hazelcast", hazelcast);
+        }
+        return config;
+    }
 }
