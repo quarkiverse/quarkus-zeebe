@@ -210,7 +210,7 @@ public class ZeebeMonitorDevServiceProcessor {
             } else {
                 addExposedPort(DEFAULT_SIMPLE_MONITOR_PORT);
             }
-            addEnv("zeebe.client.broker.contactPoint", broker);
+            addEnv("zeebe.client.broker.gateway-address", broker);
             addEnv("zeebe.client.worker.hazelcast.connection", hazelcast);
         }
 
