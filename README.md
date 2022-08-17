@@ -138,14 +138,14 @@ quarkus.zeebe.devservices.enabled=true|false
 quarkus.zeebe.devservices.port=
 quarkus.zeebe.devservices.shared=true
 quarkus.zeebe.devservices.service-name=zeebe
-quarkus.zeebe.devservices.imageName=
+quarkus.zeebe.devservices.image-name=
 # zeebe broker with hazelcast
 quarkus.zeebe.devservices.hazelcast.enabled=true|false
-quarkus.zeebe.devservices.hazelcast.imageName=ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:1.3.3-1.1.1-SNAPSHOT
+quarkus.zeebe.devservices.hazelcast.image-name=ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:1.3.3-1.1.1-SNAPSHOT
 # zeebe simple monitor dev-service
 quarkus.zeebe.devservices.monitor.enabled=true|false
 quarkus.zeebe.devservices.monitor.port=
-quarkus.zeebe.devservices.monitor.imageName=ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.3.0
+quarkus.zeebe.devservices.monitor.image-name=ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.3.0
 quarkus.zeebe.devservices.monitor.service-name=zeebe-simple-monitor
 ```
 
