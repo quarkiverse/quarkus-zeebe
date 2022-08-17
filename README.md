@@ -137,7 +137,7 @@ Property `quarkus.zeebe.devservices.hazelcast.enabled=true` will activate the [h
 quarkus.zeebe.devservices.enabled=true|false
 quarkus.zeebe.devservices.port=
 quarkus.zeebe.devservices.shared=true
-quarkus.zeebe.devservices.serviceName=zeebe
+quarkus.zeebe.devservices.service-name=zeebe
 quarkus.zeebe.devservices.imageName=
 # zeebe broker with hazelcast
 quarkus.zeebe.devservices.hazelcast.enabled=true|false
@@ -146,7 +146,7 @@ quarkus.zeebe.devservices.hazelcast.imageName=ghcr.io/camunda-community-hub/zeeb
 quarkus.zeebe.devservices.monitor.enabled=true|false
 quarkus.zeebe.devservices.monitor.port=
 quarkus.zeebe.devservices.monitor.imageName=ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.3.0
-quarkus.zeebe.devservices.monitor.serviceName=zeebe-simple-monitor
+quarkus.zeebe.devservices.monitor.service-name=zeebe-simple-monitor
 ```
 
 ## Simple usage
