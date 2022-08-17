@@ -78,6 +78,66 @@ bpmn-process-element-instance-key,bpmn-process-def-key,bpmn-process-def-ver,bpmn
 bpmn-job-type,bpmn-job-key,bpmn-class
 ```
 
+### Exemplary Setup for your local development
+Generally speaking there are three ways to configure your quarkus project to speak with camunda:
+- Local dev instance with dev services
+- Shared local dev instance
+- Direct interaction with Camunda SaaS/ on-premise
+
+You can see some exemplary configurations for each of the setups below. Please note that these are only exemplary and can be adapted to your needs.
+
+#### Local dev instance with dev services
+
+```
+# enable auto load bpmn resources 
+quarkus.zeebe.resources.enabled=true
+# src/main/resources/bpmn
+quarkus.zeebe.resources.location=bpmn
+
+# Enable Simple-Monitor Dev Service:
+quarkus.zeebe.devservices.enabled=true
+quarkus.zeebe.devservices.hazelcast.enabled=true
+quarkus.zeebe.devservices.monitor.enabled=true
+
+# Only start devservices, if no running docker container is found
+quarkus.zeebe.devservices.shared=true
+quarkus.zeebe.devservices.monitor.service-name=zeebe-simple-monitor-in-memory
+quarkus.zeebe.devservices.service-name=zeebe_broker
+```
+
+#### Shared local dev instance
+
+```
+quarkus.zeebe.client.broker.gateway-address=localhost:26500
+# If you are sure that there is already an instance running, yu can directly deactivate it
+quarkus.zeebe.devservices.enabled=false
+quarkus.zeebe.devservices.shared=true
+quarkus.zeebe.devservices.monitor.serviceName=zeebe-simple-monitor-in-memory
+quarkus.zeebe.devservices.serviceName=zeebe_broker
+```
+
+#### Direct interaction with Camunda live instance
+Preferably you would be using a dev instance of Camunda and not your production process engine ;)
+
+```
+# Disable local dev services
+quarkus.zeebe.devservices.enabled=false
+
+# Enter your cloud credentials from the zeebe portal
+quarkus.zeebe.client.broker.gateway-address=
+# cloud configuration
+quarkus.zeebe.client.cloud.cluster-id=
+quarkus.zeebe.client.cloud.client-id=
+quarkus.zeebe.client.cloud.client-secret=
+quarkus.zeebe.client.cloud.region=
+quarkus.zeebe.client.cloud.base-url=zeebe.camunda.io
+quarkus.zeebe.client.cloud.auth-url=https://login.cloud.camunda.io/oauth/token
+quarkus.zeebe.client.cloud.port=443
+
+# Make sure you are disabling plaintext security, otherwise connection will fail
+quarkus.zeebe.client.security.plaintext=false
+```
+
 ## Tracing
 
 Whether `zeebe` tracing is enabled or not is done by `quarkus.zeebe.tracing.enabled` build time property. The default is `true`, but shown here to indicate how it can be disabled.
@@ -137,16 +197,16 @@ Property `quarkus.zeebe.devservices.hazelcast.enabled=true` will activate the [h
 quarkus.zeebe.devservices.enabled=true|false
 quarkus.zeebe.devservices.port=
 quarkus.zeebe.devservices.shared=true
-quarkus.zeebe.devservices.serviceName=zeebe
-quarkus.zeebe.devservices.imageName=
+quarkus.zeebe.devservices.service-name=zeebe
+quarkus.zeebe.devservices.image-name=
 # zeebe broker with hazelcast
 quarkus.zeebe.devservices.hazelcast.enabled=true|false
-quarkus.zeebe.devservices.hazelcast.imageName=ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:1.3.3-1.1.1-SNAPSHOT
+quarkus.zeebe.devservices.hazelcast.image-name=ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:1.3.3-1.1.1-SNAPSHOT
 # zeebe simple monitor dev-service
 quarkus.zeebe.devservices.monitor.enabled=true|false
 quarkus.zeebe.devservices.monitor.port=
-quarkus.zeebe.devservices.monitor.imageName=ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.3.0
-quarkus.zeebe.devservices.monitor.serviceName=zeebe-simple-monitor
+quarkus.zeebe.devservices.monitor.image-name=ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.3.0
+quarkus.zeebe.devservices.monitor.service-name=zeebe-simple-monitor
 ```
 
 ## Simple usage
