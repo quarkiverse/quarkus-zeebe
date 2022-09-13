@@ -21,7 +21,7 @@
     </modules>
 
     <properties>
-        <quarkus.version>2.11.2.Final</quarkus.version>
+        <quarkus.version>2.12.2.Final</quarkus.version>
         <zeebe.version>8.0.5</zeebe.version>
         <zeebe.testcontainers.version>3.4.0</zeebe.testcontainers.version>
         <zeebe.test.version>8.0.3</zeebe.test.version>
