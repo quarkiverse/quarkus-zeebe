@@ -34,15 +34,11 @@ import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerLocator;
 import io.quarkus.runtime.LaunchMode;
 
-public class ZeebeMonitorDevServiceProcessor {
+public class ZeebeDevMonitorDevServiceProcessor {
 
-    private static final Logger log = Logger.getLogger(ZeebeMonitorDevServiceProcessor.class);
-
-    /**
-     * Label to add to shared Dev Service for Zeebe running in containers.
-     * This allows other applications to discover the running service and use it instead of starting a new instance.
-     */
-    private static final String DEV_SERVICE_MONITOR_LABEL = "quarkus-dev-service-zeebe-monitor";
+    private static final Logger log = Logger.getLogger(ZeebeDevMonitorDevServiceProcessor.class);
+    
+    private static final String DEV_SERVICE_MONITOR_LABEL = "quarkus-dev-service-zeebe-dev-monitor";
     public static final int DEFAULT_SIMPLE_MONITOR_PORT = 8082;
 
     private static volatile List<Closeable> closeables;
@@ -211,7 +207,6 @@ public class ZeebeMonitorDevServiceProcessor {
                 addExposedPort(DEFAULT_SIMPLE_MONITOR_PORT);
             }
             addEnv("zeebe.client.broker.gateway-address", broker);
-            addEnv("zeebe.client.worker.hazelcast.connection", hazelcast);
         }
 
         @Override
@@ -233,7 +228,7 @@ public class ZeebeMonitorDevServiceProcessor {
         public final String url;
 
         public ZeebeSimpleMonitorDevServicesStartResult(String containerId, String url, Closeable closeable) {
-            super(FEATURE_NAME + "-simple-monitor", containerId, closeable, Map.of());
+            super(FEATURE_NAME + "-dev-monitor", containerId, closeable, Map.of());
             this.url = url;
         }
     }
