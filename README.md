@@ -180,7 +180,7 @@ Dev Service for Zeebe relies on Docker to start the broker. If your environment 
 to start the broker manually, or connect to an already running broker. You can configure the broker address using 
 `quarkus.zeebe.broker.gateway-address`.
 
-![Test](./docs/devservice.png)
+![Test](./docs/devservice.svg)
 
 To activate [Simple-Monitor](https://github.com/camunda-community-hub/zeebe-simple-monitor) Dev Service use this configuration:
 ```properties
@@ -230,7 +230,16 @@ To use the test extension, add this dependency to the project:
     <scope>test</scope>
 </dependency>
 ```
-![Test](./docs/test.png)
+![Test](./docs/testing.svg)
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
 To use the `ZeebeClient` and `BpmnAssert` in the tests use the `@QuarkusTestResource(ZeebeTestResource.class)` and enable this configuration:
 ```properties
 quarkus.zeebe.devservices.enabled=true
