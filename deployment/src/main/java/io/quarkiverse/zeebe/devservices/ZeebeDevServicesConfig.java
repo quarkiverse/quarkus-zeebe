@@ -1,6 +1,5 @@
 package io.quarkiverse.zeebe.devservices;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -68,29 +67,31 @@ public class ZeebeDevServicesConfig {
     public MonitorConfig monitor = new MonitorConfig();
 
     /**
-     * Optional fixed port the dev service will listen to.
+     * Optional fixed debug export receiver port the dev service will listen to.
      * <p>
      * If not defined, the port will be chosen randomly.
      */
-    @ConfigItem(name = "test-debug-export-port", defaultValue = "8083")
-    public int testDebugExportPort;
+    @ConfigItem(name = "test")
+    public TestConfig test;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        ZeebeDevServicesConfig that = (ZeebeDevServicesConfig) o;
-        return enabled == that.enabled &&
-                Objects.equals(port, that.port) &&
-                Objects.equals(shared, that.shared) &&
-                Objects.equals(serviceName, that.serviceName);
-    }
+    /**
+     * Zeebe simple monitor configuration.
+     */
+    @ConfigGroup
+    public static class TestConfig {
+        /**
+         * Optional fixed debug export receiver port the dev service will listen to.
+         * <p>
+         * If not defined, the port will be chosen randomly.
+         */
+        @ConfigItem(name = "receiver-port")
+        public OptionalInt receiverPort;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(enabled, port, shared, serviceName);
+        /**
+         * Disable or enable debug exporter for the test.
+         */
+        @ConfigItem(name = "exporter", defaultValue = "true")
+        public boolean exporter;
     }
 
     /**

@@ -62,6 +62,11 @@
                 <artifactId>zeebe-process-test-assertions</artifactId>
                 <version>${zeebe.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.camunda</groupId>
+                <artifactId>zeebe-protocol-jackson</artifactId>
+                <version>${zeebe.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
