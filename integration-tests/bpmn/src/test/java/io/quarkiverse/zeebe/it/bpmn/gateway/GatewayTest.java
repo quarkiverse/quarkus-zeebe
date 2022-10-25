@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
+import io.camunda.zeebe.process.test.assertions.BpmnAssert;
 import io.camunda.zeebe.process.test.assertions.ProcessInstanceAssert;
 import io.quarkiverse.zeebe.it.bpmn.AbstractTest;
-import io.quarkiverse.zeebe.test.BpmnAssert;
 import io.quarkiverse.zeebe.test.InjectZeebeClient;
 import io.quarkus.test.junit.QuarkusTest;
 

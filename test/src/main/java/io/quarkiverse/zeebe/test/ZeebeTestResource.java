@@ -11,8 +11,6 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager, DevServicesContext.ContextAware {
 
-    static RecordStreamImpl RECORDS;
-
     static ZeebeClient CLIENT;
 
     @Override
@@ -22,13 +20,7 @@ public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager, D
 
     @Override
     public void stop() {
-        try {
-            if (RECORDS != null) {
-                RECORDS.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -47,10 +39,5 @@ public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager, D
             CLIENT = builder.build();
         }
 
-        String address = context.devServicesProperties().get("quarkiverse.zeebe.devservices.test.hazelcast");
-        if (address != null) {
-            RECORDS = new RecordStreamImpl(address);
-            BpmnAssert.init(RECORDS.getRecordStream());
-        }
     }
 }

@@ -14,7 +14,7 @@ To use the extension, add the dependency to the target project:
 <dependency>
     <groupId>io.quarkiverse.zeebe</groupId>
     <artifactId>quarkus-zeebe</artifactId>
-    <version>0.3.0</version>
+    <version>{version}</version>
 </dependency>
 ```
 
@@ -96,12 +96,11 @@ quarkus.zeebe.resources.location=bpmn
 
 # Enable Simple-Monitor Dev Service:
 quarkus.zeebe.devservices.enabled=true
-quarkus.zeebe.devservices.hazelcast.enabled=true
 quarkus.zeebe.devservices.monitor.enabled=true
 
 # Only start devservices, if no running docker container is found
 quarkus.zeebe.devservices.shared=true
-quarkus.zeebe.devservices.monitor.service-name=zeebe-simple-monitor-in-memory
+quarkus.zeebe.devservices.monitor.service-name=zeebe-dev-monitor
 quarkus.zeebe.devservices.service-name=zeebe_broker
 ```
 
@@ -112,7 +111,7 @@ quarkus.zeebe.client.broker.gateway-address=localhost:26500
 # If you are sure that there is already an instance running, yu can directly deactivate it
 quarkus.zeebe.devservices.enabled=false
 quarkus.zeebe.devservices.shared=true
-quarkus.zeebe.devservices.monitor.serviceName=zeebe-simple-monitor-in-memory
+quarkus.zeebe.devservices.monitor.serviceName=zeebe-dev-monitor
 quarkus.zeebe.devservices.serviceName=zeebe_broker
 ```
 
@@ -186,10 +185,9 @@ to start the broker manually, or connect to an already running broker. You can c
 To activate [Simple-Monitor](https://github.com/camunda-community-hub/zeebe-simple-monitor) Dev Service use this configuration:
 ```properties
 quarkus.zeebe.devservices.enabled=true
-quarkus.zeebe.devservices.hazelcast.enabled=true
 quarkus.zeebe.devservices.monitor.enabled=true
 ```
-Property `quarkus.zeebe.devservices.hazelcast.enabled=true` will activate the [hazelcast exporter](https://github.com/camunda-community-hub/zeebe-hazelcast-exporter).
+Property `qquarkus.zeebe.devservices.monitor.enabled=true` will activate the debug exporter.
 
 #### Configuration
 
@@ -199,9 +197,6 @@ quarkus.zeebe.devservices.port=
 quarkus.zeebe.devservices.shared=true
 quarkus.zeebe.devservices.service-name=zeebe
 quarkus.zeebe.devservices.image-name=
-# zeebe broker with hazelcast
-quarkus.zeebe.devservices.hazelcast.enabled=true|false
-quarkus.zeebe.devservices.hazelcast.image-name=ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:1.3.3-1.1.1-SNAPSHOT
 # zeebe simple monitor dev-service
 quarkus.zeebe.devservices.monitor.enabled=true|false
 quarkus.zeebe.devservices.monitor.port=
@@ -231,14 +226,14 @@ To use the test extension, add this dependency to the project:
 <dependency>
     <groupId>io.quarkiverse.zeebe</groupId>
     <artifactId>quarkus-zeebe-test</artifactId>
-    <version>0.3.0</version>
+    <version>{version}</version>
+    <scope>test</scope>
 </dependency>
 ```
 ![Test](./docs/test.png)
 To use the `ZeebeClient` and `BpmnAssert` in the tests use the `@QuarkusTestResource(ZeebeTestResource.class)` and enable this configuration:
 ```properties
 quarkus.zeebe.devservices.enabled=true
-quarkus.zeebe.devservices.hazelcast.enabled=true
 ```
 Test example
 ```java

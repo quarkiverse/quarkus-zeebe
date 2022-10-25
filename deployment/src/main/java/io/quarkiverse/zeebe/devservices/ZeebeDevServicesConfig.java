@@ -62,16 +62,18 @@ public class ZeebeDevServicesConfig {
     public Optional<String> imageName;
 
     /**
-     * Zeebe broker with hazelcast exporter
-     */
-    @ConfigItem(name = "hazelcast")
-    public HazelcastConfig hazelcast = new HazelcastConfig();
-
-    /**
      * Zeebe simple monitor configuration
      */
     @ConfigItem(name = "monitor")
     public MonitorConfig monitor = new MonitorConfig();
+
+    /**
+     * Optional fixed port the dev service will listen to.
+     * <p>
+     * If not defined, the port will be chosen randomly.
+     */
+    @ConfigItem(name = "test-debug-export-port", defaultValue = "8083")
+    public int testDebugExportPort;
 
     @Override
     public boolean equals(Object o) {
@@ -92,32 +94,13 @@ public class ZeebeDevServicesConfig {
     }
 
     /**
-     * Zeebe broker hazelcast configuration.
-     */
-    @ConfigGroup
-    public static class HazelcastConfig {
-
-        /**
-         * Enable or disable hazelcast exporter for devservices.
-         */
-        @ConfigItem(defaultValue = "false")
-        public boolean enabled;
-
-        /**
-         * The container image name to use, for container based zeebe broker hazelcast providers.
-         */
-        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:8.0.3")
-        public String imageName;
-    }
-
-    /**
      * Zeebe simple monitor configuration.
      */
     @ConfigGroup
     public static class MonitorConfig {
 
         /**
-         * Enable or disable simple monitor for devservices.
+         * Enable or disable simple monitor for dev-services.
          */
         @ConfigItem(name = "enabled", defaultValue = "false")
         public boolean enabled;
@@ -133,7 +116,7 @@ public class ZeebeDevServicesConfig {
         /**
          * The container image name to use, for container based zeebe simple monitor.
          */
-        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.3.0")
+        @ConfigItem(name = "image-name", defaultValue = "localhost/zeebe-dev-monitor:native")
         public String imageName;
 
         /**
@@ -146,7 +129,7 @@ public class ZeebeDevServicesConfig {
          * <p>
          * This property is used when you need multiple shared Zeebe servers.
          */
-        @ConfigItem(defaultValue = "zeebe-simple-monitor")
+        @ConfigItem(defaultValue = "zeebe-dev-monitor")
         public String serviceName;
     }
 

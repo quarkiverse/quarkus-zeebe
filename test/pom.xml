@@ -27,10 +27,6 @@
             <artifactId>zeebe-process-test-assertions</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.zeebe.hazelcast</groupId>
-            <artifactId>zeebe-hazelcast-connector</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-test-common</artifactId>
         </dependency>
