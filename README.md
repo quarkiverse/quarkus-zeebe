@@ -232,14 +232,6 @@ To use the test extension, add this dependency to the project:
 ```
 ![Test](./docs/testing.svg)
 
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
-
 To use the `ZeebeClient` and `BpmnAssert` in the tests use the `@QuarkusTestResource(ZeebeTestResource.class)` and enable this configuration:
 ```properties
 quarkus.zeebe.devservices.enabled=true
