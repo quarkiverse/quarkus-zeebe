@@ -1,0 +1,25 @@
+= Quarkus Zeebe
+
+include::./includes/attributes.adoc[]
+
+TIP: Quarkus Zeebe extension.
+
+== Installation
+
+If you want to use this extension, you need to add the `io.quarkiverse.zeebe:quarkus-zeebe` extension first to your build file.
+
+For instance, with Maven, add the following dependency to your POM file:
+
+[source,xml,subs=attributes+]
+----
+<dependency>
+    <groupId>io.quarkiverse.zeebe</groupId>
+    <artifactId>quarkus-zeebe</artifactId>
+    <version>{project-version}</version>
+</dependency>
+----
+
+[[extension-configuration-reference]]
+== Extension Configuration Reference
+
+TIP: Remove this section if you don't have Quarkus configuration properties in your extension.

@@ -1,0 +1,260 @@
+
+:summaryTableId: quarkus-zeebe
+[.configuration-legend]
+icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
+[.configuration-reference.searchable, cols="80,.^10,.^10"]
+|===
+
+h|[[quarkus-zeebe_configuration]]link:#quarkus-zeebe_configuration[Configuration property]
+
+h|Type
+h|Default
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.enabled[quarkus.zeebe.devservices.enabled]`
+
+[.description]
+--
+If DevServices has been explicitly enabled or disabled. DevServices is generally enabled by default, unless there is an existing configuration present. 
+When DevServices is enabled Quarkus will attempt to automatically configure and start a database when running in Dev or Test mode and when Docker is running.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.port[quarkus.zeebe.devservices.port]`
+
+[.description]
+--
+Optional fixed port the dev service will listen to. 
+If not defined, the port will be chosen randomly.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_PORT+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.shared]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.shared[quarkus.zeebe.devservices.shared]`
+
+[.description]
+--
+Indicates if the Zeebe server managed by Quarkus Dev Services is shared. When shared, Quarkus looks for running containers using label-based service discovery. If a matching container is found, it is used, and so a second one is not started. Otherwise, Dev Services for Zeebe starts a new container. 
+The discovery uses the `quarkus-dev-service-zeebe` label. The value is configured using the `service-name` property. 
+Container sharing is only used in dev mode.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_SHARED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_SHARED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.service-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.service-name[quarkus.zeebe.devservices.service-name]`
+
+[.description]
+--
+The value of the `quarkus-dev-service-zeebe` label attached to the started container. This property is used when `shared` is set to `true`. In this case, before starting a container, Dev Services for Zeebe looks for a container with the `quarkus-dev-service-zeebe` label set to the configured value. If found, it will use this container instead of starting a new one. Otherwise, it starts a new container with the `quarkus-dev-service-zeebe` label set to the specified value. 
+This property is used when you need multiple shared Zeebe servers.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_SERVICE_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_SERVICE_NAME+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`zeebe`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.image-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.image-name[quarkus.zeebe.devservices.image-name]`
+
+[.description]
+--
+The container image name to use, for container based DevServices providers.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_IMAGE_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_IMAGE_NAME+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled[quarkus.zeebe.devservices.monitor.enabled]`
+
+[.description]
+--
+Enable or disable simple monitor for dev-services.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.port[quarkus.zeebe.devservices.monitor.port]`
+
+[.description]
+--
+Optional fixed port the simple monitor will listen to. 
+If not defined, the port will be chosen randomly.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_PORT+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.image-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.image-name[quarkus.zeebe.devservices.monitor.image-name]`
+
+[.description]
+--
+The container image name to use, for container based zeebe simple monitor.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_IMAGE_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_IMAGE_NAME+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`ghcr.io/lorislab/zeebe-dev-monitor:0.2.0`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.service-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.service-name[quarkus.zeebe.devservices.monitor.service-name]`
+
+[.description]
+--
+The value of the `quarkus-dev-service-zeebe` label attached to the started container. This property is used when `shared` is set to `true`. In this case, before starting a container, Dev Services for Zeebe looks for a container with the `quarkus-dev-service-zeebe` label set to the configured value. If found, it will use this container instead of starting a new one. Otherwise, it starts a new container with the `quarkus-dev-service-zeebe` label set to the specified value. 
+This property is used when you need multiple shared Zeebe servers.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_SERVICE_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_SERVICE_NAME+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`zeebe-dev-monitor`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.test.receiver-port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.test.receiver-port[quarkus.zeebe.devservices.test.receiver-port]`
+
+[.description]
+--
+Optional fixed debug export receiver port the dev service will listen to. 
+If not defined, the port will be chosen randomly.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_TEST_RECEIVER_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_TEST_RECEIVER_PORT+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.test.exporter]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.test.exporter[quarkus.zeebe.devservices.test.exporter]`
+
+[.description]
+--
+Disable or enable debug exporter for the test.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_TEST_EXPORTER+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_TEST_EXPORTER+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.resources.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.resources.enabled[quarkus.zeebe.resources.enabled]`
+
+[.description]
+--
+Whether or not an auto scan BPMN process folder. Default true
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_RESOURCES_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_RESOURCES_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.resources.location]]`link:#quarkus-zeebe_quarkus.zeebe.resources.location[quarkus.zeebe.resources.location]`
+
+[.description]
+--
+BPMN process root folder. Default bpmn
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_RESOURCES_LOCATION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_RESOURCES_LOCATION+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`bpmn`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.health.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.health.enabled[quarkus.zeebe.health.enabled]`
+
+[.description]
+--
+Whether or not an health check is published in case the smallrye-health extension is present.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_HEALTH_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_HEALTH_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.tracing.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.tracing.enabled[quarkus.zeebe.tracing.enabled]`
+
+[.description]
+--
+Whether or not an opentracing is published in case the smallrye-opentracing extension is present.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_TRACING_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_TRACING_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+|===

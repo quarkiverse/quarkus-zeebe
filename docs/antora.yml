@@ -1,0 +1,5 @@
+name: quarkus-zeebe
+title: Quarkus Zeebe
+version: dev
+nav:
+  - modules/ROOT/nav.adoc

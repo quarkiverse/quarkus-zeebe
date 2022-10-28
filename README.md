@@ -157,7 +157,7 @@ Whether `zeebe` tracing is enabled or not is done by `quarkus.zeebe.tracing.enab
 ```properties
 quarkus.zeebe.tracing.enabled=true
 ```
-![OpenTelemetry](./docs/opentelemetry.png)
+![OpenTelemetry](docs/images/opentelemetry.png)
 
 ### OpenTelemetry
 
@@ -194,7 +194,7 @@ Dev Service for Zeebe relies on Docker to start the broker. If your environment 
 to start the broker manually, or connect to an already running broker. You can configure the broker address using 
 `quarkus.zeebe.broker.gateway-address`.
 
-![Test](./docs/devservice.svg)
+![Test](docs/images/devservice.svg)
 
 To activate [Zeebe-Dev-Monitor](https://github.com/lorislab/zeebe-dev-monitor) Dev Service use this configuration:
 ```properties
