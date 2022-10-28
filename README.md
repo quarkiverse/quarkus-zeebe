@@ -27,7 +27,7 @@ from [zeebe-process-test](https://github.com/camunda/zeebe-process-test).
 
 API migration
 
-| 0.6.1                                | 0.7.0                                               |
+| 0.6.x                                | 0.7.0                                               |
 |--------------------------------------|-----------------------------------------------------|
 | io.quarkiverse.zeebe.test.BpmnAssert | io.camunda.zeebe.process.test.assertions.BpmnAssert |
 
