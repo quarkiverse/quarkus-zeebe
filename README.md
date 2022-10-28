@@ -244,7 +244,7 @@ To use the test extension, add this dependency to the project:
     <scope>test</scope>
 </dependency>
 ```
-![Test](./docs/testing.svg)
+![Test](./docs/images/testing.svg)
 
 To use the `ZeebeClient` and `BpmnAssert` in the tests use the `@QuarkusTestResource(ZeebeTestResource.class)` and enable this configuration:
 ```properties
