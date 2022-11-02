@@ -57,10 +57,10 @@ public class ZeebeDevMonitorProcessor {
             LoggingSetupBuildItem loggingSetupBuildItem, GlobalDevServicesConfig devServicesConfig) {
 
         if (zeebeDevServiceBuildItem.isEmpty()) {
-            log.error("The zeebe cluster activated for the dev monitor");
+            log.debug("No zeebe internal URL setup for dev monitor");
             return null;
         }
-        String brokerUrl = zeebeDevServiceBuildItem.get().internalUrl;
+        String brokerUrl = zeebeDevServiceBuildItem.get().zeebeInternalUrl;
 
         ZeebeDevMonitorServiceCfg configuration = getConfiguration(zeebeDevServiceBuildTimeConfig);
 
