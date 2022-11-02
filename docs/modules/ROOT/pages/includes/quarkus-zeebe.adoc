@@ -141,7 +141,7 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_IMAGE_NAME+++`
 endif::add-copy-button-to-env-var[]
 --|string 
-|`ghcr.io/lorislab/zeebe-dev-monitor:0.2.0`
+|`ghcr.io/lorislab/zeebe-dev-monitor:0.3.0`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.service-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.service-name[quarkus.zeebe.devservices.monitor.service-name]`
