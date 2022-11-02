@@ -19,6 +19,7 @@ import io.camunda.zeebe.client.api.command.CreateProcessInstanceCommandStep1;
 import io.camunda.zeebe.client.api.command.DeployProcessCommandStep1;
 import io.camunda.zeebe.client.api.command.DeployResourceCommandStep1;
 import io.camunda.zeebe.client.api.command.FailJobCommandStep1;
+import io.camunda.zeebe.client.api.command.ModifyProcessInstanceCommandStep1;
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1;
 import io.camunda.zeebe.client.api.command.ResolveIncidentCommandStep1;
 import io.camunda.zeebe.client.api.command.SetVariablesCommandStep1;
@@ -89,6 +90,11 @@ public class ZeebeClientService implements ZeebeClient {
     @Override
     public CreateProcessInstanceCommandStep1 newCreateInstanceCommand() {
         return client.newCreateInstanceCommand();
+    }
+
+    @Override
+    public ModifyProcessInstanceCommandStep1 newModifyProcessInstanceCommand(long processInstanceKey) {
+        return client.newModifyProcessInstanceCommand(processInstanceKey);
     }
 
     @Override

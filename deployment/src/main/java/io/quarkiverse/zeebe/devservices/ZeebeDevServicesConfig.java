@@ -1,6 +1,5 @@
 package io.quarkiverse.zeebe.devservices;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -62,52 +61,37 @@ public class ZeebeDevServicesConfig {
     public Optional<String> imageName;
 
     /**
-     * Zeebe broker with hazelcast exporter
-     */
-    @ConfigItem(name = "hazelcast")
-    public HazelcastConfig hazelcast = new HazelcastConfig();
-
-    /**
      * Zeebe simple monitor configuration
      */
     @ConfigItem(name = "monitor")
     public MonitorConfig monitor = new MonitorConfig();
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        ZeebeDevServicesConfig that = (ZeebeDevServicesConfig) o;
-        return enabled == that.enabled &&
-                Objects.equals(port, that.port) &&
-                Objects.equals(shared, that.shared) &&
-                Objects.equals(serviceName, that.serviceName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(enabled, port, shared, serviceName);
-    }
+    /**
+     * Optional fixed debug export receiver port the dev service will listen to.
+     * <p>
+     * If not defined, the port will be chosen randomly.
+     */
+    @ConfigItem(name = "test")
+    public TestConfig test;
 
     /**
-     * Zeebe broker hazelcast configuration.
+     * Zeebe simple monitor configuration.
      */
     @ConfigGroup
-    public static class HazelcastConfig {
+    public static class TestConfig {
+        /**
+         * Optional fixed debug export receiver port the dev service will listen to.
+         * <p>
+         * If not defined, the port will be chosen randomly.
+         */
+        @ConfigItem(name = "receiver-port")
+        public OptionalInt receiverPort;
 
         /**
-         * Enable or disable hazelcast exporter for devservices.
+         * Disable or enable debug exporter for the test.
          */
-        @ConfigItem(defaultValue = "false")
-        public boolean enabled;
-
-        /**
-         * The container image name to use, for container based zeebe broker hazelcast providers.
-         */
-        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:8.0.3")
-        public String imageName;
+        @ConfigItem(name = "exporter", defaultValue = "true")
+        public boolean exporter;
     }
 
     /**
@@ -117,7 +101,7 @@ public class ZeebeDevServicesConfig {
     public static class MonitorConfig {
 
         /**
-         * Enable or disable simple monitor for devservices.
+         * Enable or disable simple monitor for dev-services.
          */
         @ConfigItem(name = "enabled", defaultValue = "false")
         public boolean enabled;
@@ -133,7 +117,7 @@ public class ZeebeDevServicesConfig {
         /**
          * The container image name to use, for container based zeebe simple monitor.
          */
-        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.3.0")
+        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/lorislab/zeebe-dev-monitor:0.3.0")
         public String imageName;
 
         /**
@@ -146,7 +130,7 @@ public class ZeebeDevServicesConfig {
          * <p>
          * This property is used when you need multiple shared Zeebe servers.
          */
-        @ConfigItem(defaultValue = "zeebe-simple-monitor")
+        @ConfigItem(defaultValue = "zeebe-dev-monitor")
         public String serviceName;
     }
 

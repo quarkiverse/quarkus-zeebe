@@ -27,12 +27,16 @@
             <artifactId>zeebe-process-test-assertions</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.zeebe.hazelcast</groupId>
-            <artifactId>zeebe-hazelcast-connector</artifactId>
+            <groupId>io.camunda</groupId>
+            <artifactId>zeebe-protocol-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-test-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.zeebe</groupId>
+            <artifactId>zeebe-test-container</artifactId>
         </dependency>
     </dependencies>
 

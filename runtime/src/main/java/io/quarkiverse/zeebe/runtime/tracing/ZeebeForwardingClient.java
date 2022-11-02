@@ -103,15 +103,13 @@ public abstract class ZeebeForwardingClient<ReqT, RespT> extends ForwardingClien
         } else if (message instanceof GatewayOuterClass.CancelProcessInstanceRequest) {
             GatewayOuterClass.CancelProcessInstanceRequest r = (GatewayOuterClass.CancelProcessInstanceRequest) message;
             callSpan.setAttribute(PROCESS_INSTANCE_KEY, r.getProcessInstanceKey());
-
-        } else if (message instanceof GatewayOuterClass.DeployProcessRequest) {
-            GatewayOuterClass.DeployProcessRequest r = (GatewayOuterClass.DeployProcessRequest) message;
-            String tmp = r.getProcessesList()
+        } else if (message instanceof GatewayOuterClass.DeployResourceRequest) {
+            GatewayOuterClass.DeployResourceRequest r = (GatewayOuterClass.DeployResourceRequest) message;
+            String tmp = r.getResourcesList()
                     .stream()
-                    .map(GatewayOuterClass.ProcessRequestObject::getName)
+                    .map(GatewayOuterClass.Resource::getName)
                     .collect(Collectors.joining(","));
             callSpan.setAttribute(DEPLOY_RESOURCES, tmp);
-
         } else if (message instanceof GatewayOuterClass.ResolveIncidentRequest) {
             GatewayOuterClass.ResolveIncidentRequest r = (GatewayOuterClass.ResolveIncidentRequest) message;
             callSpan.setAttribute(INCIDENT_KEY, r.getIncidentKey());

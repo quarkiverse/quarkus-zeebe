@@ -1,9 +1,10 @@
 # Quarkus Zeebe
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![Build](https://github.com/quarkiverse/quarkus-zeebe/workflows/Build/badge.svg?branch=main)](https://github.com/quarkiverse/quarkus-zeebe/actions?query=workflow%3ABuild)
 [![License](https://img.shields.io/github/license/quarkiverse/quarkus-zeebe.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Central](https://img.shields.io/maven-central/v/io.quarkiverse.zeebe/quarkus-zeebe-parent?color=green)](https://search.maven.org/search?q=g:io.quarkiverse.zeebe%20AND%20a:quarkus-zeebe-parent)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
@@ -14,9 +15,22 @@ To use the extension, add the dependency to the target project:
 <dependency>
     <groupId>io.quarkiverse.zeebe</groupId>
     <artifactId>quarkus-zeebe</artifactId>
-    <version>0.3.0</version>
+    <version>{version}</version>
 </dependency>
 ```
+### Upgrade
+
+>In version `>0.7.0` we removed the hazelcast dependency and [zeebe-simple-monitor](https://github.com/camunda-community-hub/zeebe-simple-monitor)
+for test and dev services. Now we do use [zeebe-test-container](https://github.com/camunda-community-hub/zeebe-test-container) with [debug exporter](https://github.com/camunda-community-hub/zeebe-test-container#debug-exporter) 
+and [zeebe-dev-monitor](https://github.com/lorislab/zeebe-dev-monitor). In test module we remove our assert API and switch to Camunda [BpmnAssert](https://github.com/camunda/zeebe-process-test/blob/main/assertions/src/main/java/io/camunda/zeebe/process/test/assertions/BpmnAssert.java) 
+from [zeebe-process-test](https://github.com/camunda/zeebe-process-test).
+
+API migration
+
+| 0.6.x                                | 0.7.0                                               |
+|--------------------------------------|-----------------------------------------------------|
+| io.quarkiverse.zeebe.test.BpmnAssert | io.camunda.zeebe.process.test.assertions.BpmnAssert |
+
 
 ## Configuration
 
@@ -94,14 +108,13 @@ quarkus.zeebe.resources.enabled=true
 # src/main/resources/bpmn
 quarkus.zeebe.resources.location=bpmn
 
-# Enable Simple-Monitor Dev Service:
+# Enable Dev-Monitor Dev Service:
 quarkus.zeebe.devservices.enabled=true
-quarkus.zeebe.devservices.hazelcast.enabled=true
 quarkus.zeebe.devservices.monitor.enabled=true
 
 # Only start devservices, if no running docker container is found
 quarkus.zeebe.devservices.shared=true
-quarkus.zeebe.devservices.monitor.service-name=zeebe-simple-monitor-in-memory
+quarkus.zeebe.devservices.monitor.service-name=zeebe-dev-monitor
 quarkus.zeebe.devservices.service-name=zeebe_broker
 ```
 
@@ -112,7 +125,7 @@ quarkus.zeebe.client.broker.gateway-address=localhost:26500
 # If you are sure that there is already an instance running, yu can directly deactivate it
 quarkus.zeebe.devservices.enabled=false
 quarkus.zeebe.devservices.shared=true
-quarkus.zeebe.devservices.monitor.serviceName=zeebe-simple-monitor-in-memory
+quarkus.zeebe.devservices.monitor.serviceName=zeebe-dev-monitor
 quarkus.zeebe.devservices.serviceName=zeebe_broker
 ```
 
@@ -144,7 +157,7 @@ Whether `zeebe` tracing is enabled or not is done by `quarkus.zeebe.tracing.enab
 ```properties
 quarkus.zeebe.tracing.enabled=true
 ```
-![OpenTelemetry](./docs/opentelemetry.png)
+![OpenTelemetry](docs/images/opentelemetry.png)
 
 ### OpenTelemetry
 
@@ -181,15 +194,14 @@ Dev Service for Zeebe relies on Docker to start the broker. If your environment 
 to start the broker manually, or connect to an already running broker. You can configure the broker address using 
 `quarkus.zeebe.broker.gateway-address`.
 
-![Test](./docs/devservice.png)
+![Test](docs/images/devservice.svg)
 
-To activate [Simple-Monitor](https://github.com/camunda-community-hub/zeebe-simple-monitor) Dev Service use this configuration:
+To activate [Zeebe-Dev-Monitor](https://github.com/lorislab/zeebe-dev-monitor) Dev Service use this configuration:
 ```properties
 quarkus.zeebe.devservices.enabled=true
-quarkus.zeebe.devservices.hazelcast.enabled=true
 quarkus.zeebe.devservices.monitor.enabled=true
 ```
-Property `quarkus.zeebe.devservices.hazelcast.enabled=true` will activate the [hazelcast exporter](https://github.com/camunda-community-hub/zeebe-hazelcast-exporter).
+Property `qquarkus.zeebe.devservices.monitor.enabled=true` will activate the debug exporter.
 
 #### Configuration
 
@@ -199,14 +211,11 @@ quarkus.zeebe.devservices.port=
 quarkus.zeebe.devservices.shared=true
 quarkus.zeebe.devservices.service-name=zeebe
 quarkus.zeebe.devservices.image-name=
-# zeebe broker with hazelcast
-quarkus.zeebe.devservices.hazelcast.enabled=true|false
-quarkus.zeebe.devservices.hazelcast.image-name=ghcr.io/camunda-community-hub/zeebe-with-hazelcast-exporter:1.3.3-1.1.1-SNAPSHOT
-# zeebe simple monitor dev-service
+# zeebe dev monitor dev-service
 quarkus.zeebe.devservices.monitor.enabled=true|false
 quarkus.zeebe.devservices.monitor.port=
-quarkus.zeebe.devservices.monitor.image-name=ghcr.io/camunda-community-hub/zeebe-simple-monitor:2.3.0
-quarkus.zeebe.devservices.monitor.service-name=zeebe-simple-monitor
+quarkus.zeebe.devservices.monitor.image-name=ghcr.io/lorislab/zeebe-dev-monitor:1.0.0
+quarkus.zeebe.devservices.monitor.service-name=zeebe-dev-monitor
 ```
 
 ## Simple usage
@@ -231,14 +240,15 @@ To use the test extension, add this dependency to the project:
 <dependency>
     <groupId>io.quarkiverse.zeebe</groupId>
     <artifactId>quarkus-zeebe-test</artifactId>
-    <version>0.3.0</version>
+    <version>{version}</version>
+    <scope>test</scope>
 </dependency>
 ```
-![Test](./docs/test.png)
+![Test](./docs/images/testing.svg)
+
 To use the `ZeebeClient` and `BpmnAssert` in the tests use the `@QuarkusTestResource(ZeebeTestResource.class)` and enable this configuration:
 ```properties
 quarkus.zeebe.devservices.enabled=true
-quarkus.zeebe.devservices.hazelcast.enabled=true
 ```
 Test example
 ```java

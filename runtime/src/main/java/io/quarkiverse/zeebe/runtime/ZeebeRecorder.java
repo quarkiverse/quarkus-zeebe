@@ -174,13 +174,4 @@ public class ZeebeRecorder {
         ZeebeRecorder.workers = new ArrayList<>(workers);
     }
 
-    public static Class<?> getClassForName(ClassLoader cl, String classname) {
-        Class<?> clazz = null;
-        try {
-            clazz = Class.forName(classname, false, cl);
-        } catch (ClassNotFoundException ignored) {
-        }
-        log.debugf("getClass: TCCL: %s ## %s : %s", cl, classname, (clazz != null));
-        return clazz;
-    }
 }

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import io.opentelemetry.extension.annotations.WithSpan;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 
 @ApplicationScoped
 public class TestService {
