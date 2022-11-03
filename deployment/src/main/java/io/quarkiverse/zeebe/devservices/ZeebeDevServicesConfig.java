@@ -141,7 +141,7 @@ public class ZeebeDevServicesConfig {
         /**
          * The container image name to use, for container based zeebe simple monitor.
          */
-        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/lorislab/zeebe-dev-monitor:0.3.0")
+        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/lorislab/zeebe-dev-monitor:0.5.0")
         public String imageName;
 
         /**
