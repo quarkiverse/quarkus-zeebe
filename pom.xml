@@ -11,7 +11,7 @@
     <groupId>io.quarkiverse.zeebe</groupId>
     <artifactId>quarkus-zeebe-parent</artifactId>
     <name>Quarkus - Zeebe - Parent</name>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.7.2</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -105,5 +105,9 @@
             </modules>
         </profile>
     </profiles>
+
+  <scm>
+    <tag>0.7.2</tag>
+  </scm>
 </project>
 
