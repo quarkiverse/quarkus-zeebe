@@ -99,7 +99,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices
 
 [.description]
 --
-Enable or disable simple monitor for dev-services.
+Enable or disable dev monitor for dev-services.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_ENABLED+++[]
@@ -115,7 +115,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices
 
 [.description]
 --
-Optional fixed port the simple monitor will listen to. 
+Optional fixed port the dev monitor will listen to. 
 If not defined, the port will be chosen randomly.
 
 ifdef::add-copy-button-to-env-var[]
@@ -192,6 +192,38 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_TEST_EXPORTER+++`
 endif::add-copy-button-to-env-var[]
 --|boolean 
 |`true`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.debug-exporter.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.debug-exporter.enabled[quarkus.zeebe.devservices.debug-exporter.enabled]`
+
+[.description]
+--
+Enable or disable debug exporter.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_DEBUG_EXPORTER_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_DEBUG_EXPORTER_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.debug-exporter.receiver-port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.debug-exporter.receiver-port[quarkus.zeebe.devservices.debug-exporter.receiver-port]`
+
+[.description]
+--
+Fixed debug export receiver port the localhost service will listen to.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_DEBUG_EXPORTER_RECEIVER_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_DEBUG_EXPORTER_RECEIVER_PORT+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|`8080`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.resources.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.resources.enabled[quarkus.zeebe.resources.enabled]`

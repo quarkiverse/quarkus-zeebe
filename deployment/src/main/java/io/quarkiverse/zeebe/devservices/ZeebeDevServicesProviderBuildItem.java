@@ -4,10 +4,10 @@ import io.quarkus.builder.item.SimpleBuildItem;
 
 public final class ZeebeDevServicesProviderBuildItem extends SimpleBuildItem {
 
-    public String internalUrl;
+    public String zeebeInternalUrl;
 
-    public ZeebeDevServicesProviderBuildItem(String internalUrl) {
-        this.internalUrl = internalUrl;
+    public ZeebeDevServicesProviderBuildItem(String zeebeInternalUrl) {
+        this.zeebeInternalUrl = zeebeInternalUrl;
     }
 
 }

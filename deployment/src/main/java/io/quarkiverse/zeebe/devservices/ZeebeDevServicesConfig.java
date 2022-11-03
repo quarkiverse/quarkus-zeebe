@@ -75,6 +75,12 @@ public class ZeebeDevServicesConfig {
     public TestConfig test;
 
     /**
+     * Debug exporter optional configuration.
+     */
+    @ConfigItem(name = "debug-exporter")
+    public DebugExporterConfig debugExporter;
+
+    /**
      * Zeebe simple monitor configuration.
      */
     @ConfigGroup
@@ -95,19 +101,37 @@ public class ZeebeDevServicesConfig {
     }
 
     /**
-     * Zeebe simple monitor configuration.
+     * Zeebe debug exporter configuration.
      */
     @ConfigGroup
-    public static class MonitorConfig {
-
+    public static class DebugExporterConfig {
         /**
-         * Enable or disable simple monitor for dev-services.
+         * Enable or disable debug exporter.
          */
         @ConfigItem(name = "enabled", defaultValue = "false")
         public boolean enabled;
 
         /**
-         * Optional fixed port the simple monitor will listen to.
+         * Fixed debug export receiver port the localhost service will listen to.
+         */
+        @ConfigItem(name = "receiver-port", defaultValue = "8080")
+        public int receiverPort;
+    }
+
+    /**
+     * Zeebe dev monitor configuration.
+     */
+    @ConfigGroup
+    public static class MonitorConfig {
+
+        /**
+         * Enable or disable dev monitor for dev-services.
+         */
+        @ConfigItem(name = "enabled", defaultValue = "false")
+        public boolean enabled;
+
+        /**
+         * Optional fixed port the dev monitor will listen to.
          * <p>
          * If not defined, the port will be chosen randomly.
          */
