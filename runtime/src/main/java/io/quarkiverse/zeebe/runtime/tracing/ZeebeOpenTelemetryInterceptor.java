@@ -1,6 +1,6 @@
 package io.quarkiverse.zeebe.runtime.tracing;
 
-import static io.quarkus.opentelemetry.runtime.OpenTelemetryConfig.INSTRUMENTATION_NAME;
+import static io.quarkus.opentelemetry.runtime.config.OpenTelemetryConfig.INSTRUMENTATION_NAME;
 import static java.lang.String.valueOf;
 
 import java.util.Map;
