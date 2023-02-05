@@ -32,7 +32,7 @@ public class ZeebeBuildTimeConfig {
     @ConfigGroup
     public static class HealthCheckConfig {
         /**
-         * Whether or not an health check is published in case the smallrye-health extension is present.
+         * Whether a health check is published in case the smallrye-health extension is present.
          */
         @ConfigItem(name = "enabled")
         public boolean enabled;
@@ -44,7 +44,7 @@ public class ZeebeBuildTimeConfig {
     @ConfigGroup
     public static class ResourcesConfig {
         /**
-         * Whether or not an auto scan BPMN process folder. Default true
+         * Whether an auto scan BPMN process folder. Default true
          */
         @ConfigItem(name = "enabled", defaultValue = "true")
         public Boolean enabled;
@@ -62,7 +62,7 @@ public class ZeebeBuildTimeConfig {
     @ConfigGroup
     public static class TracingConfig {
         /**
-         * Whether or not an opentracing is published in case the smallrye-opentracing extension is present.
+         * Whether an opentracing is published in case the smallrye-opentracing extension is present.
          */
         @ConfigItem(name = "enabled", defaultValue = "true")
         public boolean enabled = true;

@@ -1,25 +1,21 @@
 package io.quarkiverse.zeebe.it.bpmn.sayhello;
 
+import static io.restassured.RestAssured.given;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.camunda.zeebe.client.ZeebeClient;
-import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.process.test.assertions.BpmnAssert;
 import io.camunda.zeebe.process.test.assertions.ProcessInstanceAssert;
 import io.quarkiverse.zeebe.it.bpmn.AbstractTest;
-import io.quarkiverse.zeebe.test.InjectZeebeClient;
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
 
 @QuarkusTest
 @DisplayName("Say Hello Test")
 public class SayHelloTest extends AbstractTest {
-
-    @InjectZeebeClient
-    ZeebeClient client;
 
     @Test
     @DisplayName("Start process")
@@ -29,14 +25,13 @@ public class SayHelloTest extends AbstractTest {
         p.message = "message-example";
         p.name = "name-input";
 
-        ProcessInstanceEvent event = client
-                .newCreateInstanceCommand()
-                .bpmnProcessId("hello_process")
-                .latestVersion()
-                .variables(p)
-                .send().join();
+        long processInstanceKey = given().contentType(ContentType.JSON)
+                .body(p).when()
+                .post("/say-hello")
+                .then().log().body().extract()
+                .jsonPath().getLong("processInstanceKey");
 
-        ProcessInstanceAssert a = BpmnAssert.assertThat(event);
+        ProcessInstanceAssert a = new ProcessInstanceAssert(processInstanceKey, BpmnAssert.getRecordStream());
         await().atMost(7, SECONDS).untilAsserted(a::isCompleted);
         a.hasVariableWithValue("name", "name-input");
         a.hasVariableWithValue("message", "Hi, name-input");

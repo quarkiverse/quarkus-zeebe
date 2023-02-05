@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.quarkiverse.zeebe.ZeebeWorker;
+import io.quarkiverse.zeebe.JobWorker;
 
 public class ZeebeTracing {
 
@@ -14,7 +14,7 @@ public class ZeebeTracing {
 
     static String DEPLOY_RESOURCES = "bpmn-deploy-resources";
 
-    static String COMPONENT_NAME = "zeebe-worker";
+    static String COMPONENT_NAME = "job-worker";
 
     static String CLIENT_EXCEPTION = "bpmn-client-exception";
 
@@ -81,7 +81,7 @@ public class ZeebeTracing {
     }
 
     static String getSpanName(ActivatedJob job, Method method) {
-        ZeebeWorker zw = method.getDeclaringClass().getDeclaredAnnotation(ZeebeWorker.class);
+        JobWorker zw = method.getDeclaredAnnotation(JobWorker.class);
         if (zw != null && zw.name() != null && !zw.name().isBlank()) {
             return zw.name();
         }

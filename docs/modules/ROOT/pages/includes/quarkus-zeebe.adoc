@@ -230,7 +230,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.resources.e
 
 [.description]
 --
-Whether or not an auto scan BPMN process folder. Default true
+Whether an auto scan BPMN process folder. Default true
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_RESOURCES_ENABLED+++[]
@@ -262,7 +262,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.health.enab
 
 [.description]
 --
-Whether or not an health check is published in case the smallrye-health extension is present.
+Whether a health check is published in case the smallrye-health extension is present.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_HEALTH_ENABLED+++[]
@@ -278,7 +278,7 @@ a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.tracing.ena
 
 [.description]
 --
-Whether or not an opentracing is published in case the smallrye-opentracing extension is present.
+Whether an opentracing is published in case the smallrye-opentracing extension is present.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_TRACING_ENABLED+++[]

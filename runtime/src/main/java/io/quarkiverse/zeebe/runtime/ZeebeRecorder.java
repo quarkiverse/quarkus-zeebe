@@ -2,23 +2,21 @@ package io.quarkiverse.zeebe.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jboss.logging.Logger;
 
+import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.command.DeployResourceCommandStep1;
 import io.camunda.zeebe.client.api.response.DeploymentEvent;
 import io.camunda.zeebe.client.api.worker.BackoffSupplier;
 import io.camunda.zeebe.client.api.worker.ExponentialBackoffBuilder;
-import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1;
+import io.quarkiverse.zeebe.JobWorkerExceptionHandler;
 import io.quarkiverse.zeebe.runtime.tracing.ZeebeTracing;
 import io.quarkus.arc.Arc;
 import io.quarkus.runtime.annotations.Recorder;
@@ -36,7 +34,12 @@ public class ZeebeRecorder {
     /**
      * Job handler map with job type as key and class name as value
      */
-    public static List<ZeebeWorkerValue> workers;
+    public static List<JobWorkerMetadata> workers;
+
+    /**
+     * Job handler invoker factory class.
+     */
+    public static String factory;
 
     /**
      * Initialize the producer with the configuration
@@ -45,8 +48,10 @@ public class ZeebeRecorder {
      */
     public void init(ZeebeRuntimeConfig config) {
         // client configuration
-        ZeebeClientService client = Arc.container().instance(ZeebeClientService.class).get();
-        client.initialize(config);
+        ZeebeClientService clientService = Arc.container().instance(ZeebeClientService.class).get();
+        clientService.initialize(config);
+        ZeebeClient client = clientService.client();
+
         // tracing configuration
         if (config.tracing.attributes.isPresent()) {
             List<String> attrs = config.tracing.attributes.get();
@@ -54,6 +59,8 @@ public class ZeebeRecorder {
                 ZeebeTracing.setAttributes(attrs);
             }
         }
+
+        // deploy resources
         if (resources != null && !resources.isEmpty()) {
 
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -84,93 +91,130 @@ public class ZeebeRecorder {
                             .collect(Collectors.joining(",")));
         }
 
+        // create job workers
         if (workers != null && !workers.isEmpty()) {
-            //            ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
-            ZeebeWorkerContainer con = Arc.container().instance(ZeebeWorkerContainer.class).get();
-            Map<String, JobHandler> c = con.getJobHandlers();
-            for (ZeebeWorkerValue w : workers) {
+            JobWorkerExceptionHandler handler = Arc.container().instance(JobWorkerExceptionHandler.class).get();
+            JobWorkerInvokerFactory factory = createJobWorkerInvokerFactory(ZeebeRecorder.factory);
+
+            for (JobWorkerMetadata meta : workers) {
                 try {
-
-                    JobHandler jobHandler = c.get(w.clazz);
-
-                    // check the worker type
-                    String type = w.type;
-                    if (type == null || type.isEmpty()) {
-                        type = config.worker.defaultType.orElse(type);
+                    JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = buildJobWorker(client, config, factory, handler,
+                            meta);
+                    if (builder != null) {
+                        clientService.openWorker(builder);
+                        log.infof("Starting worker %s.%s for job type %s", meta.declaringClassName, meta.methodName,
+                                meta.workerValue.type);
                     }
-
-                    final JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = client
-                            .newWorker()
-                            .jobType(type)
-                            .handler(jobHandler);
-
-                    // overwrite the annotation with properties
-                    ZeebeRuntimeConfig.HandlerConfig hc = config.workers.get(type);
-                    if (hc != null) {
-                        hc.name.ifPresent(n -> w.name = n);
-                        hc.maxJobsActive.ifPresent(n -> w.maxJobsActive = n);
-                        hc.timeout.ifPresent(n -> w.timeout = n);
-                        hc.pollInterval.ifPresent(n -> w.pollInterval = n);
-                        hc.requestTimeout.ifPresent(n -> w.requestTimeout = n);
-                        hc.fetchVariables.ifPresent(n -> w.fetchVariables = n.toArray(new String[0]));
-                        hc.expBackoffFactor.ifPresent(n -> w.expBackoffFactor = n);
-                        hc.expJitterFactor.ifPresent(n -> w.expJitterFactor = n);
-                        hc.expMinDelay.ifPresent(n -> w.expMinDelay = n);
-                        hc.expMaxDelay.ifPresent(n -> w.expMaxDelay = n);
-                    }
-
-                    // using defaults from config if null, 0 or negative
-                    if (w.name != null && !w.name.isEmpty()) {
-                        builder.name(w.name);
-                    }
-
-                    if (w.maxJobsActive > 0) {
-                        builder.maxJobsActive(w.maxJobsActive);
-                    }
-                    if (w.timeout > 0) {
-                        builder.timeout(w.timeout);
-                    }
-                    if (w.pollInterval > 0) {
-                        builder.pollInterval(Duration.ofMillis(w.pollInterval));
-                    }
-                    if (w.requestTimeout > 0) {
-                        builder.requestTimeout(Duration.ofSeconds(w.requestTimeout));
-                    }
-                    if (w.fetchVariables.length > 0) {
-                        builder.fetchVariables(w.fetchVariables);
-                    }
-
-                    // setup ExponentialBackoff configuration
-                    if (w.expBackoffFactor > 0 || w.expJitterFactor > 0 || w.expMaxDelay > 0 || w.expMinDelay > 0) {
-                        ExponentialBackoffBuilder exp = BackoffSupplier.newBackoffBuilder();
-                        if (w.expBackoffFactor > 0) {
-                            exp.backoffFactor(w.expBackoffFactor);
-                        }
-                        if (w.expJitterFactor > 0) {
-                            exp.jitterFactor(w.expJitterFactor);
-                        }
-                        if (w.expMaxDelay > 0) {
-                            exp.maxDelay(w.expMaxDelay);
-                        }
-                        if (w.expMinDelay > 0) {
-                            exp.minDelay(w.expMinDelay);
-                        }
-                        builder.backoffSupplier(exp.build());
-                    }
-
-                    builder.open();
-
-                    log.infof("Starting worker %s for job type %s", w.clazz, w.type);
                 } catch (Exception e) {
-                    log.errorf(e, "Error opening worker for type %s with class %s", w.type, w.clazz);
+                    log.errorf(e, "Error opening worker for type %s with class %s.%s", meta.workerValue.type,
+                            meta.declaringClassName,
+                            meta.methodName);
                 }
             }
         }
     }
 
-    public void setResources(Collection<String> resources, List<ZeebeWorkerValue> workers) {
+    private static JobWorkerBuilderStep1.JobWorkerBuilderStep3 buildJobWorker(ZeebeClient client, ZeebeRuntimeConfig config,
+            JobWorkerInvokerFactory factory, JobWorkerExceptionHandler exceptionHandler, JobWorkerMetadata meta) {
+        JobWorkerValue value = meta.workerValue;
+
+        // check the worker type
+        String type = value.type;
+        if (type == null || type.isEmpty()) {
+            type = config.job.defaultType.orElse(type);
+        }
+
+        // overwrite the annotation with properties
+        ZeebeRuntimeConfig.JobHandlerConfig jonHandlerConfig = config.workers.get(type);
+        if (jonHandlerConfig != null) {
+            jonHandlerConfig.name.ifPresent(n -> value.name = n);
+            jonHandlerConfig.enabled.ifPresent(n -> value.enabled = n);
+            jonHandlerConfig.maxJobsActive.ifPresent(n -> value.maxJobsActive = n);
+            jonHandlerConfig.timeout.ifPresent(n -> value.timeout = n);
+            jonHandlerConfig.pollInterval.ifPresent(n -> value.pollInterval = n);
+            jonHandlerConfig.requestTimeout.ifPresent(n -> value.requestTimeout = n);
+        }
+
+        // skip disabled workers
+        if (!value.enabled) {
+            log.infof("Job worker %s.%s for job type %s is disabled.", meta.declaringClassName, meta.methodName,
+                    value.type);
+            return null;
+        }
+
+        JobWorkerInvoker invoker = factory.create(meta.invokerClass);
+        JobWorkerHandler jobHandler = new JobWorkerHandler(value, invoker, exceptionHandler, config.autoComplete);
+
+        final JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = client
+                .newWorker()
+                .jobType(type)
+                .handler(jobHandler);
+
+        // using defaults from config if null, 0 or negative
+        if (value.name != null && !value.name.isEmpty()) {
+            builder.name(value.name);
+        }
+
+        if (value.maxJobsActive > 0) {
+            builder.maxJobsActive(value.maxJobsActive);
+        }
+        if (value.timeout > 0) {
+            builder.timeout(value.timeout);
+        }
+        if (value.pollInterval > 0) {
+            builder.pollInterval(Duration.ofMillis(value.pollInterval));
+        }
+        if (value.requestTimeout > 0) {
+            builder.requestTimeout(Duration.ofSeconds(value.requestTimeout));
+        }
+        if (value.fetchVariables.length > 0) {
+            builder.fetchVariables(value.fetchVariables);
+        }
+
+        // setup exponential backoff pull configuration
+        ExponentialBackoffBuilder exp = BackoffSupplier.newBackoffBuilder();
+        exp.backoffFactor(config.job.expBackoffFactor);
+        exp.jitterFactor(config.job.expJitterFactor);
+        exp.maxDelay(config.job.expMaxDelay);
+        exp.minDelay(config.job.expMinDelay);
+        builder.backoffSupplier(exp.build());
+
+        return builder;
+    }
+
+    private static long getConfigValueLong(long annotationValue, Optional<Long> itemConfig, Optional<Long> globalConfig) {
+        return itemConfig.orElseGet(() -> {
+            if (annotationValue > 0) {
+                return annotationValue;
+            }
+            return globalConfig.orElse(annotationValue);
+        });
+    }
+
+    private static double getConfigValueDouble(double annotationValue, Optional<Double> itemConfig,
+            Optional<Double> globalConfig) {
+        return itemConfig.orElseGet(() -> {
+            if (annotationValue > 0) {
+                return annotationValue;
+            }
+            return globalConfig.orElse(annotationValue);
+        });
+    }
+
+    private static JobWorkerInvokerFactory createJobWorkerInvokerFactory(String name) {
+        try {
+            Class<?> invokerClazz = Thread.currentThread().getContextClassLoader().loadClass(name);
+            return (JobWorkerInvokerFactory) invokerClazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException
+                | InvocationTargetException e) {
+            throw new IllegalStateException("Unable to create invoker factory: " + name, e);
+        }
+    }
+
+    public void setResources(Collection<String> resources, List<JobWorkerMetadata> workers, String factory) {
         ZeebeRecorder.resources = resources;
+        ZeebeRecorder.factory = factory;
         ZeebeRecorder.workers = new ArrayList<>(workers);
     }
 

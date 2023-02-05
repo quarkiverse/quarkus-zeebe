@@ -9,13 +9,13 @@ import io.quarkus.arc.DefaultBean;
 import io.quarkus.arc.Unremovable;
 
 @Singleton
-public class ZeebeObjectMapperProducer {
+public class ZeebeResourcesProducer {
 
     @Produces
     @Singleton
     @Unremovable
     @DefaultBean
-    public JsonMapper defaultZeebeObjectMapper() {
+    public JsonMapper defaultJsonMapper() {
         return new ZeebeObjectMapper();
     }
 }

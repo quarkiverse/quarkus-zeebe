@@ -62,30 +62,38 @@ quarkus.zeebe.client.cloud.base-url=zeebe.camunda.io
 quarkus.zeebe.client.cloud.auth-url=https://login.cloud.camunda.io/oauth/token
 quarkus.zeebe.client.cloud.port=443
 quarkus.zeebe.client.cloud.credentials-cache-path=
-# worker configuration
-quarkus.zeebe.client.worker.max-jobs-active=32
-quarkus.zeebe.client.worker.threads=1
-quarkus.zeebe.client.worker.default-name=default
-quarkus.zeebe.client.worker.default-type=
 # message configuration
 quarkus.zeebe.client.message.time-to-live=PT1H
 # security configuration
 quarkus.zeebe.client.security.plaintext=true
 quarkus.zeebe.client.security.cert-path=
 # job configuration
+quarkus.zeebe.client.job.max-jobs-active=32
+quarkus.zeebe.client.job.worker-execution-threads=1
+quarkus.zeebe.client.job.worker-name=default
+quarkus.zeebe.client.job.default-type=
 quarkus.zeebe.client.job.timeout=PT5M
+quarkus.zeebe.client.job.request-timeout=
 quarkus.zeebe.client.job.pool-interval=PT0.100S
+quarkus.zeebe.client.job.exp-backoff-factor=1.6
+quarkus.zeebe.client.job.exp-jitter-factor=0.1
+quarkus.zeebe.client.job.exp-max-delay=5000
+quarkus.zeebe.client.job.exp-min-delay=50
 # overwrite job handler annotation
 quarkus.zeebe.client.workers.<type>.name=
+quarkus.zeebe.client.workers.<type>.enabled=
 quarkus.zeebe.client.workers.<type>.timeout=
 quarkus.zeebe.client.workers.<type>.max-jobs-active=
 quarkus.zeebe.client.workers.<type>.request-timeout=
 quarkus.zeebe.client.workers.<type>.poll-interval=
-quarkus.zeebe.client.workers.<type>.fetch-variables=
-quarkus.zeebe.client.workers.<type>.exp-backoff-factor=1.6
-quarkus.zeebe.client.workers.<type>.exp-jitter-factor=0.1
-quarkus.zeebe.client.workers.<type>.exp-max-delay=5000
-quarkus.zeebe.client.workers.<type>.exp-min-delay=50
+# Auto-complete
+quarkus.zeebe.client.auto-complete.max-retries=20
+quarkus.zeebe.client.auto-complete.retry-delay=50L
+quarkus.zeebe.client.auto-complete.exp-backoff-factor=1.5
+quarkus.zeebe.client.auto-complete.exp-jitter-factor=0.2
+quarkus.zeebe.client.auto-complete.exp-max-delay=1000
+quarkus.zeebe.client.auto-complete.exp-min-delay=50
+
 # client tracing configuration
 quarkus.zeebe.client.tracing.attributes=bpmn-process-id,bpmn-process-instance-key,bpmn-process-element-id,
 bpmn-process-element-instance-key,bpmn-process-def-key,bpmn-process-def-ver,bpmn-retries,bpmn-component,

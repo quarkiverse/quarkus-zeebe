@@ -1,13 +1,16 @@
 package io.quarkiverse.zeebe;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.FIELD })
-public @interface ZeebeWorker {
+@Target({ ElementType.METHOD })
+@Documented
+public @interface JobWorker {
+
+    /**
+     * Enable or disable the job worker.
+     */
+    boolean enabled() default true;
 
     /**
      * Job type.
@@ -59,26 +62,17 @@ public @interface ZeebeWorker {
     String[] fetchVariables() default {};
 
     /**
-     * Sets the backoff multiplication factor. The previous delay is multiplied by this factor. Default is 1.6.
+     * Fetch all variables for the job.
+     *
+     * @return disable or enable fetch all variables.
      */
-    double expBackoffFactor() default -1;
+    boolean fetchAllVariables() default false;
 
     /**
-     * Sets the jitter factor. The next delay is changed randomly within a range of +/- this factor.
-     * For example, if the next delay is calculated to be 1s and the jitterFactor is 0.1 then the actual next
-     * delay can be somewhere between 0.9 and 1.1s.
+     * Auto-complete enable or disable feature.
+     *
+     * @return the auto-complete enable or disable feature.
      */
-    double expJitterFactor() default -1;
+    boolean autoComplete() default true;
 
-    /**
-     * Sets the maximum retry delay.
-     * Note that the jitter may push the retry delay over this maximum. Default is 5000ms.
-     */
-    long expMaxDelay() default -1L;
-
-    /**
-     * Sets the minimum retry delay.
-     * Note that the jitter may push the retry delay below this minimum. Default is 50ms.
-     */
-    long expMinDelay() default -1L;
 }

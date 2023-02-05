@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,7 +23,7 @@ public class ProcessRestController {
     ZeebeClient zeebe;
 
     @GET
-    public Response startTest() {
+    public Response startTests() {
         List<ProcessInstanceEvent> result = new ArrayList<>();
         try {
             result.add(start("test.complete"));
@@ -30,6 +31,16 @@ public class ProcessRestController {
             result.add(start("test.fail"));
             result.add(start("test.throw"));
             return Response.ok(result).build();
+        } catch (Exception ex) {
+            return Response.serverError().entity(ex.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("{name}")
+    public Response startTest(@PathParam("name") String name) {
+        try {
+            return Response.ok(start(name)).build();
         } catch (Exception ex) {
             return Response.serverError().entity(ex.getMessage()).build();
         }

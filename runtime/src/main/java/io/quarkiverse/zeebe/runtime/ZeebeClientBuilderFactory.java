@@ -12,11 +12,11 @@ public class ZeebeClientBuilderFactory {
         builder.gatewayAddress(createGatewayAddress(config))
                 .defaultJobPollInterval(config.job.pollInterval)
                 .defaultJobTimeout(config.job.timeout)
-                .defaultJobWorkerMaxJobsActive(config.worker.maxJobsActive)
-                .defaultJobWorkerName(config.worker.defaultName)
+                .defaultJobWorkerMaxJobsActive(config.job.workerMaxJobsActive)
+                .defaultJobWorkerName(config.job.workerName)
                 .defaultMessageTimeToLive(config.message.timeToLive)
-                .numJobWorkerExecutionThreads(config.worker.threads)
-                .defaultRequestTimeout(config.requestTimeout)
+                .numJobWorkerExecutionThreads(config.job.workerExecutionThreads)
+                .defaultRequestTimeout(config.job.requestTimeout)
                 .credentialsProvider(getCredentialsProvider(config.cloud));
 
         config.security.certPath.ifPresent(builder::caCertificatePath);

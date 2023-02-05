@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.camunda.zeebe.client.api.response.Topology;
+import io.quarkiverse.zeebe.jobworker.Parameter;
+import io.quarkiverse.zeebe.jobworker.TestJobWorker;
 import io.quarkiverse.zeebe.test.TestConfig;
 import io.quarkus.test.QuarkusUnitTest;
 
@@ -17,7 +19,7 @@ public class ZeebeClientConnectionTest {
     static final QuarkusUnitTest unitTest = new QuarkusUnitTest()
             .withApplicationRoot((jar) -> jar
                     .addAsResource("default.properties", "application.properties")
-                    .addClass(TestConfig.class));
+                    .addClasses(TestConfig.class, Parameter.class, TestJobWorker.class));
 
     @Inject
     TestConfig config;

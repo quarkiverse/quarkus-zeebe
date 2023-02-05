@@ -1,2 +1,10 @@
-package io.quarkiverse.zeebe;public class VariablesAsType {
+package io.quarkiverse.zeebe;
+
+import java.lang.annotation.*;
+
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface VariablesAsType {
+
 }

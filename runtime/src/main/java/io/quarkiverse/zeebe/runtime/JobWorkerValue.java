@@ -1,6 +1,8 @@
 package io.quarkiverse.zeebe.runtime;
 
-public class ZeebeWorkerValue {
+public class JobWorkerValue {
+
+    public boolean enabled;
 
     public String type;
 
@@ -16,14 +18,8 @@ public class ZeebeWorkerValue {
 
     public String[] fetchVariables;
 
-    public String clazz;
+    public boolean fetchAllVariables;
 
-    public double expBackoffFactor;
-
-    public double expJitterFactor;
-
-    public long expMaxDelay;
-
-    public long expMinDelay;
+    public boolean autoComplete;
 
 }
