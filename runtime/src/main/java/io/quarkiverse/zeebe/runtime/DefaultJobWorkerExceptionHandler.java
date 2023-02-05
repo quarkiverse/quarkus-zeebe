@@ -4,8 +4,10 @@ import static java.util.Map.entry;
 
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.quarkiverse.zeebe.ZeebeScheduledExecutorService;
 import org.jboss.logging.Logger;
 
 import io.grpc.Status;
@@ -29,6 +31,9 @@ public class DefaultJobWorkerExceptionHandler implements JobWorkerExceptionHandl
         IGNORABLE,
         FAILURE;
     }
+
+    @Inject
+    ZeebeScheduledExecutorService zeebeScheduledExecutorService;
 
     private static final Map<Status.Code, ACTION> CODES = Map.ofEntries(
             // SUCCESS
@@ -68,7 +73,7 @@ public class DefaultJobWorkerExceptionHandler implements JobWorkerExceptionHandl
             case RETRIEVABLE:
                 if (command.canRetry()) {
                     command.supplyRetryDelay();
-                    command.retry(Infrastructure.getDefaultWorkerPool());
+                    command.retry(zeebeScheduledExecutorService.scheduledExecutorService());
                     LOG.warn("Retry " + command + " after error of type '" + code + "' with backoff");
                     return;
                 }
