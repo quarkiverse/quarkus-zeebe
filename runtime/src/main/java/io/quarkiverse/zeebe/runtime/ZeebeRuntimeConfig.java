@@ -341,7 +341,7 @@ public class ZeebeRuntimeConfig {
         /**
          * Maximum retries for the auto-completion command.
          */
-        @ConfigItem(name = "retry-delay", defaultValue = "50L")
+        @ConfigItem(name = "retry-delay", defaultValue = "50")
         public long retryDelay;
 
         /**

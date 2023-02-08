@@ -9,23 +9,16 @@ public final class ZeebeWorkersBuildItem extends SimpleBuildItem {
 
     final List<JobWorkerMetadata> workers;
 
-    final String factory;
-
     public ZeebeWorkersBuildItem() {
         this.workers = null;
-        this.factory = null;
     }
 
-    public ZeebeWorkersBuildItem(List<JobWorkerMetadata> workers, String factory) {
+    public ZeebeWorkersBuildItem(List<JobWorkerMetadata> workers) {
         this.workers = workers;
-        this.factory = factory;
     }
 
     public List<JobWorkerMetadata> getWorkers() {
         return workers;
     }
 
-    public String getFactory() {
-        return factory;
-    }
 }

@@ -12,6 +12,7 @@ import io.camunda.zeebe.client.api.command.ThrowErrorCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.BackoffSupplier;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.quarkiverse.zeebe.runtime.metrics.MetricsRecorder;
 
 public class JobWorkerCommand {
 
@@ -21,6 +22,10 @@ public class JobWorkerCommand {
 
     private BackoffSupplier backoffSupplier;
 
+    private String metricsActionName;
+
+    private String metricsFailedActionName;
+
     private ActivatedJob job;
 
     private int counter = 0;
@@ -29,13 +34,23 @@ public class JobWorkerCommand {
 
     private int maxRetries = 20;
 
-    public JobWorkerCommand(FinalCommandStep<?> command, ActivatedJob job) {
+    private MetricsRecorder metricsRecorder;
+
+    public JobWorkerCommand(FinalCommandStep<?> command, ActivatedJob job, String metricsActionName,
+            String metricsFailedActionName) {
         this.command = command;
         this.job = job;
+        this.metricsActionName = metricsActionName;
+        this.metricsFailedActionName = metricsFailedActionName;
     }
 
     public JobWorkerCommand backoffSupplier(BackoffSupplier backoffSupplier) {
         this.backoffSupplier = backoffSupplier;
+        return this;
+    }
+
+    public JobWorkerCommand metricsRecorder(MetricsRecorder metricsRecorder) {
+        this.metricsRecorder = metricsRecorder;
         return this;
     }
 
@@ -56,22 +71,27 @@ public class JobWorkerCommand {
 
     public void send() {
         counter++;
-        command.send().exceptionally(ex -> {
-            exceptionHandler.handleError(this, ex);
+        command.send().handle((o, ex) -> {
+            if (ex != null) {
+                metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, metricsFailedActionName, job.getType());
+                exceptionHandler.handleError(this, ex);
+                return null;
+            }
+            metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, metricsActionName, job.getType());
             return null;
         });
     }
 
     public static JobWorkerCommand createJobWorkerCommand(JobClient client, ActivatedJob job, Object result) {
         CompleteJobCommandStep1 tmp = createCompleteCommand(client, job, result);
-        return new JobWorkerCommand(tmp, job);
+        return new JobWorkerCommand(tmp, job, MetricsRecorder.ACTION_COMPLETED, MetricsRecorder.ACTION_COMPLETED_FAILED);
     }
 
     public static JobWorkerCommand createJobWorkerCommand(JobClient client, ActivatedJob job, ZeebeBpmnError bpmnError) {
         ThrowErrorCommandStep1.ThrowErrorCommandStep2 tmp = client.newThrowErrorCommand(job.getKey())
                 .errorCode(bpmnError.getErrorCode())
                 .errorMessage(bpmnError.getErrorMessage());
-        return new JobWorkerCommand(tmp, job);
+        return new JobWorkerCommand(tmp, job, MetricsRecorder.ACTION_BPMN_ERROR, MetricsRecorder.ACTION_BPMN_ERROR_FAILED);
     }
 
     private static CompleteJobCommandStep1 createCompleteCommand(JobClient client, ActivatedJob job, Object result) {

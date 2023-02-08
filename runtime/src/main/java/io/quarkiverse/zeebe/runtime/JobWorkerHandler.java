@@ -10,6 +10,7 @@ import io.camunda.zeebe.client.impl.worker.ExponentialBackoffBuilderImpl;
 import io.quarkiverse.zeebe.JobWorkerCommand;
 import io.quarkiverse.zeebe.JobWorkerExceptionHandler;
 import io.quarkiverse.zeebe.ZeebeBpmnError;
+import io.quarkiverse.zeebe.runtime.metrics.MetricsRecorder;
 import io.quarkus.arc.Unremovable;
 
 /**
@@ -30,10 +31,13 @@ public class JobWorkerHandler implements JobHandler {
 
     private ZeebeRuntimeConfig.AutoCompleteConfig autoCompleteConfig;
 
-    public JobWorkerHandler(JobWorkerValue jobWorkerValue, JobWorkerInvoker invoker,
+    private MetricsRecorder metricsRecorder;
+
+    public JobWorkerHandler(JobWorkerValue jobWorkerValue, JobWorkerInvoker invoker, MetricsRecorder metricsRecorder,
             JobWorkerExceptionHandler exceptionHandler, ZeebeRuntimeConfig.AutoCompleteConfig autoCompleteConfig) {
         this.jobWorkerValue = jobWorkerValue;
         this.invoker = invoker;
+        this.metricsRecorder = metricsRecorder;
         this.exceptionHandler = exceptionHandler;
         this.autoCompleteConfig = autoCompleteConfig;
 
@@ -51,18 +55,18 @@ public class JobWorkerHandler implements JobHandler {
     public void handle(JobClient client, ActivatedJob job) throws Exception {
         LOG.tracef("Handle %s and invoke worker %s", job, jobWorkerValue);
         try {
-            //TODO: metrics
-            Object result = null;
+            metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_ACTIVATED, job.getType());
+            Object result;
             try {
                 result = invoker.invoke(client, job).toCompletableFuture().get();
-            } catch (Throwable t) {
-                //TODO: metrics
-                throw t;
+            } catch (Throwable throwable) {
+                metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_FAILED, job.getType());
+                throw throwable;
             }
 
             if (jobWorkerValue.autoComplete) {
-                //TODO: metrics
                 JobWorkerCommand.createJobWorkerCommand(client, job, result)
+                        .metricsRecorder(metricsRecorder)
                         .backoffSupplier(backoffSupplier)
                         .exceptionHandler(exceptionHandler)
                         .maxRetries(autoCompleteConfig.maxRetries)
@@ -71,8 +75,8 @@ public class JobWorkerHandler implements JobHandler {
             }
         } catch (ZeebeBpmnError error) {
             LOG.tracef("Caught JobWorker BPMN error on %s", job);
-            //TODO: metrics
             JobWorkerCommand.createJobWorkerCommand(client, job, error)
+                    .metricsRecorder(metricsRecorder)
                     .backoffSupplier(backoffSupplier)
                     .exceptionHandler(exceptionHandler)
                     .maxRetries(autoCompleteConfig.maxRetries)

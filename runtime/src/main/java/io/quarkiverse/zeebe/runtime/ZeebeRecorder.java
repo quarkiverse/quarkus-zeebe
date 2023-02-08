@@ -8,6 +8,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.enterprise.util.AnnotationLiteral;
+
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.RegistryType;
 import org.jboss.logging.Logger;
 
 import io.camunda.zeebe.client.ZeebeClient;
@@ -17,6 +21,7 @@ import io.camunda.zeebe.client.api.worker.BackoffSupplier;
 import io.camunda.zeebe.client.api.worker.ExponentialBackoffBuilder;
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1;
 import io.quarkiverse.zeebe.JobWorkerExceptionHandler;
+import io.quarkiverse.zeebe.runtime.metrics.MetricsRecorder;
 import io.quarkiverse.zeebe.runtime.tracing.ZeebeTracing;
 import io.quarkus.arc.Arc;
 import io.quarkus.runtime.annotations.Recorder;
@@ -29,17 +34,12 @@ public class ZeebeRecorder {
     /**
      * List of paths to the bpmn files in classpath
      */
-    public static Collection<String> resources;
+    private static Collection<String> resources;
 
     /**
      * Job handler map with job type as key and class name as value
      */
-    public static List<JobWorkerMetadata> workers;
-
-    /**
-     * Job handler invoker factory class.
-     */
-    public static String factory;
+    private static List<JobWorkerMetadata> workers;
 
     /**
      * Initialize the producer with the configuration
@@ -95,12 +95,12 @@ public class ZeebeRecorder {
         if (workers != null && !workers.isEmpty()) {
 
             JobWorkerExceptionHandler handler = Arc.container().instance(JobWorkerExceptionHandler.class).get();
-            JobWorkerInvokerFactory factory = createJobWorkerInvokerFactory(ZeebeRecorder.factory);
+            MetricsRecorder metricsRecorder = Arc.container().instance(MetricsRecorder.class).get();
 
             for (JobWorkerMetadata meta : workers) {
                 try {
-                    JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = buildJobWorker(client, config, factory, handler,
-                            meta);
+                    JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = buildJobWorker(client, config, handler,
+                            meta, metricsRecorder);
                     if (builder != null) {
                         clientService.openWorker(builder);
                         log.infof("Starting worker %s.%s for job type %s", meta.declaringClassName, meta.methodName,
@@ -116,7 +116,7 @@ public class ZeebeRecorder {
     }
 
     private static JobWorkerBuilderStep1.JobWorkerBuilderStep3 buildJobWorker(ZeebeClient client, ZeebeRuntimeConfig config,
-            JobWorkerInvokerFactory factory, JobWorkerExceptionHandler exceptionHandler, JobWorkerMetadata meta) {
+            JobWorkerExceptionHandler exceptionHandler, JobWorkerMetadata meta, MetricsRecorder metricsRecorder) {
         JobWorkerValue value = meta.workerValue;
 
         // check the worker type
@@ -143,8 +143,9 @@ public class ZeebeRecorder {
             return null;
         }
 
-        JobWorkerInvoker invoker = factory.create(meta.invokerClass);
-        JobWorkerHandler jobHandler = new JobWorkerHandler(value, invoker, exceptionHandler, config.autoComplete);
+        JobWorkerInvoker invoker = createJobWorkerInvoker(meta.invokerClass);
+        JobWorkerHandler jobHandler = new JobWorkerHandler(value, invoker, metricsRecorder, exceptionHandler,
+                config.autoComplete);
 
         final JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = client
                 .newWorker()
@@ -202,20 +203,31 @@ public class ZeebeRecorder {
         });
     }
 
-    private static JobWorkerInvokerFactory createJobWorkerInvokerFactory(String name) {
+    private static JobWorkerInvoker createJobWorkerInvoker(String name) {
         try {
             Class<?> invokerClazz = Thread.currentThread().getContextClassLoader().loadClass(name);
-            return (JobWorkerInvokerFactory) invokerClazz.getDeclaredConstructor().newInstance();
+            return (JobWorkerInvoker) invokerClazz.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | NoSuchMethodException
                 | InvocationTargetException e) {
             throw new IllegalStateException("Unable to create invoker factory: " + name, e);
         }
     }
 
-    public void setResources(Collection<String> resources, List<JobWorkerMetadata> workers, String factory) {
+    public void setResources(Collection<String> resources, List<JobWorkerMetadata> workers) {
         ZeebeRecorder.resources = resources;
-        ZeebeRecorder.factory = factory;
         ZeebeRecorder.workers = new ArrayList<>(workers);
     }
 
+    public class RegistryTypeLiteral extends AnnotationLiteral<RegistryType> implements RegistryType {
+
+        private MetricRegistry.Type type;
+
+        public RegistryTypeLiteral(MetricRegistry.Type type) {
+            this.type = type;
+        }
+
+        public MetricRegistry.Type type() {
+            return type;
+        }
+    }
 }

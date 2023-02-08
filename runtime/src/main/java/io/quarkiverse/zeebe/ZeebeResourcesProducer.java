@@ -9,8 +9,6 @@ import io.quarkus.arc.DefaultBean;
 import io.quarkus.arc.Unremovable;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 
-import java.util.concurrent.ScheduledExecutorService;
-
 @Singleton
 public class ZeebeResourcesProducer {
 
@@ -27,6 +25,6 @@ public class ZeebeResourcesProducer {
     @Unremovable
     @DefaultBean
     public ZeebeScheduledExecutorService defaultZeebeScheduledExecutorService() {
-        return () -> Infrastructure.getDefaultWorkerPool();
+        return Infrastructure::getDefaultWorkerPool;
     }
 }

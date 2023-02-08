@@ -15,6 +15,12 @@ public class ZeebeBuildTimeConfig {
     public ResourcesConfig resources = new ResourcesConfig();
 
     /**
+     * Metrics configuration.
+     */
+    @ConfigItem(name = "metrics")
+    public MetricsConfig metrics = new MetricsConfig();
+
+    /**
      * Health check configuration.
      */
     @ConfigItem(name = "health")
@@ -27,6 +33,18 @@ public class ZeebeBuildTimeConfig {
     public TracingConfig tracing = new TracingConfig();
 
     /**
+     * Metrics configuration.
+     */
+    @ConfigGroup
+    public static class MetricsConfig {
+        /**
+         * Whether a metrics is enabled in case the micrometer or micro-profile metrics extension is present.
+         */
+        @ConfigItem(name = "enabled", defaultValue = "true")
+        public boolean enabled;
+    }
+
+    /**
      * Health check configuration.
      */
     @ConfigGroup
@@ -34,7 +52,7 @@ public class ZeebeBuildTimeConfig {
         /**
          * Whether a health check is published in case the smallrye-health extension is present.
          */
-        @ConfigItem(name = "enabled")
+        @ConfigItem(name = "enabled", defaultValue = "true")
         public boolean enabled;
     }
 

@@ -7,16 +7,15 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.quarkiverse.zeebe.ZeebeScheduledExecutorService;
 import org.jboss.logging.Logger;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.quarkiverse.zeebe.JobWorkerCommand;
 import io.quarkiverse.zeebe.JobWorkerExceptionHandler;
+import io.quarkiverse.zeebe.ZeebeScheduledExecutorService;
 import io.quarkus.arc.DefaultBean;
 import io.quarkus.arc.Unremovable;
-import io.smallrye.mutiny.infrastructure.Infrastructure;
 
 @Singleton
 @Unremovable

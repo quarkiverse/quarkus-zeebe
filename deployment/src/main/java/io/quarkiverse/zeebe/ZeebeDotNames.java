@@ -2,6 +2,8 @@ package io.quarkiverse.zeebe;
 
 import java.util.concurrent.CompletionStage;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.jandex.DotName;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
@@ -28,4 +30,7 @@ public class ZeebeDotNames {
     static final DotName CUSTOM_HEADERS = DotName.createSimple(CustomHeaders.class.getName());
 
     static final DotName STRING = DotName.createSimple(String.class.getName());
+
+    static final DotName APPLICATION_SCOPE = DotName.createSimple(ApplicationScoped.class.getName());
+
 }

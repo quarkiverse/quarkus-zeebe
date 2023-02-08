@@ -258,6 +258,22 @@ endif::add-copy-button-to-env-var[]
 |`bpmn`
 
 
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.metrics.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.metrics.enabled[quarkus.zeebe.metrics.enabled]`
+
+[.description]
+--
+Whether a metrics is enabled in case the micrometer or micro-profile metrics extension is present.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_METRICS_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_METRICS_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.health.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.health.enabled[quarkus.zeebe.health.enabled]`
 
 [.description]
@@ -271,7 +287,7 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_HEALTH_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --|boolean 
-|`false`
+|`true`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.tracing.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.tracing.enabled[quarkus.zeebe.tracing.enabled]`
