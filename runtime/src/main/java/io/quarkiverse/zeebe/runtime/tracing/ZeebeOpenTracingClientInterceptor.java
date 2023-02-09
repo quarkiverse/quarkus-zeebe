@@ -3,6 +3,7 @@ package io.quarkiverse.zeebe.runtime.tracing;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.camunda.zeebe.client.api.JsonMapper;
@@ -19,6 +20,7 @@ import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
 import io.quarkiverse.zeebe.ZeebeClientInterceptor;
 
+@ApplicationScoped
 public class ZeebeOpenTracingClientInterceptor implements ZeebeClientInterceptor {
 
     @Inject

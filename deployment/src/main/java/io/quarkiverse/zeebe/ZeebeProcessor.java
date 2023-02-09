@@ -34,10 +34,8 @@ import io.quarkiverse.zeebe.runtime.health.ZeebeHealthCheck;
 import io.quarkiverse.zeebe.runtime.health.ZeebeTopologyHealthCheck;
 import io.quarkiverse.zeebe.runtime.metrics.MicrometerMetricsRecorder;
 import io.quarkiverse.zeebe.runtime.metrics.MicroprofileMetricsRecorder;
-import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTelemetryClientInterceptor;
-import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTelemetryInterceptor;
-import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTracingClientInterceptor;
-import io.quarkiverse.zeebe.runtime.tracing.ZeebeOpenTracingInterceptor;
+import io.quarkiverse.zeebe.runtime.metrics.NoopMetricsRecorder;
+import io.quarkiverse.zeebe.runtime.tracing.*;
 import io.quarkus.arc.Arc;
 import io.quarkus.arc.ArcContainer;
 import io.quarkus.arc.InjectableBean;
@@ -86,35 +84,14 @@ public class ZeebeProcessor {
     }
 
     @BuildStep(onlyIf = TracingEnabled.class)
-    void addTracing(Capabilities capabilities, BuildProducer<AdditionalBeanBuildItem> additionalBeans,
-            BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer,
-            BuildProducer<InterceptorBindingRegistrarBuildItem> interceptorBindingRegistrar) {
-
+    void addTracing(Capabilities capabilities, BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
         if (capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
-            addTracing(annotationsTransformer, interceptorBindingRegistrar, additionalBeans,
-                    ZeebeOpenTelemetryInterceptor.class, ZeebeOpenTelemetryClientInterceptor.class);
+            additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(OpenTelemetryTracingRecorder.class));
+            additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpenTelemetryClientInterceptor.class));
         } else if (capabilities.isPresent(Capability.SMALLRYE_OPENTRACING)) {
-            addTracing(annotationsTransformer, interceptorBindingRegistrar, additionalBeans,
-                    ZeebeOpenTracingInterceptor.class, ZeebeOpenTracingClientInterceptor.class);
+            additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(OpenTracingRecorder.class));
+            additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpenTracingClientInterceptor.class));
         }
-    }
-
-    void addTracing(BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer,
-            BuildProducer<InterceptorBindingRegistrarBuildItem> interceptorBindingRegistrar,
-            BuildProducer<AdditionalBeanBuildItem> additionalBeans,
-            Class<?> interceptor, Class<?> clientInterceptor) {
-
-        DotName ci = DotName.createSimple(clientInterceptor.getName());
-        annotationsTransformer.produce(new AnnotationsTransformerBuildItem(transformationContext -> {
-            AnnotationTarget target = transformationContext.getTarget();
-            if (target.kind().equals(AnnotationTarget.Kind.CLASS)) {
-                if (target.asClass().name().equals(ci)) {
-
-                    transformationContext.transform().add(APPLICATION_SCOPE).done();
-                }
-            }
-        }));
-        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(clientInterceptor));
     }
 
     static class MetricsEnabled implements BooleanSupplier {
@@ -128,30 +105,14 @@ public class ZeebeProcessor {
     }
 
     @BuildStep(onlyIf = MetricsEnabled.class)
-    void addMetrics(Optional<MetricsCapabilityBuildItem> metrics,
-            BuildProducer<AdditionalBeanBuildItem> additionalBeans,
-            BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer) {
+    void addMetrics(Optional<MetricsCapabilityBuildItem> metrics, BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
         if (metrics.isPresent()) {
             if (metrics.get().metricsSupported(MetricsFactory.MICROMETER)) {
-                addMetrics(additionalBeans, annotationsTransformer, MicrometerMetricsRecorder.class);
+                additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(MicrometerMetricsRecorder.class));
             } else if (metrics.get().metricsSupported(MetricsFactory.MP_METRICS)) {
-                addMetrics(additionalBeans, annotationsTransformer, MicroprofileMetricsRecorder.class);
+                additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(MicroprofileMetricsRecorder.class));
             }
         }
-    }
-
-    private void addMetrics(BuildProducer<AdditionalBeanBuildItem> additionalBeans,
-            BuildProducer<AnnotationsTransformerBuildItem> annotationsTransformer, Class<?> clazz) {
-        DotName ci = DotName.createSimple(clazz.getName());
-        annotationsTransformer.produce(new AnnotationsTransformerBuildItem(transformationContext -> {
-            AnnotationTarget target = transformationContext.getTarget();
-            if (target.kind().equals(AnnotationTarget.Kind.CLASS)) {
-                if (target.asClass().name().equals(ci)) {
-                    transformationContext.transform().add(ZeebeDotNames.APPLICATION_SCOPE).done();
-                }
-            }
-        }));
-        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(clazz));
     }
 
     @BuildStep
@@ -239,7 +200,9 @@ public class ZeebeProcessor {
 
     @BuildStep
     @Record(RUNTIME_INIT)
-    public FeatureBuildItem buildJobWorkerInvokers(ZeebeRecorder recorder, BuildProducer<ZeebeWorkersBuildItem> zeebeWorkers,
+    public FeatureBuildItem buildJobWorkerInvokers(ZeebeRecorder recorder,
+                                                   Optional<ZeebeTracingBuildItem> zeebeTracingBuildItem,
+                                                   BuildProducer<ZeebeWorkersBuildItem> zeebeWorkers,
             List<JobWorkerMethodItem> workerMethods,
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
@@ -290,6 +253,8 @@ public class ZeebeProcessor {
         additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeClientService.class));
         additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeResourcesProducer.class));
         additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(DefaultJobWorkerExceptionHandler.class));
+        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(NoopMetricsRecorder.class));
+        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(DefaultTracingRecorder.class));
 
         resource.produce(new NativeImageResourceBuildItem("client-java.properties"));
 
@@ -313,8 +278,7 @@ public class ZeebeProcessor {
                 "io.camunda.zeebe.client.impl.response.ResolveIncidentResponseImpl",
                 "io.camunda.zeebe.client.impl.response.SetVariablesResponseImpl",
                 "io.camunda.zeebe.client.impl.response.TopologyImpl",
-                "io.camunda.zeebe.client.impl.response.UpdateRetriesJobResponseImpl"
-                ));
+                "io.camunda.zeebe.client.impl.response.UpdateRetriesJobResponseImpl"));
 
         Collection<String> resources = discoverResources(config.resources);
         if (!resources.isEmpty()) {

@@ -11,7 +11,6 @@ import org.jboss.logging.Logger;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import io.quarkiverse.zeebe.JobWorkerCommand;
 import io.quarkiverse.zeebe.JobWorkerExceptionHandler;
 import io.quarkiverse.zeebe.ZeebeScheduledExecutorService;
 import io.quarkus.arc.DefaultBean;
@@ -80,8 +79,10 @@ public class DefaultJobWorkerExceptionHandler implements JobWorkerExceptionHandl
                         "Could not execute " + command + " due to error of type '" + code + "' and no retries are left",
                         throwable);
             case IGNORABLE:
-                LOG.warnf("Ignoring the error of type '%s' during %s. Job might have been canceled or already completed.", code,
-                        command);
+                throw new JobWorkerExceptionHandler.WarningException(
+                        "Ignoring the error of type '" + code + "' during '" + command
+                                + "'. Job might have been canceled or already completed.",
+                        throwable);
         }
 
     }

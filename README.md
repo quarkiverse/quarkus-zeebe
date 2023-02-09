@@ -43,9 +43,9 @@ quarkus.zeebe.resources.location=bpmn
 # enable health check true|false
 quarkus.zeebe.health.enabled=false
 # enable opentracing true|false
-quarkus.zeebe.opentracing.enabled=true
-# enable opentelemetry true|false
-quarkus.zeebe.opentelemetry.enabled=true
+quarkus.zeebe.tracing.enabled=true
+# enable metrics true|false
+quarkus.zeebe.metrics.enabled=true
 ```
 
 Runtime configuration
@@ -95,9 +95,10 @@ quarkus.zeebe.client.auto-complete.exp-max-delay=1000
 quarkus.zeebe.client.auto-complete.exp-min-delay=50
 
 # client tracing configuration
-quarkus.zeebe.client.tracing.attributes=bpmn-process-id,bpmn-process-instance-key,bpmn-process-element-id,
-bpmn-process-element-instance-key,bpmn-process-def-key,bpmn-process-def-ver,bpmn-retries,bpmn-component,
-bpmn-job-type,bpmn-job-key,bpmn-class
+quarkus.zeebe.client.tracing.attributes=
+# bpmn-process-id,bpmn-process-instance-key,bpmn-process-element-id,
+# bpmn-process-element-instance-key,bpmn-process-def-key,bpmn-process-def-ver,bpmn-retries,bpmn-component,
+# bpmn-job-type,bpmn-job-key,bpmn-class,bpmn-class-method
 ```
 
 ### Exemplary Setup for your local development

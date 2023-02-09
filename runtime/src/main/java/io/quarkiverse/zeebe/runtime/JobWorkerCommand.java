@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe;
+package io.quarkiverse.zeebe.runtime;
 
 import java.io.InputStream;
 import java.time.Instant;
@@ -6,15 +6,23 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.jboss.logging.Logger;
+
 import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.command.FinalCommandStep;
 import io.camunda.zeebe.client.api.command.ThrowErrorCommandStep1;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.BackoffSupplier;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.quarkiverse.zeebe.JobWorkerExceptionHandler;
+import io.quarkiverse.zeebe.ZeebeBpmnError;
 import io.quarkiverse.zeebe.runtime.metrics.MetricsRecorder;
+import io.quarkiverse.zeebe.runtime.tracing.TracingRecorder;
+import io.quarkiverse.zeebe.runtime.tracing.ZeebeTracing;
 
 public class JobWorkerCommand {
+
+    private static final Logger LOG = Logger.getLogger(JobWorkerCommand.class);
 
     private final FinalCommandStep<?> command;
 
@@ -35,6 +43,8 @@ public class JobWorkerCommand {
     private int maxRetries = 20;
 
     private MetricsRecorder metricsRecorder;
+
+    private TracingRecorder.TracingContext tracingContext;
 
     public JobWorkerCommand(FinalCommandStep<?> command, ActivatedJob job, String metricsActionName,
             String metricsFailedActionName) {
@@ -69,15 +79,43 @@ public class JobWorkerCommand {
         return this;
     }
 
+    public JobWorkerCommand tracingContext(TracingRecorder.TracingContext tracingContext) {
+        this.tracingContext = tracingContext;
+        return this;
+    }
+
     public void send() {
         counter++;
         command.send().handle((o, ex) -> {
             if (ex != null) {
+                // tracing command failed
+                tracingContext.error(ZeebeTracing.JOB_CMD_EXCEPTION, ex);
+
+                // metrics
                 metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, metricsFailedActionName, job.getType());
-                exceptionHandler.handleError(this, ex);
+
+                // handle error (retry)
+                try {
+                    exceptionHandler.handleError(this, ex);
+                } catch (Throwable t) {
+                    if (t instanceof JobWorkerExceptionHandler.WarningException) {
+                        LOG.warn(t.getMessage());
+                    } else {
+                        LOG.error(t.getMessage());
+                    }
+                    // tracing error handler
+                    tracingContext.error(ZeebeTracing.JOB_ERROR_HANDLER_EXCEPTION, t);
+                    tracingContext.close();
+                }
                 return null;
             }
+
+            // metrics
             metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, metricsActionName, job.getType());
+
+            // tracing
+            tracingContext.ok();
+            tracingContext.close();
             return null;
         });
     }
@@ -100,7 +138,9 @@ public class JobWorkerCommand {
             return completeCommand;
         }
         if (result.getClass().isAssignableFrom(Map.class)) {
-            return completeCommand.variables((Map) result);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> var = (Map<String, Object>) result;
+            return completeCommand.variables(var);
         }
         if (result.getClass().isAssignableFrom(String.class)) {
             return completeCommand.variables((String) result);
@@ -120,12 +160,24 @@ public class JobWorkerCommand {
     }
 
     public boolean canRetry() {
-        if (Instant.now().getEpochSecond() > job.getDeadline()) {
+        long now = Instant.now().getEpochSecond();
+        if (now > job.getDeadline()) {
+            LOG.warnf("Command %s type %s cannot be repeated: deadline time [now: %s, deadline: %s]", command.getClass().getName(), job.getType(),  now, job.getDeadline());
             return false;
         }
         if (counter >= maxRetries) {
+            LOG.warnf("Command %s type %s cannot be repeated: no retries are left [counter: %s, max-retries: %s]", command.getClass().getName(), job.getType(),  counter, maxRetries);
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "JobWorkerCommand{" +
+                "command=" + command.getClass().getName() +
+                ", counter=" + counter +
+                ", maxRetries=" + maxRetries +
+                '}';
     }
 }

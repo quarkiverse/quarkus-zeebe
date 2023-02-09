@@ -1,15 +1,16 @@
 package io.quarkiverse.zeebe.runtime.metrics;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.Tag;
 
+@ApplicationScoped
 public class MicroprofileMetricsRecorder implements MetricsRecorder {
 
-    private final MetricRegistry metricRegistry;
-
-    public MicroprofileMetricsRecorder(MetricRegistry metricRegistry) {
-        this.metricRegistry = metricRegistry;
-    }
+    @Inject
+    MetricRegistry metricRegistry;
 
     @Override
     public void increase(String name, String action, String type) {

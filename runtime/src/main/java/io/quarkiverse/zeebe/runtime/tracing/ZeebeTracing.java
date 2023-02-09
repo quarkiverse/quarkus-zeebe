@@ -1,12 +1,10 @@
 package io.quarkiverse.zeebe.runtime.tracing;
 
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.quarkiverse.zeebe.JobWorker;
 
 public class ZeebeTracing {
 
@@ -18,7 +16,11 @@ public class ZeebeTracing {
 
     static String CLIENT_EXCEPTION = "bpmn-client-exception";
 
-    static String JOB_EXCEPTION = "bpmn-job-exception";
+    public static String JOB_EXCEPTION = "bpmn-job-exception";
+
+    public static String JOB_CMD_EXCEPTION = "bpmn-cmd-exception";
+
+    public static String JOB_ERROR_HANDLER_EXCEPTION = "bpmn-error-handler-exception";
 
     static String JOB_TYPE = "bpmn-job-type";
 
@@ -46,6 +48,8 @@ public class ZeebeTracing {
 
     static String CLASS = "bpmn-class";
 
+    static String METHOD = "bpmn-class-method";
+
     static String COMPONENT = "bpmn-component";
 
     static String PROCESS_ID = "bpmn-process-id";
@@ -68,10 +72,6 @@ public class ZeebeTracing {
 
     static String THROW_ERROR_CODE = "bpmn-throw-error-code";
 
-    static String getClass(Class<?> c) {
-        return c.getName().replace("_Subclass", "");
-    }
-
     static Set<String> ATTRIBUTES = new HashSet<>(List.of(
             PROCESS_ID, PROCESS_INSTANCE_KEY, PROCESS_ELEMENT_ID, PROCESS_ELEMENT_INSTANCE_KEY,
             PROCESS_DEF_KEY, PROCESS_DEF_VER, RETRIES, COMPONENT, JOB_TYPE, JOB_KEY, JOB_VARIABLES, CLASS));
@@ -80,16 +80,9 @@ public class ZeebeTracing {
         ATTRIBUTES = new HashSet<>(attributes);
     }
 
-    static String getSpanName(ActivatedJob job, Method method) {
-        JobWorker zw = method.getDeclaredAnnotation(JobWorker.class);
-        if (zw != null && zw.name() != null && !zw.name().isBlank()) {
-            return zw.name();
-        }
-        return job.getType();
-    }
-
-    static void setAttributes(String clazz, ActivatedJob job, AttributeConfigCallback call) {
+    static void setAttributes(String clazz, String method, ActivatedJob job, AttributeConfigCallback call) {
         call.setAttributeCheck(CLASS, clazz);
+        call.setAttributeCheck(METHOD, method);
         call.setAttributeCheck(JOB_TYPE, job.getType());
         call.setAttributeCheck(COMPONENT, COMPONENT_NAME);
         call.setAttributeCheck(JOB_KEY, job.getKey());

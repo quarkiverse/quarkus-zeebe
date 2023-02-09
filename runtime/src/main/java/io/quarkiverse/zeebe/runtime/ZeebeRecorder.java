@@ -22,6 +22,7 @@ import io.camunda.zeebe.client.api.worker.ExponentialBackoffBuilder;
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1;
 import io.quarkiverse.zeebe.JobWorkerExceptionHandler;
 import io.quarkiverse.zeebe.runtime.metrics.MetricsRecorder;
+import io.quarkiverse.zeebe.runtime.tracing.TracingRecorder;
 import io.quarkiverse.zeebe.runtime.tracing.ZeebeTracing;
 import io.quarkus.arc.Arc;
 import io.quarkus.runtime.annotations.Recorder;
@@ -96,11 +97,18 @@ public class ZeebeRecorder {
 
             JobWorkerExceptionHandler handler = Arc.container().instance(JobWorkerExceptionHandler.class).get();
             MetricsRecorder metricsRecorder = Arc.container().instance(MetricsRecorder.class).get();
+            TracingRecorder tracingRecorder = Arc.container().instance(TracingRecorder.class).get();
+
+            Set<String> tracingVariables = null;
+            Collection<String> fields = tracingRecorder.fields();
+            if (fields != null && !fields.isEmpty()) {
+                tracingVariables = new HashSet<>(fields);
+            }
 
             for (JobWorkerMetadata meta : workers) {
                 try {
                     JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = buildJobWorker(client, config, handler,
-                            meta, metricsRecorder);
+                            meta, metricsRecorder, tracingRecorder, tracingVariables);
                     if (builder != null) {
                         clientService.openWorker(builder);
                         log.infof("Starting worker %s.%s for job type %s", meta.declaringClassName, meta.methodName,
@@ -116,7 +124,8 @@ public class ZeebeRecorder {
     }
 
     private static JobWorkerBuilderStep1.JobWorkerBuilderStep3 buildJobWorker(ZeebeClient client, ZeebeRuntimeConfig config,
-            JobWorkerExceptionHandler exceptionHandler, JobWorkerMetadata meta, MetricsRecorder metricsRecorder) {
+            JobWorkerExceptionHandler exceptionHandler, JobWorkerMetadata meta, MetricsRecorder metricsRecorder,
+            TracingRecorder tracingRecorder, Set<String> tracingVariables) {
         JobWorkerValue value = meta.workerValue;
 
         // check the worker type
@@ -144,8 +153,8 @@ public class ZeebeRecorder {
         }
 
         JobWorkerInvoker invoker = createJobWorkerInvoker(meta.invokerClass);
-        JobWorkerHandler jobHandler = new JobWorkerHandler(value, invoker, metricsRecorder, exceptionHandler,
-                config.autoComplete);
+        JobWorkerHandler jobHandler = new JobWorkerHandler(meta, invoker, metricsRecorder, exceptionHandler,
+                config.autoComplete, tracingRecorder);
 
         final JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = client
                 .newWorker()
@@ -168,6 +177,12 @@ public class ZeebeRecorder {
         }
         if (value.requestTimeout > 0) {
             builder.requestTimeout(Duration.ofSeconds(value.requestTimeout));
+        }
+
+        if (tracingVariables != null && !tracingVariables.isEmpty()) {
+            Set<String> tmp = new HashSet<>(tracingVariables);
+            tmp.addAll(Arrays.asList(value.fetchVariables));
+            value.fetchVariables = tmp.toArray(new String[0]);
         }
         if (value.fetchVariables.length > 0) {
             builder.fetchVariables(value.fetchVariables);

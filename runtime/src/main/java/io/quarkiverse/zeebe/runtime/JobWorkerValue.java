@@ -1,5 +1,7 @@
 package io.quarkiverse.zeebe.runtime;
 
+import java.util.Arrays;
+
 public class JobWorkerValue {
 
     public boolean enabled;
@@ -22,4 +24,19 @@ public class JobWorkerValue {
 
     public boolean autoComplete;
 
+    @Override
+    public String toString() {
+        return "JobWorkerValue{" +
+                "enabled=" + enabled +
+                ", type='" + type + '\'' +
+                ", name='" + name + '\'' +
+                ", timeout=" + timeout +
+                ", maxJobsActive=" + maxJobsActive +
+                ", requestTimeout=" + requestTimeout +
+                ", pollInterval=" + pollInterval +
+                ", fetchVariables=" + Arrays.toString(fetchVariables) +
+                ", fetchAllVariables=" + fetchAllVariables +
+                ", autoComplete=" + autoComplete +
+                '}';
+    }
 }

@@ -3,13 +3,12 @@ package io.quarkiverse.zeebe.runtime.tracing;
 import static io.quarkus.opentelemetry.runtime.config.OpenTelemetryConfig.INSTRUMENTATION_NAME;
 import static java.lang.String.valueOf;
 
+import java.util.Collection;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-import javax.annotation.Priority;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.opentelemetry.api.OpenTelemetry;
@@ -18,40 +17,58 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
-import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 
-@SuppressWarnings("CdiInterceptorInspection")
-@Interceptor
-@Priority(value = Interceptor.Priority.LIBRARY_BEFORE + 1)
-public class ZeebeOpenTelemetryInterceptor {
+@ApplicationScoped
+public class OpenTelemetryTracingRecorder implements TracingRecorder {
 
-    private final OpenTelemetry openTelemetry;
+    @Inject
+    OpenTelemetry openTelemetry;
 
-    public ZeebeOpenTelemetryInterceptor(final OpenTelemetry openTelemetry) {
-        this.openTelemetry = openTelemetry;
+    @Override
+    public TracingContext createTracingContext(String clazz, String method, String name, ActivatedJob job) {
+        Span span = createSpan(openTelemetry, clazz, method, name, job);
+        Scope scope = span.makeCurrent();
+        return new OpenTelemetryTracingContext(span, scope);
     }
 
-    @AroundInvoke
-    public Object wrap(InvocationContext ctx) throws Exception {
-        ActivatedJob job = (ActivatedJob) ctx.getParameters()[1];
-        Span span = createSpan(openTelemetry, ZeebeTracing.getClass(ctx.getTarget().getClass()),
-                ZeebeTracing.getSpanName(job, ctx.getMethod()), job);
-        try (Scope ignored = span.makeCurrent()) {
-            return ctx.proceed();
-        } catch (Throwable e) {
-            span.setStatus(StatusCode.ERROR);
-            span.setAttribute(ZeebeTracing.JOB_EXCEPTION, e.getMessage());
-            throw e;
-        } finally {
+    @Override
+    public Collection<String> fields() {
+        return openTelemetry.getPropagators().getTextMapPropagator().fields();
+    }
+
+    public static class OpenTelemetryTracingContext implements TracingContext {
+
+        Span span;
+
+        Scope scope;
+
+        public OpenTelemetryTracingContext(Span span, Scope scope) {
+            this.span = span;
+            this.scope = scope;
+        }
+
+        @Override
+        public void close() {
+            scope.close();
             span.end();
+        }
+
+        @Override
+        public void error(String key, Throwable t) {
+            span.setStatus(StatusCode.ERROR);
+            span.setAttribute(key, t.getMessage());
+        }
+
+        @Override
+        public void ok() {
+            span.setStatus(StatusCode.OK);
         }
     }
 
-    private static Span createSpan(OpenTelemetry openTelemetry, String clazz, String spanName, ActivatedJob job) {
-        ContextPropagators propagators = openTelemetry.getPropagators();
-        TextMapPropagator textMapPropagator = propagators.getTextMapPropagator();
+    private static Span createSpan(OpenTelemetry openTelemetry, String clazz, String method, String spanName, ActivatedJob job) {
+        TextMapPropagator textMapPropagator = openTelemetry.getPropagators().getTextMapPropagator();
 
         Context context = textMapPropagator.extract(Context.current(), job.getVariablesAsMap(), new TextMapGetter<>() {
             @Override
@@ -76,7 +93,7 @@ public class ZeebeOpenTelemetryInterceptor {
         Span span = openTelemetry.getTracer(INSTRUMENTATION_NAME).spanBuilder(spanName).setParent(context)
                 .setSpanKind(SpanKind.CONSUMER).startSpan();
 
-        ZeebeTracing.setAttributes(clazz, job, new ZeebeTracing.AttributeConfigCallback() {
+        ZeebeTracing.setAttributes(clazz,  method, job, new ZeebeTracing.AttributeConfigCallback() {
             @Override
             public void setAttribute(String key, long value) {
                 span.setAttribute(key, value);
@@ -90,4 +107,5 @@ public class ZeebeOpenTelemetryInterceptor {
 
         return span;
     }
+
 }

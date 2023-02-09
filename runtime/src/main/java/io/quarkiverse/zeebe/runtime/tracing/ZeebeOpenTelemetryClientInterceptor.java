@@ -5,6 +5,7 @@ import static io.quarkus.opentelemetry.runtime.config.OpenTelemetryConfig.INSTRU
 
 import java.util.Map;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.camunda.zeebe.client.api.JsonMapper;
@@ -23,6 +24,7 @@ import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.quarkiverse.zeebe.ZeebeClientInterceptor;
 
+@ApplicationScoped
 public class ZeebeOpenTelemetryClientInterceptor implements ZeebeClientInterceptor {
 
     private final OpenTelemetry openTelemetry;
