@@ -162,11 +162,13 @@ public class JobWorkerCommand {
     public boolean canRetry() {
         long now = Instant.now().getEpochSecond();
         if (now > job.getDeadline()) {
-            LOG.warnf("Command %s type %s cannot be repeated: deadline time [now: %s, deadline: %s]", command.getClass().getName(), job.getType(),  now, job.getDeadline());
+            LOG.warnf("Command %s type %s cannot be repeated: deadline time [now: %s, deadline: %s]",
+                    command.getClass().getName(), job.getType(), now, job.getDeadline());
             return false;
         }
         if (counter >= maxRetries) {
-            LOG.warnf("Command %s type %s cannot be repeated: no retries are left [counter: %s, max-retries: %s]", command.getClass().getName(), job.getType(),  counter, maxRetries);
+            LOG.warnf("Command %s type %s cannot be repeated: no retries are left [counter: %s, max-retries: %s]",
+                    command.getClass().getName(), job.getType(), counter, maxRetries);
             return false;
         }
         return true;

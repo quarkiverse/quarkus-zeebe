@@ -1,13 +1,8 @@
 package io.quarkiverse.zeebe.runtime.metrics;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
-import io.quarkus.arc.DefaultBean;
-import io.quarkus.arc.Unremovable;
-
-@Singleton
-@Unremovable
-@DefaultBean
+@ApplicationScoped
 public class NoopMetricsRecorder implements MetricsRecorder {
 
     @Override

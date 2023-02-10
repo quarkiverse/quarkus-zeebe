@@ -1,8 +1,8 @@
 package io.quarkiverse.zeebe.runtime.tracing;
 
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-
 import java.util.Collection;
+
+import io.camunda.zeebe.client.api.response.ActivatedJob;
 
 public interface TracingRecorder {
 

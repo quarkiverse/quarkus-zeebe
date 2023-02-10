@@ -67,7 +67,8 @@ public class OpenTelemetryTracingRecorder implements TracingRecorder {
         }
     }
 
-    private static Span createSpan(OpenTelemetry openTelemetry, String clazz, String method, String spanName, ActivatedJob job) {
+    private static Span createSpan(OpenTelemetry openTelemetry, String clazz, String method, String spanName,
+            ActivatedJob job) {
         TextMapPropagator textMapPropagator = openTelemetry.getPropagators().getTextMapPropagator();
 
         Context context = textMapPropagator.extract(Context.current(), job.getVariablesAsMap(), new TextMapGetter<>() {
@@ -93,7 +94,7 @@ public class OpenTelemetryTracingRecorder implements TracingRecorder {
         Span span = openTelemetry.getTracer(INSTRUMENTATION_NAME).spanBuilder(spanName).setParent(context)
                 .setSpanKind(SpanKind.CONSUMER).startSpan();
 
-        ZeebeTracing.setAttributes(clazz,  method, job, new ZeebeTracing.AttributeConfigCallback() {
+        ZeebeTracing.setAttributes(clazz, method, job, new ZeebeTracing.AttributeConfigCallback() {
             @Override
             public void setAttribute(String key, long value) {
                 span.setAttribute(key, value);

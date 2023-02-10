@@ -1,16 +1,12 @@
 package io.quarkiverse.zeebe.runtime.tracing;
 
-import javax.inject.Singleton;
-
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.quarkus.arc.DefaultBean;
-import io.quarkus.arc.Unremovable;
-
 import java.util.Collection;
 
-@Singleton
-@Unremovable
-@DefaultBean
+import javax.enterprise.context.ApplicationScoped;
+
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+
+@ApplicationScoped
 public class DefaultTracingRecorder implements TracingRecorder {
 
     private static final TracingRecorder.TracingContext CONTEXT = new TracingContext() {

@@ -2,15 +2,13 @@ package io.quarkiverse.zeebe.runtime.tracing;
 
 import static java.lang.String.valueOf;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.jaegertracing.internal.JaegerSpanContext;
 import io.opentracing.Scope;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
@@ -27,8 +25,20 @@ public class OpenTracingRecorder implements TracingRecorder {
 
     @Override
     public Collection<String> fields() {
-        //TODO: return open tracing fields
-        return null;
+
+        Set<String> variables = new HashSet<>();
+        tracer.inject(new JaegerSpanContext(0L, 0L, 0L, 0L, (byte) 0), Format.Builtin.TEXT_MAP, new TextMap() {
+            @Override
+            public void put(String key, String value) {
+                variables.add(key);
+            }
+
+            @Override
+            public Iterator<Map.Entry<String, String>> iterator() {
+                throw new UnsupportedOperationException("iterator should never be used with Tracer.inject()");
+            }
+        });
+        return variables;
     }
 
     @Override

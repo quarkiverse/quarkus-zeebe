@@ -91,6 +91,8 @@ public class ZeebeProcessor {
         } else if (capabilities.isPresent(Capability.SMALLRYE_OPENTRACING)) {
             additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(OpenTracingRecorder.class));
             additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpenTracingClientInterceptor.class));
+        } else {
+            additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(DefaultTracingRecorder.class));
         }
     }
 
@@ -109,10 +111,13 @@ public class ZeebeProcessor {
         if (metrics.isPresent()) {
             if (metrics.get().metricsSupported(MetricsFactory.MICROMETER)) {
                 additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(MicrometerMetricsRecorder.class));
+                return;
             } else if (metrics.get().metricsSupported(MetricsFactory.MP_METRICS)) {
                 additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(MicroprofileMetricsRecorder.class));
+                return;
             }
         }
+        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(NoopMetricsRecorder.class));
     }
 
     @BuildStep
@@ -201,8 +206,7 @@ public class ZeebeProcessor {
     @BuildStep
     @Record(RUNTIME_INIT)
     public FeatureBuildItem buildJobWorkerInvokers(ZeebeRecorder recorder,
-                                                   Optional<ZeebeTracingBuildItem> zeebeTracingBuildItem,
-                                                   BuildProducer<ZeebeWorkersBuildItem> zeebeWorkers,
+            BuildProducer<ZeebeWorkersBuildItem> zeebeWorkers,
             List<JobWorkerMethodItem> workerMethods,
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
             BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
@@ -253,8 +257,6 @@ public class ZeebeProcessor {
         additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeClientService.class));
         additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeResourcesProducer.class));
         additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(DefaultJobWorkerExceptionHandler.class));
-        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(NoopMetricsRecorder.class));
-        additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(DefaultTracingRecorder.class));
 
         resource.produce(new NativeImageResourceBuildItem("client-java.properties"));
 
