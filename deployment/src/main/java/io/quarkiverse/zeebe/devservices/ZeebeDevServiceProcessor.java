@@ -186,6 +186,12 @@ public class ZeebeDevServiceProcessor {
                     config.debugExporter,
                     config.debugReceiverPort);
             timeout.ifPresent(container::withStartupTimeout);
+
+            // enable test-container reuse
+            if (config.reuse) {
+                container.withReuse(true);
+            }
+
             container.start();
 
             String gateway = String.format("%s:%d", container.getGatewayHost(), container.getPort());
@@ -194,7 +200,7 @@ public class ZeebeDevServiceProcessor {
 
             return new ZeebeRunningDevService(FEATURE_NAME,
                     container.getContainerId(),
-                    container::close,
+                    new ContainerShutdownCloseable(container, FEATURE_NAME),
                     configMap(gateway, launchMode.isTest(), testClient, testDebugExportPort, config.testExporter),
                     zeebeInternalUrl);
         };
@@ -254,6 +260,8 @@ public class ZeebeDevServiceProcessor {
 
         private final int debugReceiverPort;
 
+        private final boolean reuse;
+
         public ZeebeDevServiceCfg(ZeebeDevServicesConfig config) {
             this.devServicesEnabled = config.enabled;
             this.imageName = config.imageName.orElse(null);
@@ -265,6 +273,7 @@ public class ZeebeDevServiceProcessor {
             this.testDebugExportPort = config.test.receiverPort.orElse(0);
             this.debugExporter = config.debugExporter.enabled;
             this.debugReceiverPort = config.debugExporter.receiverPort;
+            this.reuse = config.reuse;
         }
 
         @Override

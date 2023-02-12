@@ -111,20 +111,25 @@ You can see some exemplary configurations for each of the setups below. Please n
 
 #### Local dev instance with dev services
 
-```
+```properties
 # enable auto load bpmn resources 
 quarkus.zeebe.resources.enabled=true
 # src/main/resources/bpmn
 quarkus.zeebe.resources.location=bpmn
-
-# Enable Dev-Monitor Dev Service:
+# Enable zeebe Dev Service:
 quarkus.zeebe.devservices.enabled=true
-quarkus.zeebe.devservices.monitor.enabled=true
-
-# Only start devservices, if no running docker container is found
+# only start devservices, if no running docker container is found
 quarkus.zeebe.devservices.shared=true
-quarkus.zeebe.devservices.monitor.service-name=zeebe-dev-monitor
+# zeebe service name
 quarkus.zeebe.devservices.service-name=zeebe_broker
+# enable reusable zeebe test-container (https://www.testcontainers.org/features/reuse/)
+quarkus.zeebe.devservices.reuse=false
+# enable zeebe monitor Dev Service:
+quarkus.zeebe.devservices.monitor.enabled=true
+# zeebe monitor service name
+quarkus.zeebe.devservices.monitor.service-name=zeebe-dev-monitor
+# enable reusable zeebe test-container (https://www.testcontainers.org/features/reuse/)
+quarkus.zeebe.devservices.monitor.reuse=false
 ```
 
 #### Shared local dev instance

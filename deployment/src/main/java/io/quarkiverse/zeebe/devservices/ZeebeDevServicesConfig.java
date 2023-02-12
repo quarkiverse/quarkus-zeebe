@@ -61,6 +61,19 @@ public class ZeebeDevServicesConfig {
     public Optional<String> imageName;
 
     /**
+     * Helper to define the stop strategy for containers created by DevServices.
+     * In particular, we don't want to actually stop the containers when they
+     * have been flagged for reuse, and when the Testcontainers configuration
+     * has been explicitly set to allow container reuse.
+     * To enable reuse, ass {@literal testcontainers.reuse.enable=true} in your
+     * {@literal .testcontainers.properties} file, to be stored in your home.
+     *
+     * @see <a href="https://www.testcontainers.org/features/configuration/">Testcontainers Configuration</a>.
+     */
+    @ConfigItem(name = "reuse", defaultValue = "false")
+    public boolean reuse;
+
+    /**
      * Zeebe simple monitor configuration
      */
     @ConfigItem(name = "monitor")
@@ -156,6 +169,19 @@ public class ZeebeDevServicesConfig {
          */
         @ConfigItem(defaultValue = "zeebe-dev-monitor")
         public String serviceName;
+
+        /**
+         * Helper to define the stop strategy for containers created by DevServices.
+         * In particular, we don't want to actually stop the containers when they
+         * have been flagged for reuse, and when the Testcontainers configuration
+         * has been explicitly set to allow container reuse.
+         * To enable reuse, ass {@literal testcontainers.reuse.enable=true} in your
+         * {@literal .testcontainers.properties} file, to be stored in your home.
+         *
+         * @see <a href="https://www.testcontainers.org/features/configuration/">Testcontainers Configuration</a>.
+         */
+        @ConfigItem(name = "reuse", defaultValue = "false")
+        public boolean reuse;
     }
 
 }
