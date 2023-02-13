@@ -15,6 +15,7 @@
     <modules>
         <module>bpmn</module>
         <module>docker</module>
+        <module>microprofile</module>
     </modules>
 
     <properties>

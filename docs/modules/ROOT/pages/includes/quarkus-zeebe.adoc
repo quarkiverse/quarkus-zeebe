@@ -95,6 +95,22 @@ endif::add-copy-button-to-env-var[]
 |
 
 
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.reuse]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.reuse[quarkus.zeebe.devservices.reuse]`
+
+[.description]
+--
+Helper to define the stop strategy for containers created by DevServices. In particular, we don't want to actually stop the containers when they have been flagged for reuse, and when the Testcontainers configuration has been explicitly set to allow container reuse. To enable reuse, ass `testcontainers.reuse.enable=true` in your `.testcontainers.properties` file, to be stored in your home.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_REUSE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_REUSE+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
+
+
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled[quarkus.zeebe.devservices.monitor.enabled]`
 
 [.description]
@@ -159,6 +175,22 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_SERVICE_NAME+++`
 endif::add-copy-button-to-env-var[]
 --|string 
 |`zeebe-dev-monitor`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.reuse]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.reuse[quarkus.zeebe.devservices.monitor.reuse]`
+
+[.description]
+--
+Helper to define the stop strategy for containers created by DevServices. In particular, we don't want to actually stop the containers when they have been flagged for reuse, and when the Testcontainers configuration has been explicitly set to allow container reuse. To enable reuse, ass `testcontainers.reuse.enable=true` in your `.testcontainers.properties` file, to be stored in your home.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_REUSE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_REUSE+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.test.receiver-port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.test.receiver-port[quarkus.zeebe.devservices.test.receiver-port]`
