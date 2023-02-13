@@ -17,7 +17,6 @@ public class TestJobWorker {
 
     @JobWorker(name = "test.complete.action", type = "test.complete")
     public Parameter testComplete(@VariablesAsType Parameter p) {
-        System.out.println("### p: " + p);
         p.info = "test.complete";
         p.data = service.getParam();
         return p;
@@ -25,8 +24,7 @@ public class TestJobWorker {
 
     @JobWorker(name = "test.complete.action2", type = "test.complete2")
     public Parameter testComplete2(@Variable boolean info, @VariablesAsType Parameter p) {
-        System.out.println("### p: " + info);
-        p.info = "test.complete";
+        p.info = info + "test.complete";
         p.data = service.getParam();
         return p;
     }

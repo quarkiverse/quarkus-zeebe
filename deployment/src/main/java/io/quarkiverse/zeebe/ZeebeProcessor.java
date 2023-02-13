@@ -226,6 +226,8 @@ public class ZeebeProcessor {
             }
         });
 
+        reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, JobWorkerInvoker.class));
+
         List<JobWorkerMetadata> metadata = new ArrayList<>();
         for (JobWorkerMethodItem workerMethod : workerMethods) {
 
@@ -503,14 +505,14 @@ public class ZeebeProcessor {
 
                             String paramName = getAnnotationStringValue(variable.value(), param.name());
                             fetchVariableNames.add(paramName);
-
+                            String paramClass = parameterType.name().toString();
                             args[i] = tryBlock
-                                    .invokeStaticMethod(
-                                            MethodDescriptor.ofMethod(ActivatedJobUtil.class, "getVariable",
-                                                    parameterType.name().toString(),
+                                    .invokeSpecialMethod(
+                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getVariable",
+                                                    Object.class,
                                                     ActivatedJob.class, String.class, Class.class),
-                                            invoke.getMethodParam(1), tryBlock.load(paramName),
-                                            tryBlock.loadClass(parameterType.name().toString()));
+                                            tryBlock.getThis(), invoke.getMethodParam(1), tryBlock.load(paramName),
+                                            tryBlock.loadClass(paramClass));
 
                             continue;
                         }
@@ -519,13 +521,14 @@ public class ZeebeProcessor {
                         AnnotationInstance variableAsType = param.annotation(VARIABLE_AS_TYPE);
                         if (variableAsType != null) {
                             fetchVariableAsType = true;
+                            String paramClass = parameterType.name().toString();
                             args[i] = tryBlock
-                                    .invokeStaticMethod(
-                                            MethodDescriptor.ofMethod(ActivatedJobUtil.class, "getVariablesAsType",
+                                    .invokeSpecialMethod(
+                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getVariablesAsType",
                                                     Object.class,
                                                     ActivatedJob.class, Class.class),
-                                            invoke.getMethodParam(1),
-                                            tryBlock.loadClass(parameterType.name().toString()));
+                                            tryBlock.getThis(), invoke.getMethodParam(1),
+                                            tryBlock.loadClass(paramClass));
                             continue;
                         }
 
@@ -541,11 +544,11 @@ public class ZeebeProcessor {
                             String headerName = getAnnotationStringValue(customHeaders.value(), param.name());
 
                             args[i] = tryBlock
-                                    .invokeStaticMethod(
-                                            MethodDescriptor.ofMethod(ActivatedJobUtil.class, "getCustomHeaders",
+                                    .invokeSpecialMethod(
+                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getCustomHeaders",
                                                     String.class,
                                                     ActivatedJob.class, String.class),
-                                            invoke.getMethodParam(1), tryBlock.load(headerName));
+                                            tryBlock.getThis(), invoke.getMethodParam(1), tryBlock.load(headerName));
                             continue;
                         }
                         args[i] = tryBlock.loadNull();
