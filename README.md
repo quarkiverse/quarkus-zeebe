@@ -20,6 +20,8 @@ To use the extension, add the dependency to the target project:
 ```
 ### Upgrade
 
+>In version `>=0.8.0` we replace `@ZeebeWorker` with `@JobWorker` annotation.
+
 >In version `>0.7.0` we removed the hazelcast dependency and [zeebe-simple-monitor](https://github.com/camunda-community-hub/zeebe-simple-monitor)
 for test and dev services. Now we do use [zeebe-test-container](https://github.com/camunda-community-hub/zeebe-test-container) with [debug exporter](https://github.com/camunda-community-hub/zeebe-test-container#debug-exporter) 
 and [zeebe-dev-monitor](https://github.com/lorislab/zeebe-dev-monitor). In test module we remove our assert API and switch to Camunda [BpmnAssert](https://github.com/camunda/zeebe-process-test/blob/main/assertions/src/main/java/io/camunda/zeebe/process/test/assertions/BpmnAssert.java) 
@@ -235,14 +237,12 @@ quarkus.zeebe.devservices.monitor.service-name=zeebe-dev-monitor
 ## Simple usage
 
 ```java
-@ZeebeWorker(type = "job1")
-public class Job1 implements JobHandler {
 
-    @Override
-    public void handle(JobClient client, ActivatedJob job) throws Exception {
-        Parameter p = job.getVariablesAsType(Parameter.class);
-        client.newCompleteCommand(job.getKey())
-                .variables(p).send().join();
+public class Job1Worker {
+
+    @JobWorker(type = "job1")
+    public void job1(@VariablesAsType Parameter p) {
+        
     }
 }
 ```
