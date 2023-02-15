@@ -19,6 +19,7 @@ public class GatewayJobWorker {
 
     @JobWorker(type = "gateway-read-data")
     public Parameter readData(@VariablesAsType Input input) {
+        log.info("{}", input);
         if (input.read) {
             Parameter p = new Parameter();
             p.data = "read data";

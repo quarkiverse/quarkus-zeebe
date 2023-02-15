@@ -22,8 +22,8 @@ public class SayHelloTest extends AbstractTest {
     public void sayHelloTest() {
 
         SayHelloParameter p = new SayHelloParameter();
-        p.message = "message-example";
-        p.name = "name-input";
+        p.message = "message-test-example";
+        p.name = "name-test-input";
 
         long processInstanceKey = given().contentType(ContentType.JSON)
                 .body(p).when()
@@ -33,8 +33,8 @@ public class SayHelloTest extends AbstractTest {
 
         ProcessInstanceAssert a = new ProcessInstanceAssert(processInstanceKey, BpmnAssert.getRecordStream());
         await().atMost(7, SECONDS).untilAsserted(a::isCompleted);
-        a.hasVariableWithValue("name", "name-input");
-        a.hasVariableWithValue("message", "Hi, name-input");
+        a.hasVariableWithValue("name", "name-test-input");
+        a.hasVariableWithValue("message", "Hi, name-test-input");
     }
 
 }

@@ -17,12 +17,24 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.process.test.assertions.BpmnAssert;
 import io.camunda.zeebe.process.test.assertions.ProcessInstanceAssert;
+import io.quarkiverse.zeebe.it.microprofile.AbstractTest;
 import io.quarkiverse.zeebe.test.InjectZeebeClient;
+import io.quarkiverse.zeebe.test.ZeebeTestResource;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
+import io.restassured.filter.log.ResponseLoggingFilter;
 
 @QuarkusTest
-@DisplayName("Metrics test")
-public class MetricsTest {
+@DisplayName("Microprofile metrics test")
+@QuarkusTestResource(ZeebeTestResource.class)
+public class MetricsTest extends AbstractTest {
+
+    //Configure the containers for the test
+    static {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+        RestAssured.filters(new ResponseLoggingFilter());
+    }
 
     private static final String PREFIX = "application_camunda_job_invocations_total";
     private static final int LENGTH = PREFIX.length();
@@ -39,7 +51,7 @@ public class MetricsTest {
     ZeebeClient client;
 
     @Test
-    @DisplayName("Check metrics values")
+    @DisplayName("Check microprofile metrics values")
     public void readyHealthCheckTest() {
 
         MetricsTestParameter p = new MetricsTestParameter();

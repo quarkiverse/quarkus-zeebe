@@ -17,12 +17,13 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.process.test.assertions.BpmnAssert;
 import io.camunda.zeebe.process.test.assertions.ProcessInstanceAssert;
+import io.quarkiverse.zeebe.it.bpmn.AbstractTest;
 import io.quarkiverse.zeebe.test.InjectZeebeClient;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @DisplayName("Metrics test")
-public class MetricsTest {
+public class MetricsTest extends AbstractTest {
 
     private static final String PREFIX = "camunda_job_invocations_total";
     private static final int LENGTH = PREFIX.length();

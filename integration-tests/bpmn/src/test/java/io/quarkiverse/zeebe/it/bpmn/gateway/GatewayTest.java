@@ -29,6 +29,7 @@ public class GatewayTest extends AbstractTest {
     public void gatewayWithoutParameterTest() {
 
         Input p = new Input();
+        p.message = "test-message";
         p.read = false;
 
         ProcessInstanceEvent event = client
