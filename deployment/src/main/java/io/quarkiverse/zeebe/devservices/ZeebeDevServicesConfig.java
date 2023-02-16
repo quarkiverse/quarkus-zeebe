@@ -16,7 +16,7 @@ public class ZeebeDevServicesConfig {
      * When DevServices is enabled Quarkus will attempt to automatically configure and start
      * a database when running in Dev or Test mode and when Docker is running.
      */
-    @ConfigItem(defaultValue = "true")
+    @ConfigItem(name = "enabled", defaultValue = "true")
     public boolean enabled;
 
     /**
@@ -24,7 +24,7 @@ public class ZeebeDevServicesConfig {
      * <p>
      * If not defined, the port will be chosen randomly.
      */
-    @ConfigItem
+    @ConfigItem(name = "port")
     public OptionalInt port;
 
     /**
@@ -38,7 +38,7 @@ public class ZeebeDevServicesConfig {
      * <p>
      * Container sharing is only used in dev mode.
      */
-    @ConfigItem(defaultValue = "true")
+    @ConfigItem(name = "shared", defaultValue = "true")
     public boolean shared;
 
     /**
@@ -51,7 +51,7 @@ public class ZeebeDevServicesConfig {
      * <p>
      * This property is used when you need multiple shared Zeebe servers.
      */
-    @ConfigItem(defaultValue = "zeebe")
+    @ConfigItem(name = "service-name", defaultValue = "zeebe")
     public String serviceName;
 
     /**
@@ -72,6 +72,12 @@ public class ZeebeDevServicesConfig {
      */
     @ConfigItem(name = "reuse", defaultValue = "false")
     public boolean reuse;
+
+    /**
+     * Observe changes in the bpmn directory and subdirectories.
+     */
+    @ConfigItem(name = "watch-bpmn-dir", defaultValue = "true")
+    public boolean watchBpmnDir;
 
     /**
      * Zeebe simple monitor configuration
@@ -167,7 +173,7 @@ public class ZeebeDevServicesConfig {
          * <p>
          * This property is used when you need multiple shared Zeebe servers.
          */
-        @ConfigItem(defaultValue = "zeebe-dev-monitor")
+        @ConfigItem(name = "service-name", defaultValue = "zeebe-dev-monitor")
         public String serviceName;
 
         /**

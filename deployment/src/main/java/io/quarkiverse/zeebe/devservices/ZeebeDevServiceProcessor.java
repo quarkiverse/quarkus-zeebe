@@ -63,18 +63,21 @@ public class ZeebeDevServiceProcessor {
 
         // watch directories for new files
         // add root directory and all subdirectories
-        watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(config.resources.location));
+        if (buildTimeConfig.devService.watchBpmnDir) {
+            watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(config.resources.location));
 
-        try {
-            Enumeration<URL> location = Thread.currentThread().getContextClassLoader().getResources(config.resources.location);
-            Files.walk(Path.of(location.nextElement().toURI()))
-                    .filter(Files::isDirectory)
-                    .map(Path::toString)
-                    .map(dir -> dir.replace('\\', '/'))
-                    .peek(dir -> log.debugf("Watch bpmn sub-directory %s", dir))
-                    .forEach(dir -> watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(dir)));
-        } catch (Exception ex) {
-            throw new RuntimeException("Error find all sub-directories of " + config.resources.location, ex);
+            try {
+                Enumeration<URL> location = Thread.currentThread().getContextClassLoader()
+                        .getResources(config.resources.location);
+                Files.walk(Path.of(location.nextElement().toURI()))
+                        .filter(Files::isDirectory)
+                        .map(Path::toString)
+                        .map(dir -> dir.replace('\\', '/'))
+                        .peek(dir -> log.debugf("Watched bpmn sub-directory %s", dir))
+                        .forEach(dir -> watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(dir)));
+            } catch (Exception ex) {
+                throw new RuntimeException("Error find all sub-directories of " + config.resources.location, ex);
+            }
         }
     }
 

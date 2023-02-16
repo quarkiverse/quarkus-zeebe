@@ -262,7 +262,7 @@ public class ZeebeDevMonitorProcessor {
             this.fixedExposedPort = config.monitor.port.orElse(0);
             this.serviceName = config.monitor.serviceName;
             this.shared = true;
-            this.reuse = config.reuse;
+            this.reuse = config.monitor.reuse;
         }
 
         @Override
