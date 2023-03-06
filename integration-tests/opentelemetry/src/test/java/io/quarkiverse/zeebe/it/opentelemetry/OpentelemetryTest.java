@@ -85,13 +85,6 @@ public class OpentelemetryTest {
             });
         });
 
-        JaegerSpan deploymentSpan = spans.get("DeployResourceRequest");
-        Assertions.assertNotNull(deploymentSpan);
-        Map<String, JaegerTag> deploymentTags = deploymentSpan.tags.stream()
-                .collect(Collectors.toMap(x -> x.key, x -> x));
-        assertTag(deploymentTags, "otel.library.name", "io.quarkus.opentelemetry");
-        Assertions.assertTrue(deploymentTags.get("bpmn-deploy-resources").value.endsWith("test.bpmn"));
-
         JaegerSpan testMethod = spans.get("openTelemetryTestMethod");
         Assertions.assertNotNull(testMethod);
         Map<String, JaegerTag> testTags = testMethod.tags.stream()

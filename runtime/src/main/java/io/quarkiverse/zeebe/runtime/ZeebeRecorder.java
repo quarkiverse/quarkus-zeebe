@@ -131,7 +131,8 @@ public class ZeebeRecorder {
         // check the worker type
         String type = value.type;
         if (type == null || type.isEmpty()) {
-            type = config.job.defaultType.orElse(type);
+            // if configuration default-type is null use method name
+            type = config.job.defaultType.orElse(meta.methodName);
         }
 
         // overwrite the annotation with properties
@@ -179,15 +180,18 @@ public class ZeebeRecorder {
             builder.requestTimeout(Duration.ofSeconds(value.requestTimeout));
         }
 
-        // add tracing variables only if custom fetch variable list is defined
-        if (value.fetchVariables != null && value.fetchVariables.length > 0
-                && tracingVariables != null && !tracingVariables.isEmpty()) {
-            Set<String> tmp = new HashSet<>(tracingVariables);
-            tmp.addAll(Arrays.asList(value.fetchVariables));
-            value.fetchVariables = tmp.toArray(new String[0]);
-        }
-        if (value.fetchVariables != null && value.fetchVariables.length > 0) {
-            builder.fetchVariables(value.fetchVariables);
+        if (!value.fetchAllVariables) {
+
+            // add tracing variables only if custom fetch variable list is defined
+            if (value.fetchVariables != null && value.fetchVariables.length > 0
+                    && tracingVariables != null && !tracingVariables.isEmpty()) {
+                Set<String> tmp = new HashSet<>(tracingVariables);
+                tmp.addAll(Arrays.asList(value.fetchVariables));
+                value.fetchVariables = tmp.toArray(new String[0]);
+            }
+            if (value.fetchVariables != null && value.fetchVariables.length > 0) {
+                builder.fetchVariables(value.fetchVariables);
+            }
         }
 
         // setup exponential backoff pull configuration

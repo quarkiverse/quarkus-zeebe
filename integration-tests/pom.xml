@@ -18,6 +18,7 @@
         <module>microprofile</module>
         <module>opentelemetry</module>
         <module>opentracing</module>
+        <module>embedded</module>
     </modules>
 
     <properties>

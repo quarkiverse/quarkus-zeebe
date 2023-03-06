@@ -1,5 +1,6 @@
 package io.quarkiverse.zeebe.runtime;
 
+import java.util.Map;
 import java.util.concurrent.CompletionStage;
 
 import io.camunda.zeebe.client.api.JsonMapper;
@@ -77,7 +78,11 @@ public class JobWorkerInvoker {
         }
     }
 
-    protected String getCustomHeaders(ActivatedJob job, String name) {
+    protected String getCustomHeader(ActivatedJob job, String name) {
         return job.getCustomHeaders().get(name);
+    }
+
+    protected Map<String, String> getCustomHeaders(ActivatedJob job) {
+        return job.getCustomHeaders();
     }
 }

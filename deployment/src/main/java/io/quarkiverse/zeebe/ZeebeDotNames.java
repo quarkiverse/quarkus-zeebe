@@ -1,8 +1,7 @@
 package io.quarkiverse.zeebe;
 
+import java.util.Map;
 import java.util.concurrent.CompletionStage;
-
-import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.jandex.DotName;
 
@@ -17,7 +16,6 @@ public class ZeebeDotNames {
     static final DotName NON_BLOCKING = DotName.createSimple(NonBlocking.class.getName());
     static final DotName UNI = DotName.createSimple("io.smallrye.mutiny.Uni");
     static final DotName COMPLETION_STAGE = DotName.createSimple(CompletionStage.class.getName());
-    static final DotName VOID = DotName.createSimple(Void.class.getName());
 
     static final DotName JOB_CLIENT = DotName.createSimple(JobClient.class.getName());
 
@@ -27,10 +25,11 @@ public class ZeebeDotNames {
 
     static final DotName VARIABLE_AS_TYPE = DotName.createSimple(VariablesAsType.class.getName());
 
+    static final DotName CUSTOM_HEADER = DotName.createSimple(CustomHeader.class.getName());
+
     static final DotName CUSTOM_HEADERS = DotName.createSimple(CustomHeaders.class.getName());
 
     static final DotName STRING = DotName.createSimple(String.class.getName());
 
-    static final DotName APPLICATION_SCOPE = DotName.createSimple(ApplicationScoped.class.getName());
-
+    static final DotName MAP = DotName.createSimple(Map.class.getName());
 }

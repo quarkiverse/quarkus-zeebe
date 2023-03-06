@@ -1,13 +1,17 @@
 package io.quarkiverse.zeebe.examples.base;
 
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
+import io.quarkiverse.zeebe.CustomHeaders;
 import io.quarkiverse.zeebe.JobWorker;
 import io.quarkiverse.zeebe.Variable;
 import io.quarkiverse.zeebe.VariablesAsType;
+import io.quarkus.logging.Log;
 
 @ApplicationScoped
 public class TestJobWorker {
@@ -17,13 +21,15 @@ public class TestJobWorker {
 
     @JobWorker(name = "test.complete.action", type = "test.complete")
     public Parameter testComplete(@VariablesAsType Parameter p) {
-        p.info = "test.complete";
+        p.info = "test.complete-info";
         p.data = service.getParam();
+        Log.infof("Test complete. Parameter: %s", p);
         return p;
     }
 
     @JobWorker(name = "test.complete.action2", type = "test.complete2")
-    public Parameter testComplete2(@Variable boolean info, @VariablesAsType Parameter p) {
+    public Parameter testComplete2(@Variable boolean info, @VariablesAsType Parameter p,
+            @CustomHeaders Map<String, String> headers) {
         p.info = info + "test.complete";
         p.data = service.getParam();
         return p;

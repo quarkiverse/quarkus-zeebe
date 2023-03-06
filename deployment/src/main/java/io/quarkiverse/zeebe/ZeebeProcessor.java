@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jboss.jandex.*;
+import org.jboss.jandex.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -532,25 +533,54 @@ public class ZeebeProcessor {
                             continue;
                         }
 
-                        // custom headers
-                        AnnotationInstance customHeaders = param.annotation(CUSTOM_HEADERS);
-                        if (customHeaders != null) {
+                        // custom header
+                        AnnotationInstance customHeader = param.annotation(CUSTOM_HEADER);
+                        if (customHeader != null) {
                             if (!STRING.equals(typeName)) {
                                 throw new RuntimeException(
                                         "Custom header parameter '" + param.name() + "' muss be type of String. CLass '"
                                                 + method.declaringClass().name() + "' method '" + method + "'");
                             }
 
-                            String headerName = getAnnotationStringValue(customHeaders.value(), param.name());
+                            String headerName = getAnnotationStringValue(customHeader.value(), param.name());
 
                             args[i] = tryBlock
                                     .invokeSpecialMethod(
-                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getCustomHeaders",
+                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getCustomHeader",
                                                     String.class,
                                                     ActivatedJob.class, String.class),
                                             tryBlock.getThis(), invoke.getMethodParam(1), tryBlock.load(headerName));
                             continue;
                         }
+
+                        // custom headers
+                        AnnotationInstance customHeaders = param.annotation(CUSTOM_HEADERS);
+                        if (customHeaders != null) {
+
+                            // Map<String, String>
+                            if (!MAP.equals(typeName) || parameterType.kind() != Type.Kind.PARAMETERIZED_TYPE) {
+                                throw new RuntimeException(
+                                        "Custom headers parameter '" + param.name()
+                                                + "' muss be type of Map<String, String>. CLass '"
+                                                + method.declaringClass().name() + "' method '" + method + "'");
+                            }
+                            List<Type> mp = parameterType.asParameterizedType().arguments();
+                            if (mp.size() != 2 || !STRING.equals(mp.get(0).name()) || !STRING.equals(mp.get(1).name())) {
+                                throw new RuntimeException(
+                                        "Custom headers parameter '" + param.name()
+                                                + "' muss be type of Map<String, String>. CLass '"
+                                                + method.declaringClass().name() + "' method '" + method + "'");
+                            }
+
+                            args[i] = tryBlock
+                                    .invokeSpecialMethod(
+                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getCustomHeaders",
+                                                    Map.class,
+                                                    ActivatedJob.class),
+                                            tryBlock.getThis(), invoke.getMethodParam(1));
+                            continue;
+                        }
+
                         args[i] = tryBlock.loadNull();
                     }
                 }

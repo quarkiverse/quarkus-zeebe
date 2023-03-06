@@ -110,7 +110,7 @@ public class ZeebeRuntimeConfig {
         public Optional<String> clientId = Optional.empty();
 
         /**
-         * Cloud client secret
+         * Specify a client secret to request an access token.
          */
         @ConfigItem(name = "client-secret")
         public Optional<String> clientSecret;
@@ -173,10 +173,18 @@ public class ZeebeRuntimeConfig {
         public boolean plaintext = true;
 
         /**
-         * CA certificate path
+         * Specify a path to a certificate with which to validate gateway requests.
          */
         @ConfigItem(name = "cert-path")
         public Optional<String> certPath = Optional.empty();
+
+        /**
+         * Overrides the authority used with TLS virtual hosting.
+         * Specifically, to override hostname verification in
+         * the TLS handshake. It does not change what host is actually connected to.
+         */
+        @ConfigItem(name = "override-authority")
+        public Optional<String> overrideAuthority = Optional.empty();
     }
 
     /**

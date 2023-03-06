@@ -97,11 +97,13 @@ public class JobWorkerHandler implements JobHandler {
                     .maxRetries(autoCompleteConfig.maxRetries)
                     .retryDelay(autoCompleteConfig.retryDelay)
                     .send();
-        } catch (Throwable throwable) {
-            tracingContext.error(ZeebeTracing.JOB_EXCEPTION, throwable);
+        } catch (Exception exception) {
+            tracingContext.error(ZeebeTracing.JOB_EXCEPTION, exception);
+            LOG.tracef("Caught exception %s error on %s", exception.getMessage(), job);
             if (jobWorkerMetadata.workerValue.autoComplete) {
                 tracingContext.close();
             }
+            throw exception;
         } finally {
             if (!jobWorkerMetadata.workerValue.autoComplete) {
                 tracingContext.close();

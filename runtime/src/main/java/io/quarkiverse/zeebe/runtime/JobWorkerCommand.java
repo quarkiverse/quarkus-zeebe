@@ -137,15 +137,15 @@ public class JobWorkerCommand {
         if (result == null) {
             return completeCommand;
         }
-        if (result.getClass().isAssignableFrom(Map.class)) {
+        if (Map.class.isAssignableFrom(result.getClass())) {
             @SuppressWarnings("unchecked")
             Map<String, Object> var = (Map<String, Object>) result;
             return completeCommand.variables(var);
         }
-        if (result.getClass().isAssignableFrom(String.class)) {
+        if (String.class.isAssignableFrom(result.getClass())) {
             return completeCommand.variables((String) result);
         }
-        if (result.getClass().isAssignableFrom(InputStream.class)) {
+        if (InputStream.class.isAssignableFrom(result.getClass())) {
             return completeCommand.variables((InputStream) result);
         }
         return completeCommand.variables(result);

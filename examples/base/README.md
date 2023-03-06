@@ -15,3 +15,7 @@ Start 'test.complete' process instance.
 ```shell
 curl http://localhost:8080/process/test/test.complete
 ```
+
+```shell
+curl http://localhost:8080/process/test/test.exception
+```
