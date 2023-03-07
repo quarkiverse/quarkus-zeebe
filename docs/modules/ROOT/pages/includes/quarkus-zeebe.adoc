@@ -111,22 +111,6 @@ endif::add-copy-button-to-env-var[]
 |`false`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.watch-bpmn-dir]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.watch-bpmn-dir[quarkus.zeebe.devservices.watch-bpmn-dir]`
-
-[.description]
---
-Observe changes in the bpmn directory and subdirectories.
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_WATCH_BPMN_DIR+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_WATCH_BPMN_DIR+++`
-endif::add-copy-button-to-env-var[]
---|boolean 
-|`true`
-
-
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled[quarkus.zeebe.devservices.monitor.enabled]`
 
 [.description]
@@ -272,6 +256,54 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_DEBUG_EXPORTER_RECEIVER_PORT
 endif::add-copy-button-to-env-var[]
 --|int 
 |`8080`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-files]]`link:#quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-files[quarkus.zeebe.dev-mode.watch-bpmn-files]`
+
+[.description]
+--
+Observe changes in the bpmn files.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_FILES+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_FILES+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-dir]]`link:#quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-dir[quarkus.zeebe.dev-mode.watch-bpmn-dir]`
+
+[.description]
+--
+Observe changes in the bpmn directory and subdirectories.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_DIR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_DIR+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.dev-mode.watch-job-worker]]`link:#quarkus-zeebe_quarkus.zeebe.dev-mode.watch-job-worker[quarkus.zeebe.dev-mode.watch-job-worker]`
+
+[.description]
+--
+Observe changes in the job worker.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEV_MODE_WATCH_JOB_WORKER+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_WATCH_JOB_WORKER+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.resources.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.resources.enabled[quarkus.zeebe.resources.enabled]`

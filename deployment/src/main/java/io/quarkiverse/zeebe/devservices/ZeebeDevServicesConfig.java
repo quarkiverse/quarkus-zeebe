@@ -74,12 +74,6 @@ public class ZeebeDevServicesConfig {
     public boolean reuse;
 
     /**
-     * Observe changes in the bpmn directory and subdirectories.
-     */
-    @ConfigItem(name = "watch-bpmn-dir", defaultValue = "true")
-    public boolean watchBpmnDir;
-
-    /**
      * Zeebe simple monitor configuration
      */
     @ConfigItem(name = "monitor")

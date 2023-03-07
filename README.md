@@ -139,6 +139,12 @@ quarkus.zeebe.devservices.monitor.enabled=true
 quarkus.zeebe.devservices.monitor.service-name=zeebe-dev-monitor
 # enable reusable zeebe test-container (https://www.testcontainers.org/features/reuse/)
 quarkus.zeebe.devservices.monitor.reuse=false
+# enable hot restart for bpmn subdirectories changes
+quarkus.zeebe.dev-mode.watch-bpmn-dir=true
+# enable hot restart for bpmn files changes
+quarkus.zeebe.dev-mode.watch-bpmn-files=true
+# enable hot restart for job worker changes
+quarkus.zeebe.dev-mode.watch-job-worker=true
 ```
 
 #### Shared local dev instance

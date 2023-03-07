@@ -6,9 +6,6 @@ import static io.quarkus.runtime.LaunchMode.DEVELOPMENT;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Supplier;
@@ -19,8 +16,6 @@ import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
 import io.quarkiverse.zeebe.ZeebeDevServiceBuildTimeConfig;
-import io.quarkiverse.zeebe.ZeebeResourcesBuildItem;
-import io.quarkiverse.zeebe.runtime.ZeebeBuildTimeConfig;
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -46,40 +41,6 @@ public class ZeebeDevServiceProcessor {
     static volatile ZeebeRunningDevService devService;
     static volatile ZeebeDevServiceCfg cfg;
     static volatile boolean first = true;
-
-    @BuildStep(onlyIfNot = IsNormal.class, onlyIf = { GlobalDevServicesConfig.Enabled.class })
-    void watchChanges(ZeebeBuildTimeConfig config,
-            ZeebeResourcesBuildItem resources,
-            ZeebeDevServiceBuildTimeConfig buildTimeConfig,
-            BuildProducer<HotDeploymentWatchedFileBuildItem> watchedPaths) {
-        if (!config.resources.enabled || !buildTimeConfig.devService.enabled) {
-            return;
-        }
-        // add all bpmn resources
-        Collection<String> items = resources.getResources();
-        if (items != null && !items.isEmpty()) {
-            items.forEach(x -> watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(x)));
-        }
-
-        // watch directories for new files
-        // add root directory and all subdirectories
-        if (buildTimeConfig.devService.watchBpmnDir) {
-            watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(config.resources.location));
-
-            try {
-                Enumeration<URL> location = Thread.currentThread().getContextClassLoader()
-                        .getResources(config.resources.location);
-                Files.walk(Path.of(location.nextElement().toURI()))
-                        .filter(Files::isDirectory)
-                        .map(Path::toString)
-                        .map(dir -> dir.replace('\\', '/'))
-                        .peek(dir -> log.debugf("Watched bpmn sub-directory %s", dir))
-                        .forEach(dir -> watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(dir)));
-            } catch (Exception ex) {
-                throw new RuntimeException("Error find all sub-directories of " + config.resources.location, ex);
-            }
-        }
-    }
 
     @BuildStep(onlyIfNot = IsNormal.class, onlyIf = { GlobalDevServicesConfig.Enabled.class })
     public DevServicesResultBuildItem startZeebeContainers(LaunchModeBuildItem launchMode,

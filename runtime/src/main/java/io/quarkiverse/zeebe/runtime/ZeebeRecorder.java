@@ -181,15 +181,15 @@ public class ZeebeRecorder {
         }
 
         if (!value.fetchAllVariables) {
-
-            // add tracing variables only if custom fetch variable list is defined
-            if (value.fetchVariables != null && value.fetchVariables.length > 0
-                    && tracingVariables != null && !tracingVariables.isEmpty()) {
-                Set<String> tmp = new HashSet<>(tracingVariables);
-                tmp.addAll(Arrays.asList(value.fetchVariables));
-                value.fetchVariables = tmp.toArray(new String[0]);
-            }
+            // fetch list of defined variables
             if (value.fetchVariables != null && value.fetchVariables.length > 0) {
+                // add tracing variables
+                if (tracingVariables != null && !tracingVariables.isEmpty()) {
+                    Set<String> tmp = new HashSet<>(tracingVariables);
+                    tmp.addAll(Arrays.asList(value.fetchVariables));
+                    value.fetchVariables = tmp.toArray(new String[0]);
+                }
+                // set up the fetch variables
                 builder.fetchVariables(value.fetchVariables);
             }
         }

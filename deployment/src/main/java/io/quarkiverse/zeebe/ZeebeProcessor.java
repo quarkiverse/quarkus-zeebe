@@ -585,20 +585,19 @@ public class ZeebeProcessor {
                     }
                 }
 
+                // fetch all variables when we are using the @VariablesAsType annotation
+                if (fetchVariableAsType) {
+                    workerMethod.getWorker().fetchAllVariables = true;
+                }
+
                 // configure job fetch variables base on the parameter and annotation
                 if (!workerMethod.getWorker().fetchAllVariables) {
-                    // fetch all variables when we are using the @VariablesAsType annotation
-                    if (fetchVariableAsType) {
-                        workerMethod.getWorker().fetchAllVariables = true;
-                    } else {
-                        // merge parameters and annotation variables
-                        if (!fetchVariableNames.isEmpty()) {
-                            if (workerMethod.getWorker().fetchVariables.length > 0) {
-                                fetchVariableNames.addAll(List.of(workerMethod.getWorker().fetchVariables));
-                            }
-                            workerMethod.getWorker().fetchVariables = fetchVariableNames.toArray(new String[0]);
+                    // merge parameters and annotation variables
+                    if (!fetchVariableNames.isEmpty()) {
+                        if (workerMethod.getWorker().fetchVariables.length > 0) {
+                            fetchVariableNames.addAll(List.of(workerMethod.getWorker().fetchVariables));
                         }
-
+                        workerMethod.getWorker().fetchVariables = fetchVariableNames.toArray(new String[0]);
                     }
                 }
 
