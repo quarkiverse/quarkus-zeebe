@@ -31,6 +31,10 @@
             <artifactId>zeebe-protocol-jackson</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.camunda</groupId>
+            <artifactId>zeebe-process-test-engine</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-test-common</artifactId>
         </dependency>

@@ -15,6 +15,10 @@
     <modules>
         <module>bpmn</module>
         <module>docker</module>
+        <module>microprofile</module>
+        <module>opentelemetry</module>
+        <module>opentracing</module>
+        <module>embedded</module>
     </modules>
 
     <properties>

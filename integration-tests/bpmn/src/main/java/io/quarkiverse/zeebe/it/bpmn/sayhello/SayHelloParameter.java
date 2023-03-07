@@ -9,4 +9,11 @@ public class SayHelloParameter {
 
     public String message;
 
+    @Override
+    public String toString() {
+        return "SayHelloParameter{" +
+                "name='" + name + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

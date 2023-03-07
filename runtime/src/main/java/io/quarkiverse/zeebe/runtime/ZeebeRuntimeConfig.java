@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import io.camunda.zeebe.client.impl.ZeebeClientBuilderImpl;
 import io.quarkus.runtime.annotations.ConfigGroup;
@@ -35,16 +36,16 @@ public class ZeebeRuntimeConfig {
     public CloudConfig cloud = new CloudConfig();
 
     /**
-     * Zeebe client worker configuration.
-     */
-    @ConfigItem(name = "worker")
-    public WorkerConfig worker = new WorkerConfig();
-
-    /**
      * Zeebe client worker type optional configuration.
      */
     @ConfigItem(name = "workers")
-    public Map<String, HandlerConfig> workers = new HashMap<>();
+    public Map<String, JobHandlerConfig> workers = new HashMap<>();
+
+    /**
+     * Auto-complete configuration for all job handlers
+     */
+    @ConfigItem(name = "auto-complete")
+    public AutoCompleteConfig autoComplete = new AutoCompleteConfig();
 
     /**
      * Zeebe client message configuration.
@@ -63,12 +64,6 @@ public class ZeebeRuntimeConfig {
      */
     @ConfigItem(name = "job")
     public JobConfig job = new JobConfig();
-
-    /**
-     * Zeebe client request timeout configuration.
-     */
-    @ConfigItem(name = "request-timeout", defaultValue = "PT45S")
-    public Duration requestTimeout = DEFAULT.getDefaultRequestTimeout();
 
     /**
      * Zeebe client tracing configuration.
@@ -115,7 +110,7 @@ public class ZeebeRuntimeConfig {
         public Optional<String> clientId = Optional.empty();
 
         /**
-         * Cloud client secret
+         * Specify a client secret to request an access token.
          */
         @ConfigItem(name = "client-secret")
         public Optional<String> clientSecret;
@@ -153,37 +148,6 @@ public class ZeebeRuntimeConfig {
     }
 
     /**
-     * Zeebe client worker configuration.
-     */
-    @ConfigGroup
-    public static class WorkerConfig {
-
-        /**
-         * Client worker maximum active jobs.
-         */
-        @ConfigItem(name = "max-jobs-active", defaultValue = "32")
-        public Integer maxJobsActive = DEFAULT.getDefaultJobWorkerMaxJobsActive();
-
-        /**
-         * Client worker number of threads
-         */
-        @ConfigItem(name = "threads", defaultValue = "1")
-        public Integer threads = DEFAULT.getNumJobWorkerExecutionThreads();
-
-        /**
-         * Client worker default name
-         */
-        @ConfigItem(name = "default-name", defaultValue = "default")
-        public String defaultName = DEFAULT.getDefaultJobWorkerName();
-
-        /**
-         * Client worker global type
-         */
-        @ConfigItem(name = "default-type")
-        public Optional<String> defaultType;
-    }
-
-    /**
      * Zeebe client message configuration.
      */
     @ConfigGroup
@@ -209,10 +173,18 @@ public class ZeebeRuntimeConfig {
         public boolean plaintext = true;
 
         /**
-         * CA certificate path
+         * Specify a path to a certificate with which to validate gateway requests.
          */
         @ConfigItem(name = "cert-path")
         public Optional<String> certPath = Optional.empty();
+
+        /**
+         * Overrides the authority used with TLS virtual hosting.
+         * Specifically, to override hostname verification in
+         * the TLS handshake. It does not change what host is actually connected to.
+         */
+        @ConfigItem(name = "override-authority")
+        public Optional<String> overrideAuthority = Optional.empty();
     }
 
     /**
@@ -220,6 +192,36 @@ public class ZeebeRuntimeConfig {
      */
     @ConfigGroup
     public static class JobConfig {
+
+        /**
+         * Client worker maximum active jobs.
+         */
+        @ConfigItem(name = "max-jobs-active", defaultValue = "32")
+        public Integer workerMaxJobsActive = DEFAULT.getDefaultJobWorkerMaxJobsActive();
+
+        /**
+         * Client worker number of threads
+         */
+        @ConfigItem(name = "worker-execution-threads", defaultValue = "1")
+        public Integer workerExecutionThreads = DEFAULT.getNumJobWorkerExecutionThreads();
+
+        /**
+         * Client worker default name
+         */
+        @ConfigItem(name = "worker-name", defaultValue = "default")
+        public String workerName = DEFAULT.getDefaultJobWorkerName();
+
+        /**
+         * Zeebe client request timeout configuration.
+         */
+        @ConfigItem(name = "request-timeout", defaultValue = "PT45S")
+        public Duration requestTimeout = DEFAULT.getDefaultRequestTimeout();
+
+        /**
+         * Client worker global type
+         */
+        @ConfigItem(name = "default-type")
+        public Optional<String> defaultType;
 
         /**
          * Client job timeout
@@ -232,13 +234,60 @@ public class ZeebeRuntimeConfig {
          */
         @ConfigItem(name = "pool-interval", defaultValue = "PT0.100S")
         public Duration pollInterval = DEFAULT.getDefaultJobPollInterval();
+
+        /**
+         * Sets the backoff supplier. The supplier is called to determine the retry delay after each failed request;
+         * the worker then waits until the returned delay has elapsed before sending the next request.
+         * Note that this is used only for the polling mechanism - failures in the JobHandler should be handled there,
+         * and retried there if need be.
+         *
+         * Sets the backoff multiplication factor. The previous delay is multiplied by this factor. Default is 1.6.
+         *
+         * @see io.camunda.zeebe.client.impl.worker.ExponentialBackoffBuilderImpl
+         */
+        @ConfigItem(name = "exp-backoff-factor", defaultValue = "1.6")
+        public double expBackoffFactor = 1.6;
+
+        /**
+         * Sets the jitter factor. The next delay is changed randomly within a range of +/- this factor.
+         * For example, if the next delay is calculated to be 1s and the jitterFactor is 0.1 then the actual next
+         * delay can be somewhere between 0.9 and 1.1s. Default is 0.1
+         *
+         * @see io.camunda.zeebe.client.impl.worker.ExponentialBackoffBuilderImpl
+         */
+        @ConfigItem(name = "exp-jitter-factor", defaultValue = "0.1")
+        public double expJitterFactor = 0.1;
+
+        /**
+         * Sets the maximum retry delay.
+         * Note that the jitter may push the retry delay over this maximum. Default is 5000ms.
+         *
+         * @see io.camunda.zeebe.client.impl.worker.ExponentialBackoffBuilderImpl
+         */
+        @ConfigItem(name = "exp-max-delay", defaultValue = "5000")
+        public long expMaxDelay = TimeUnit.SECONDS.toMillis(5);
+
+        /**
+         * Sets the minimum retry delay.
+         * Note that the jitter may push the retry delay below this minimum. Default is 50ms.
+         *
+         * @see io.camunda.zeebe.client.impl.worker.ExponentialBackoffBuilderImpl
+         */
+        @ConfigItem(name = "exp-min-delay", defaultValue = "50")
+        public long expMinDelay = TimeUnit.MILLISECONDS.toMillis(50);
     }
 
     /**
      * Zeebe handler configuration.
      */
     @ConfigGroup
-    public static class HandlerConfig {
+    public static class JobHandlerConfig {
+
+        /**
+         * Zeebe worker enable or disable flag.
+         */
+        @ConfigItem(name = "enabled")
+        public Optional<Boolean> enabled;
 
         /**
          * Zeebe worker handler name.
@@ -270,44 +319,6 @@ public class ZeebeRuntimeConfig {
         @ConfigItem(name = "poll-interval")
         public Optional<Long> pollInterval;
 
-        /**
-         * Zeebe worker fetch variables.
-         */
-        @ConfigItem(name = "fetch-variables")
-        public Optional<List<String>> fetchVariables;
-
-        /**
-         * Sets the backoff supplier. The supplier is called to determine the retry delay after each failed request;
-         * the worker then waits until the returned delay has elapsed before sending the next request.
-         * Note that this is used only for the polling mechanism - failures in the JobHandler should be handled there,
-         * and retried there if need be.
-         *
-         * Sets the backoff multiplication factor. The previous delay is multiplied by this factor. Default is 1.6.
-         */
-        @ConfigItem(name = "exp-backoff-factor")
-        public Optional<Double> expBackoffFactor;
-
-        /**
-         * Sets the jitter factor. The next delay is changed randomly within a range of +/- this factor.
-         * For example, if the next delay is calculated to be 1s and the jitterFactor is 0.1 then the actual next
-         * delay can be somewhere between 0.9 and 1.1s. Default is 0.1
-         */
-        @ConfigItem(name = "exp-jitter-factor")
-        public Optional<Double> expJitterFactor;
-
-        /**
-         * Sets the maximum retry delay.
-         * Note that the jitter may push the retry delay over this maximum. Default is 5000ms.
-         */
-        @ConfigItem(name = "exp-max-delay")
-        public Optional<Long> expMaxDelay;
-
-        /**
-         * Sets the minimum retry delay.
-         * Note that the jitter may push the retry delay below this minimum. Default is 50ms.
-         */
-        @ConfigItem(name = "exp-min-delay")
-        public Optional<Long> expMinDelay;
     }
 
     /**
@@ -322,4 +333,58 @@ public class ZeebeRuntimeConfig {
         @ConfigItem(name = "attributes")
         public Optional<List<String>> attributes;
     }
+
+    /**
+     * Command configuration will be use only for the auto-completion of job handler.
+     */
+    @ConfigGroup
+    public static class AutoCompleteConfig {
+
+        /**
+         * Maximum retries for the auto-completion command.
+         */
+        @ConfigItem(name = "max-retries", defaultValue = "20")
+        public int maxRetries;
+
+        /**
+         * Maximum retries for the auto-completion command.
+         */
+        @ConfigItem(name = "retry-delay", defaultValue = "50")
+        public long retryDelay;
+
+        /**
+         * Sets the backoff supplier. The supplier is called to determine the retry delay after each failed request;
+         * the worker then waits until the returned delay has elapsed before sending the next request.
+         * Note that this is used only for the polling mechanism - failures in the JobHandler should be handled there,
+         * and retried there if need be.
+         *
+         * Sets the backoff multiplication factor. The previous delay is multiplied by this factor. Default is 1.5.
+         */
+        @ConfigItem(name = "exp-backoff-factor", defaultValue = "1.5")
+        public double expBackoffFactor = 1.5;
+
+        /**
+         * Sets the jitter factor. The next delay is changed randomly within a range of +/- this factor.
+         * For example, if the next delay is calculated to be 1s and the jitterFactor is 0.1 then the actual next
+         * delay can be somewhere between 0.9 and 1.1s. Default is 0.2
+         */
+        @ConfigItem(name = "exp-jitter-factor", defaultValue = "0.2")
+        public double expJitterFactor = 0.2;
+
+        /**
+         * Sets the maximum retry delay.
+         * Note that the jitter may push the retry delay over this maximum. Default is 1000ms.
+         */
+        @ConfigItem(name = "exp-max-delay", defaultValue = "1000")
+        public long expMaxDelay = TimeUnit.SECONDS.toMillis(1);
+
+        /**
+         * Sets the minimum retry delay.
+         * Note that the jitter may push the retry delay below this minimum. Default is 50ms.
+         */
+        @ConfigItem(name = "exp-min-delay", defaultValue = "50")
+        public long expMinDelay = TimeUnit.MILLISECONDS.toMillis(50);
+
+    }
+
 }

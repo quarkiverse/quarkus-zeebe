@@ -95,6 +95,22 @@ endif::add-copy-button-to-env-var[]
 |
 
 
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.reuse]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.reuse[quarkus.zeebe.devservices.reuse]`
+
+[.description]
+--
+Helper to define the stop strategy for containers created by DevServices. In particular, we don't want to actually stop the containers when they have been flagged for reuse, and when the Testcontainers configuration has been explicitly set to allow container reuse. To enable reuse, ass `testcontainers.reuse.enable=true` in your `.testcontainers.properties` file, to be stored in your home.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_REUSE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_REUSE+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
+
+
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled[quarkus.zeebe.devservices.monitor.enabled]`
 
 [.description]
@@ -141,7 +157,7 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_IMAGE_NAME+++`
 endif::add-copy-button-to-env-var[]
 --|string 
-|`ghcr.io/lorislab/zeebe-dev-monitor:0.5.0`
+|`ghcr.io/lorislab/zeebe-dev-monitor:8.1`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.service-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.service-name[quarkus.zeebe.devservices.monitor.service-name]`
@@ -159,6 +175,22 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_SERVICE_NAME+++`
 endif::add-copy-button-to-env-var[]
 --|string 
 |`zeebe-dev-monitor`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.reuse]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.reuse[quarkus.zeebe.devservices.monitor.reuse]`
+
+[.description]
+--
+Helper to define the stop strategy for containers created by DevServices. In particular, we don't want to actually stop the containers when they have been flagged for reuse, and when the Testcontainers configuration has been explicitly set to allow container reuse. To enable reuse, ass `testcontainers.reuse.enable=true` in your `.testcontainers.properties` file, to be stored in your home.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_REUSE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_MONITOR_REUSE+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.test.receiver-port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.test.receiver-port[quarkus.zeebe.devservices.test.receiver-port]`
@@ -226,11 +258,59 @@ endif::add-copy-button-to-env-var[]
 |`8080`
 
 
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-files]]`link:#quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-files[quarkus.zeebe.dev-mode.watch-bpmn-files]`
+
+[.description]
+--
+Observe changes in the bpmn files.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_FILES+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_FILES+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-dir]]`link:#quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-dir[quarkus.zeebe.dev-mode.watch-bpmn-dir]`
+
+[.description]
+--
+Observe changes in the bpmn directory and subdirectories.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_DIR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_DIR+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.dev-mode.watch-job-worker]]`link:#quarkus-zeebe_quarkus.zeebe.dev-mode.watch-job-worker[quarkus.zeebe.dev-mode.watch-job-worker]`
+
+[.description]
+--
+Observe changes in the job worker.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEV_MODE_WATCH_JOB_WORKER+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_WATCH_JOB_WORKER+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.resources.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.resources.enabled[quarkus.zeebe.resources.enabled]`
 
 [.description]
 --
-Whether or not an auto scan BPMN process folder. Default true
+Whether an auto scan BPMN process folder. Default true
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_RESOURCES_ENABLED+++[]
@@ -258,11 +338,27 @@ endif::add-copy-button-to-env-var[]
 |`bpmn`
 
 
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.metrics.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.metrics.enabled[quarkus.zeebe.metrics.enabled]`
+
+[.description]
+--
+Whether a metrics is enabled in case the micrometer or micro-profile metrics extension is present.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_METRICS_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_METRICS_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.health.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.health.enabled[quarkus.zeebe.health.enabled]`
 
 [.description]
 --
-Whether or not an health check is published in case the smallrye-health extension is present.
+Whether a health check is published in case the smallrye-health extension is present.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_HEALTH_ENABLED+++[]
@@ -271,14 +367,14 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_HEALTH_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --|boolean 
-|`false`
+|`true`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.tracing.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.tracing.enabled[quarkus.zeebe.tracing.enabled]`
 
 [.description]
 --
-Whether or not an opentracing is published in case the smallrye-opentracing extension is present.
+Whether an opentracing is published in case the smallrye-opentracing extension is present.
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_TRACING_ENABLED+++[]

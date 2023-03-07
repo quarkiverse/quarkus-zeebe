@@ -10,15 +10,17 @@ public class ZeebeClientBuilderFactory {
     public static ZeebeClientBuilder createBuilder(ZeebeRuntimeConfig config) {
         ZeebeClientBuilderImpl builder = new ZeebeClientBuilderImpl();
         builder.gatewayAddress(createGatewayAddress(config))
+                .keepAlive(config.broker.keepAlive)
                 .defaultJobPollInterval(config.job.pollInterval)
                 .defaultJobTimeout(config.job.timeout)
-                .defaultJobWorkerMaxJobsActive(config.worker.maxJobsActive)
-                .defaultJobWorkerName(config.worker.defaultName)
+                .defaultJobWorkerMaxJobsActive(config.job.workerMaxJobsActive)
+                .defaultJobWorkerName(config.job.workerName)
                 .defaultMessageTimeToLive(config.message.timeToLive)
-                .numJobWorkerExecutionThreads(config.worker.threads)
-                .defaultRequestTimeout(config.requestTimeout)
+                .numJobWorkerExecutionThreads(config.job.workerExecutionThreads)
+                .defaultRequestTimeout(config.job.requestTimeout)
                 .credentialsProvider(getCredentialsProvider(config.cloud));
 
+        config.security.overrideAuthority.ifPresent(builder::overrideAuthority);
         config.security.certPath.ifPresent(builder::caCertificatePath);
         if (config.security.plaintext) {
             builder.usePlaintext();

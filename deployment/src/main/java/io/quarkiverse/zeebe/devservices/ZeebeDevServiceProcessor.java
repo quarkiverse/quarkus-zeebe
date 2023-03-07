@@ -7,11 +7,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 
 import org.jboss.logging.Logger;
@@ -23,12 +19,8 @@ import io.quarkiverse.zeebe.ZeebeDevServiceBuildTimeConfig;
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.CuratedApplicationShutdownBuildItem;
-import io.quarkus.deployment.builditem.DevServicesResultBuildItem;
+import io.quarkus.deployment.builditem.*;
 import io.quarkus.deployment.builditem.DevServicesResultBuildItem.RunningDevService;
-import io.quarkus.deployment.builditem.DevServicesSharedNetworkBuildItem;
-import io.quarkus.deployment.builditem.DockerStatusBuildItem;
-import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
 import io.quarkus.deployment.dev.devservices.GlobalDevServicesConfig;
@@ -186,6 +178,12 @@ public class ZeebeDevServiceProcessor {
                     config.debugExporter,
                     config.debugReceiverPort);
             timeout.ifPresent(container::withStartupTimeout);
+
+            // enable test-container reuse
+            if (config.reuse) {
+                container.withReuse(true);
+            }
+
             container.start();
 
             String gateway = String.format("%s:%d", container.getGatewayHost(), container.getPort());
@@ -194,7 +192,7 @@ public class ZeebeDevServiceProcessor {
 
             return new ZeebeRunningDevService(FEATURE_NAME,
                     container.getContainerId(),
-                    container::close,
+                    new ContainerShutdownCloseable(container, FEATURE_NAME),
                     configMap(gateway, launchMode.isTest(), testClient, testDebugExportPort, config.testExporter),
                     zeebeInternalUrl);
         };
@@ -254,6 +252,8 @@ public class ZeebeDevServiceProcessor {
 
         private final int debugReceiverPort;
 
+        private final boolean reuse;
+
         public ZeebeDevServiceCfg(ZeebeDevServicesConfig config) {
             this.devServicesEnabled = config.enabled;
             this.imageName = config.imageName.orElse(null);
@@ -265,6 +265,7 @@ public class ZeebeDevServiceProcessor {
             this.testDebugExportPort = config.test.receiverPort.orElse(0);
             this.debugExporter = config.debugExporter.enabled;
             this.debugReceiverPort = config.debugExporter.receiverPort;
+            this.reuse = config.reuse;
         }
 
         @Override

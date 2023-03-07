@@ -161,10 +161,16 @@ public class ZeebeDevMonitorProcessor {
                     launchMode.getLaunchMode() == LaunchMode.DEVELOPMENT ? config.serviceName : null,
                     useSharedNetwork, brokerUrl);
             timeout.ifPresent(container::withStartupTimeout);
+
+            // enable test-container reuse
+            if (config.reuse) {
+                container.withReuse(true);
+            }
+
             container.start();
 
             return new DevMonitorRunningDevService(FEATURE_DEV_MONITOR, container.getContainerId(),
-                    container::close, container.getUrl());
+                    new ContainerShutdownCloseable(container, FEATURE_NAME), container.getUrl());
         };
 
         return maybeContainerAddress
@@ -247,7 +253,7 @@ public class ZeebeDevMonitorProcessor {
         private final String serviceName;
         private final boolean shared;
 
-        private final String zeebeServiceName;
+        private final boolean reuse;
 
         public ZeebeDevMonitorServiceCfg(ZeebeDevServicesConfig config) {
             this.devServicesEnabled = config.enabled;
@@ -256,7 +262,7 @@ public class ZeebeDevMonitorProcessor {
             this.fixedExposedPort = config.monitor.port.orElse(0);
             this.serviceName = config.monitor.serviceName;
             this.shared = true;
-            this.zeebeServiceName = config.serviceName;
+            this.reuse = config.monitor.reuse;
         }
 
         @Override
