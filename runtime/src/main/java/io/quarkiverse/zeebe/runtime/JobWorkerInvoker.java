@@ -37,7 +37,7 @@ public class JobWorkerInvoker {
         }
     }
 
-    protected CompletionStage<Object> invokeBean(JobClient client, ActivatedJob job) {
+    protected CompletionStage<Object> invokeBean(JobClient client, ActivatedJob job) throws Exception {
         return null;
     }
 
