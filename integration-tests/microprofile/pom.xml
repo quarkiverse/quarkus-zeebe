@@ -11,6 +11,10 @@
     <name>Quarkus - Zeebe - Integration Tests - Microprofile</name>
     <description>Quarkus Zeebe integration tests microprofile</description>
 
+    <properties>
+        <quarkus.package.type>fast-jar</quarkus.package.type>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.quarkiverse.zeebe</groupId>
