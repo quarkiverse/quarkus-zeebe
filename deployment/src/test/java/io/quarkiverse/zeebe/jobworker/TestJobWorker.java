@@ -24,7 +24,6 @@ public class TestJobWorker {
     @JobWorker(name = "test.complete.action4", type = "test_complete4")
     public Map<String, Object> testComplete4(@VariablesAsType Parameter p) {
         Log.infof("job 'test.complete4' parameter: %s", p);
-        System.out.println("job 'test.complete4' parameter: " + p);
         p.info = "test.complete";
         return Map.of("info", p.info, "data", p.data);
     }

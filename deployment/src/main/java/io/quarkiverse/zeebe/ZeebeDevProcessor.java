@@ -12,7 +12,6 @@ import io.quarkiverse.zeebe.runtime.ZeebeBuildTimeConfig;
 import io.quarkiverse.zeebe.runtime.devmode.JobWorkerReplacementInterceptor;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.IsDevelopment;
-import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.HotDeploymentWatchedFileBuildItem;
@@ -28,7 +27,7 @@ public class ZeebeDevProcessor {
         }
     }
 
-    @BuildStep(onlyIfNot = IsNormal.class)
+    @BuildStep(onlyIf = IsDevelopment.class)
     void watchChanges(ZeebeBuildTimeConfig config, ZeebeResourcesBuildItem resources,
             ZeebeDevServiceBuildTimeConfig buildTimeConfig,
             BuildProducer<HotDeploymentWatchedFileBuildItem> watchedPaths) {

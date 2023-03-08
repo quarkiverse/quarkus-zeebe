@@ -1,5 +1,7 @@
 package io.quarkiverse.zeebe.runtime;
 
+import java.util.concurrent.ExecutionException;
+
 import org.jboss.logging.Logger;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
@@ -71,9 +73,12 @@ public class JobWorkerHandler implements JobHandler {
             Object result;
             try {
                 result = invoker.invoke(client, job).toCompletableFuture().get();
-            } catch (Throwable throwable) {
+            } catch (Exception ex) {
+                if (ex instanceof ExecutionException) {
+                    ex = (Exception) ex.getCause();
+                }
                 metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_FAILED, job.getType());
-                throw throwable;
+                throw ex;
             }
 
             if (jobWorkerMetadata.workerValue.autoComplete) {
