@@ -17,6 +17,7 @@ import io.quarkiverse.zeebe.ZeebeBpmnError;
 import io.quarkiverse.zeebe.runtime.metrics.MetricsRecorder;
 import io.quarkiverse.zeebe.runtime.tracing.TracingRecorder;
 import io.quarkiverse.zeebe.runtime.tracing.ZeebeTracing;
+import io.vertx.core.Vertx;
 
 /**
  * Invokes a job worker business method of a bean.
@@ -40,6 +41,8 @@ public class JobWorkerHandler implements JobHandler {
     private TracingRecorder tracingRecorder;
 
     private String spanName;
+
+    private Vertx vertx;
 
     public JobWorkerHandler(JobWorkerMetadata jobWorkerMetadata, JobWorkerInvoker invoker,
             MetricsRecorder metricsRecorder,
@@ -70,6 +73,42 @@ public class JobWorkerHandler implements JobHandler {
     public void handle(JobClient client, ActivatedJob job) throws Exception {
         log.trace("Handle {} and invoke worker {}", job, jobWorkerMetadata.workerValue);
         doInvoke(client, job);
+
+//        TODO: check the correct vertx implementation
+//        Vertx vertx = Arc.container().instance(Vertx.class).get();
+//        Context context = VertxContext.getOrCreateDuplicatedContext(vertx);
+//        VertxContextSafetyToggle.setContextSafe(context, true);
+//        if (invoker.isBlocking()) {
+//            context.executeBlocking(new Handler<Promise<Object>>() {
+//                @Override
+//                public void handle(Promise<Object> p) {
+//                    try {
+//                        doInvoke(client, job);
+//                    } catch (Exception ex) {
+//                        if (ex instanceof RuntimeException) {
+//                            throw (RuntimeException) ex;
+//                        }
+//                        throw new RuntimeException(ex);
+//                    } finally {
+//                        p.complete();
+//                    }
+//                }
+//            }, false);
+//        } else {
+//            context.runOnContext(new Handler<Void>() {
+//                @Override
+//                public void handle(Void event) {
+//                    try {
+//                        doInvoke(client, job);
+//                    } catch (Exception ex) {
+//                        if (ex instanceof RuntimeException) {
+//                            throw (RuntimeException) ex;
+//                        }
+//                        throw new RuntimeException(ex);
+//                    }
+//                }
+//            });
+//        }
     }
 
     private void doInvoke(JobClient client, ActivatedJob job) throws Exception {
