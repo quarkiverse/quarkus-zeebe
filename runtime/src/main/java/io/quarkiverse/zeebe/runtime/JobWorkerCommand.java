@@ -54,36 +54,6 @@ public class JobWorkerCommand {
         this.metricsFailedActionName = metricsFailedActionName;
     }
 
-    public JobWorkerCommand backoffSupplier(BackoffSupplier backoffSupplier) {
-        this.backoffSupplier = backoffSupplier;
-        return this;
-    }
-
-    public JobWorkerCommand metricsRecorder(MetricsRecorder metricsRecorder) {
-        this.metricsRecorder = metricsRecorder;
-        return this;
-    }
-
-    public JobWorkerCommand maxRetries(int maxRetries) {
-        this.maxRetries = maxRetries;
-        return this;
-    }
-
-    public JobWorkerCommand retryDelay(long retryDelay) {
-        this.retryDelay = retryDelay;
-        return this;
-    }
-
-    public JobWorkerCommand exceptionHandler(JobWorkerExceptionHandler exceptionHandler) {
-        this.exceptionHandler = exceptionHandler;
-        return this;
-    }
-
-    public JobWorkerCommand tracingContext(TracingRecorder.TracingContext tracingContext) {
-        this.tracingContext = tracingContext;
-        return this;
-    }
-
     public void send() {
         counter++;
         command.send().handle((o, ex) -> {
@@ -125,7 +95,7 @@ public class JobWorkerCommand {
         return new JobWorkerCommand(tmp, job, MetricsRecorder.ACTION_COMPLETED, MetricsRecorder.ACTION_COMPLETED_FAILED);
     }
 
-    public static JobWorkerCommand createJobWorkerCommand(JobClient client, ActivatedJob job, ZeebeBpmnError bpmnError) {
+    public static JobWorkerCommand createThrowErrorCommand(JobClient client, ActivatedJob job, ZeebeBpmnError bpmnError) {
         ThrowErrorCommandStep1.ThrowErrorCommandStep2 tmp = client.newThrowErrorCommand(job.getKey())
                 .errorCode(bpmnError.getErrorCode())
                 .errorMessage(bpmnError.getErrorMessage());
@@ -181,5 +151,16 @@ public class JobWorkerCommand {
                 ", counter=" + counter +
                 ", maxRetries=" + maxRetries +
                 '}';
+    }
+
+    public JobWorkerCommand request(TracingRecorder.TracingContext tracingContext, MetricsRecorder metricsRecorder,
+            BackoffSupplier backoffSupplier, JobWorkerExceptionHandler exceptionHandler, int maxRetries, long retryDelay) {
+        this.tracingContext = tracingContext;
+        this.metricsRecorder = metricsRecorder;
+        this.backoffSupplier = backoffSupplier;
+        this.exceptionHandler = exceptionHandler;
+        this.maxRetries = maxRetries;
+        this.retryDelay = retryDelay;
+        return this;
     }
 }

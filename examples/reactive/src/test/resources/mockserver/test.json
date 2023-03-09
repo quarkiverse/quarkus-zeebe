@@ -1,0 +1,22 @@
+[
+  {
+    "id": "2",
+    "httpRequest": {
+      "path": "/test"
+    },
+    "httpResponse": {
+      "body": {
+        "type": "JSON",
+        "json": {
+          "key": "k1",
+          "value": "v2"
+        },
+        "contentType": "application/json"
+      },
+      "delay": {
+        "timeUnit": "MILLISECONDS",
+        "value": 100
+      }
+    }
+  }
+]

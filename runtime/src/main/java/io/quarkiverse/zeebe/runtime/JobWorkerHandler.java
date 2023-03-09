@@ -1,8 +1,11 @@
 package io.quarkiverse.zeebe.runtime;
 
-import java.util.concurrent.ExecutionException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.concurrent.CompletionException;
 
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.BackoffSupplier;
@@ -20,7 +23,7 @@ import io.quarkiverse.zeebe.runtime.tracing.ZeebeTracing;
  */
 public class JobWorkerHandler implements JobHandler {
 
-    private static final Logger LOG = Logger.getLogger(JobWorkerHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(JobWorkerHandler.class);
 
     private JobWorkerMetadata jobWorkerMetadata;
 
@@ -38,7 +41,8 @@ public class JobWorkerHandler implements JobHandler {
 
     private String spanName;
 
-    public JobWorkerHandler(JobWorkerMetadata jobWorkerMetadata, JobWorkerInvoker invoker, MetricsRecorder metricsRecorder,
+    public JobWorkerHandler(JobWorkerMetadata jobWorkerMetadata, JobWorkerInvoker invoker,
+            MetricsRecorder metricsRecorder,
             JobWorkerExceptionHandler exceptionHandler, ZeebeRuntimeConfig.AutoCompleteConfig autoCompleteConfig,
             TracingRecorder tracingRecorder) {
         this.jobWorkerMetadata = jobWorkerMetadata;
@@ -64,56 +68,82 @@ public class JobWorkerHandler implements JobHandler {
 
     @Override
     public void handle(JobClient client, ActivatedJob job) throws Exception {
-        LOG.tracef("Handle %s and invoke worker %s", job, jobWorkerMetadata.workerValue);
+        log.trace("Handle {} and invoke worker {}", job, jobWorkerMetadata.workerValue);
+        doInvoke(client, job);
+    }
+
+    private void doInvoke(JobClient client, ActivatedJob job) throws Exception {
 
         TracingRecorder.TracingContext tracingContext = tracingRecorder
                 .createTracingContext(jobWorkerMetadata.declaringClassName, jobWorkerMetadata.methodName, spanName, job);
-        try {
-            metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_ACTIVATED, job.getType());
-            Object result;
-            try {
-                result = invoker.invoke(client, job).toCompletableFuture().get();
-            } catch (Exception ex) {
-                if (ex instanceof ExecutionException) {
-                    ex = (Exception) ex.getCause();
-                }
-                metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_FAILED, job.getType());
-                throw ex;
-            }
 
-            if (jobWorkerMetadata.workerValue.autoComplete) {
-                JobWorkerCommand.createJobWorkerCommand(client, job, result)
-                        .tracingContext(tracingContext)
-                        .metricsRecorder(metricsRecorder)
-                        .backoffSupplier(backoffSupplier)
-                        .exceptionHandler(exceptionHandler)
-                        .maxRetries(autoCompleteConfig.maxRetries)
-                        .retryDelay(autoCompleteConfig.retryDelay)
-                        .send();
-            }
-        } catch (ZeebeBpmnError error) {
-            tracingContext.error(ZeebeTracing.JOB_EXCEPTION, error);
-            LOG.tracef("Caught JobWorker BPMN error on %s", job);
-            JobWorkerCommand.createJobWorkerCommand(client, job, error)
-                    .tracingContext(tracingContext)
-                    .metricsRecorder(metricsRecorder)
-                    .backoffSupplier(backoffSupplier)
-                    .exceptionHandler(exceptionHandler)
-                    .maxRetries(autoCompleteConfig.maxRetries)
-                    .retryDelay(autoCompleteConfig.retryDelay)
-                    .send();
-        } catch (Exception exception) {
-            tracingContext.error(ZeebeTracing.JOB_EXCEPTION, exception);
-            LOG.tracef("Caught exception %s error on %s", exception.getMessage(), job);
-            if (jobWorkerMetadata.workerValue.autoComplete) {
-                tracingContext.close();
-            }
-            throw exception;
-        } finally {
-            if (!jobWorkerMetadata.workerValue.autoComplete) {
-                tracingContext.close();
-            }
-        }
+        metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_ACTIVATED, job.getType());
+
+        invoker.invoke(client, job)
+                .thenApply(result -> {
+                    // check the auto-complete
+                    // the complete muss close tracing context
+                    if (jobWorkerMetadata.workerValue.autoComplete) {
+                        JobWorkerCommand.createJobWorkerCommand(client, job, result)
+                                .request(tracingContext, metricsRecorder, backoffSupplier, exceptionHandler,
+                                        autoCompleteConfig.maxRetries, autoCompleteConfig.retryDelay)
+                                .send();
+                    }
+                    return result;
+                })
+                .exceptionally(ex -> {
+
+                    try {
+                        // update metrics
+                        metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_FAILED,
+                                job.getType());
+                        // switch tracing to error
+                        tracingContext.error(ZeebeTracing.JOB_EXCEPTION, ex);
+
+                        // check the completion exception
+                        if (ex instanceof CompletionException) {
+                            ex = ex.getCause();
+                        }
+
+                        // throw error for ZeebeBpmnError exception
+                        // the throw error muss close tracing context
+                        if (ex instanceof ZeebeBpmnError) {
+                            log.info("Caught JobWorker BPMN error on {}", job);
+                            JobWorkerCommand.createThrowErrorCommand(client, job, (ZeebeBpmnError) ex)
+                                    .request(tracingContext, metricsRecorder, backoffSupplier, exceptionHandler,
+                                            autoCompleteConfig.maxRetries, autoCompleteConfig.retryDelay)
+                                    .send();
+                            return null;
+                        }
+                    } catch (Throwable t) {
+                        tracingContext.close();
+                        throw t;
+                    }
+
+                    // create failed command for the exception, put stack-trace in the error message
+                    try {
+                        log.info("Caught exception {} error on {}", ex.getMessage(), job);
+                        handleException(client, job, ex);
+                    } finally {
+                        // always close the tracing context
+                        tracingContext.close();
+                    }
+                    return null;
+                });
     }
 
+    private void handleException(JobClient jobClient, ActivatedJob job, Throwable e) {
+        log.warn(
+                "Worker {} failed to handle job with key {} of type {}, sending fail command to broker",
+                job.getWorker(), job.getKey(), job.getType(), e);
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(stringWriter);
+        e.printStackTrace(printWriter);
+        final String message = stringWriter.toString();
+
+        jobClient.newFailCommand(job.getKey())
+                .retries(job.getRetries() - 1)
+                .errorMessage(message)
+                .send();
+    }
 }
