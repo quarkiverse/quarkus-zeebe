@@ -28,7 +28,6 @@ public class JobCounter {
         init();
         endTimestamp = System.currentTimeMillis();
         int currentCount = count.addAndGet(1);
-
         log.info("...completed (" + currentCount + "). " + getThroughputInfoFor(currentCount));
     }
 
@@ -37,13 +36,13 @@ public class JobCounter {
         long timeDiff = (endTimestamp - startTimestamp) / 1000;
 
         if (timeDiff == 0) {
-            return "Current throughput (jobs/s ): " + currentCount;
+            return "Current throughput (jobs/s): " + currentCount;
         } else {
             long throughput = currentCount / timeDiff;
             if (throughput > throughputMax) {
                 throughputMax = throughput;
             }
-            return "Current throughput (jobs/s ): " + throughput + ", Max: " + throughputMax;
+            return "Current throughput (jobs/s): " + throughput + ", Max: " + throughputMax;
         }
     }
 

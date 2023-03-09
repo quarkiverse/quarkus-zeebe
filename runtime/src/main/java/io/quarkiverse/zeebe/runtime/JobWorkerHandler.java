@@ -17,6 +17,10 @@ import io.quarkiverse.zeebe.ZeebeBpmnError;
 import io.quarkiverse.zeebe.runtime.metrics.MetricsRecorder;
 import io.quarkiverse.zeebe.runtime.tracing.TracingRecorder;
 import io.quarkiverse.zeebe.runtime.tracing.ZeebeTracing;
+import io.quarkus.arc.Arc;
+import io.quarkus.vertx.core.runtime.context.VertxContextSafetyToggle;
+import io.smallrye.common.vertx.VertxContext;
+import io.vertx.core.Context;
 import io.vertx.core.Vertx;
 
 /**
@@ -72,103 +76,88 @@ public class JobWorkerHandler implements JobHandler {
     @Override
     public void handle(JobClient client, ActivatedJob job) throws Exception {
         log.trace("Handle {} and invoke worker {}", job, jobWorkerMetadata.workerValue);
-        doInvoke(client, job);
 
-        //        TODO: check the correct vertx implementation
-        //        Vertx vertx = Arc.container().instance(Vertx.class).get();
-        //        Context context = VertxContext.getOrCreateDuplicatedContext(vertx);
-        //        VertxContextSafetyToggle.setContextSafe(context, true);
-        //        if (invoker.isBlocking()) {
-        //            context.executeBlocking(new Handler<Promise<Object>>() {
-        //                @Override
-        //                public void handle(Promise<Object> p) {
-        //                    try {
-        //                        doInvoke(client, job);
-        //                    } catch (Exception ex) {
-        //                        if (ex instanceof RuntimeException) {
-        //                            throw (RuntimeException) ex;
-        //                        }
-        //                        throw new RuntimeException(ex);
-        //                    } finally {
-        //                        p.complete();
-        //                    }
-        //                }
-        //            }, false);
-        //        } else {
-        //            context.runOnContext(new Handler<Void>() {
-        //                @Override
-        //                public void handle(Void event) {
-        //                    try {
-        //                        doInvoke(client, job);
-        //                    } catch (Exception ex) {
-        //                        if (ex instanceof RuntimeException) {
-        //                            throw (RuntimeException) ex;
-        //                        }
-        //                        throw new RuntimeException(ex);
-        //                    }
-        //                }
-        //            });
-        //        }
+        Vertx vertx = Arc.container().instance(Vertx.class).get();
+        Context context = VertxContext.getOrCreateDuplicatedContext(vertx);
+        VertxContextSafetyToggle.setContextSafe(context, true);
+        if (invoker.isBlocking()) {
+            context.executeBlocking(p -> {
+                try {
+                    doInvoke(client, job);
+                } finally {
+                    p.complete();
+                }
+            }, false);
+        } else {
+            context.runOnContext(event -> doInvoke(client, job));
+        }
     }
 
-    private void doInvoke(JobClient client, ActivatedJob job) throws Exception {
+    private void doInvoke(JobClient client, ActivatedJob job) {
 
-        TracingRecorder.TracingContext tracingContext = tracingRecorder
-                .createTracingContext(jobWorkerMetadata.declaringClassName, jobWorkerMetadata.methodName, spanName, job);
+        try {
+            TracingRecorder.TracingContext tracingContext = tracingRecorder
+                    .createTracingContext(jobWorkerMetadata.declaringClassName, jobWorkerMetadata.methodName, spanName, job);
 
-        metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_ACTIVATED, job.getType());
+            metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_ACTIVATED, job.getType());
 
-        invoker.invoke(client, job)
-                .thenApply(result -> {
-                    // check the auto-complete
-                    // the complete muss close tracing context
-                    if (jobWorkerMetadata.workerValue.autoComplete) {
-                        JobWorkerCommand.createJobWorkerCommand(client, job, result)
-                                .request(tracingContext, metricsRecorder, backoffSupplier, exceptionHandler,
-                                        autoCompleteConfig.maxRetries, autoCompleteConfig.retryDelay)
-                                .send();
-                    }
-                    return result;
-                })
-                .exceptionally(ex -> {
-
-                    try {
-                        // update metrics
-                        metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_FAILED,
-                                job.getType());
-                        // switch tracing to error
-                        tracingContext.error(ZeebeTracing.JOB_EXCEPTION, ex);
-
-                        // check the completion exception
-                        if (ex instanceof CompletionException) {
-                            ex = ex.getCause();
-                        }
-
-                        // throw error for ZeebeBpmnError exception
-                        // the throw error muss close tracing context
-                        if (ex instanceof ZeebeBpmnError) {
-                            log.info("Caught JobWorker BPMN error on {}", job);
-                            JobWorkerCommand.createThrowErrorCommand(client, job, (ZeebeBpmnError) ex)
+            invoker.invoke(client, job)
+                    .thenApply(result -> {
+                        // check the auto-complete
+                        // the complete muss close tracing context
+                        if (jobWorkerMetadata.workerValue.autoComplete) {
+                            JobWorkerCommand.createJobWorkerCommand(client, job, result)
                                     .request(tracingContext, metricsRecorder, backoffSupplier, exceptionHandler,
                                             autoCompleteConfig.maxRetries, autoCompleteConfig.retryDelay)
                                     .send();
-                            return null;
                         }
-                    } catch (Throwable t) {
-                        tracingContext.close();
-                        throw t;
-                    }
+                        return result;
+                    })
+                    .exceptionally(ex -> {
 
-                    // create failed command for the exception, put stack-trace in the error message
-                    try {
-                        log.info("Caught exception {} error on {}", ex.getMessage(), job);
-                        handleException(client, job, ex);
-                    } finally {
-                        // always close the tracing context
-                        tracingContext.close();
-                    }
-                    return null;
-                });
+                        try {
+                            // update metrics
+                            metricsRecorder.increase(MetricsRecorder.METRIC_NAME_JOB, MetricsRecorder.ACTION_FAILED,
+                                    job.getType());
+                            // switch tracing to error
+                            tracingContext.error(ZeebeTracing.JOB_EXCEPTION, ex);
+
+                            // check the completion exception
+                            if (ex instanceof CompletionException) {
+                                ex = ex.getCause();
+                            }
+
+                            // throw error for ZeebeBpmnError exception
+                            // the throw error muss close tracing context
+                            if (ex instanceof ZeebeBpmnError) {
+                                log.info("Caught JobWorker BPMN error on {}", job);
+                                JobWorkerCommand.createThrowErrorCommand(client, job, (ZeebeBpmnError) ex)
+                                        .request(tracingContext, metricsRecorder, backoffSupplier, exceptionHandler,
+                                                autoCompleteConfig.maxRetries, autoCompleteConfig.retryDelay)
+                                        .send();
+                                return null;
+                            }
+                        } catch (Throwable t) {
+                            tracingContext.close();
+                            throw t;
+                        }
+
+                        // create failed command for the exception, put stack-trace in the error message
+                        try {
+                            log.info("Caught exception {} error on {}", ex.getMessage(), job);
+                            handleException(client, job, ex);
+                        } finally {
+                            // always close the tracing context
+                            tracingContext.close();
+                        }
+                        return null;
+                    });
+        } catch (Exception ex) {
+            if (ex instanceof RuntimeException) {
+                throw (RuntimeException) ex;
+            }
+            throw new RuntimeException(ex);
+        }
     }
 
     private void handleException(JobClient jobClient, ActivatedJob job, Throwable e) {

@@ -22,11 +22,3 @@ Available process are:
 
 Enable job-worker for the process in the `application.properties`.
 Restart the application with `s`
-
-Result
-```shell
-blocking:               Current throughput (jobs/s ): 9, Max: 17
-blocking-auto:          Current throughput (jobs/s ): 10, Max: 19
-uni-auto:               Current throughput (jobs/s ): 250, Max: 380
-completionStage-auto:   Current throughput (jobs/s ): 250, Max: 380
-```

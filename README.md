@@ -392,6 +392,7 @@ public class Job1Worker {
         // ... custom code
         return p;
     }
+    
 }
 ```
 
@@ -422,7 +423,24 @@ public void job1(@VariablesAsType Parameter p, @CustomHeaders Map<String, String
 }
 ```
 
+### Non-blocking Methods
+
+By default, a scheduled method is executed on the main executor for blocking tasks. As a result, a technology that is 
+designed to run on a `Vert.x` event loop (such as Hibernate Reactive) cannot be used inside the method body. For this 
+reason, a job worker method that returns `java.util.concurrent.CompletionStage<?>` or `io.smallrye.mutiny.Uni<Void>` 
+or is annotated with `@io.smallrye.common.annotation.NonBlocking` is executed on the Vert.x event loop.
+
+```java
+@JobWorker(type = "job1")
+public Uni<Void> job1(final ActivatedJob job) {
+    // ... custom code ...
+    // no need to call client.newCompleteCommand()...
+}
+```
+The return type `Uni<Void>` instructs the job worker to execute the method on the Vert.x event loop.
+
 ### Auto-completing jobs
+
 By default, the autoComplete attribute is set to true for any job worker. In this case, the Quarkus extension will take 
 care about job completion for you:
 ```java

@@ -24,6 +24,11 @@ public class TestJobWorker {
     @RestClient
     TestRestClient restClient;
 
+    private Uni<Void> test() {
+        log.info("No waiting ...");
+        return Uni.createFrom().voidItem();
+    }
+
     @JobWorker(type = "completionStage-auto")
     public CompletionStage<Void> noneBlockAutoRestCall(final JobClient client, final ActivatedJob job) {
         counter.init();
@@ -38,7 +43,7 @@ public class TestJobWorker {
     public Uni<Void> uni(final JobClient client, final ActivatedJob job) {
         counter.init();
         log.info("Invoke REST call...");
-        return restClient.uni().replaceWith(() -> {
+        return test().onItem().call(() -> restClient.uni()).replaceWith(() -> {
             counter.inc();
             return null;
         });
