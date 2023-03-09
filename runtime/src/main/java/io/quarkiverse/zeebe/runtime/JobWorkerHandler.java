@@ -74,41 +74,41 @@ public class JobWorkerHandler implements JobHandler {
         log.trace("Handle {} and invoke worker {}", job, jobWorkerMetadata.workerValue);
         doInvoke(client, job);
 
-//        TODO: check the correct vertx implementation
-//        Vertx vertx = Arc.container().instance(Vertx.class).get();
-//        Context context = VertxContext.getOrCreateDuplicatedContext(vertx);
-//        VertxContextSafetyToggle.setContextSafe(context, true);
-//        if (invoker.isBlocking()) {
-//            context.executeBlocking(new Handler<Promise<Object>>() {
-//                @Override
-//                public void handle(Promise<Object> p) {
-//                    try {
-//                        doInvoke(client, job);
-//                    } catch (Exception ex) {
-//                        if (ex instanceof RuntimeException) {
-//                            throw (RuntimeException) ex;
-//                        }
-//                        throw new RuntimeException(ex);
-//                    } finally {
-//                        p.complete();
-//                    }
-//                }
-//            }, false);
-//        } else {
-//            context.runOnContext(new Handler<Void>() {
-//                @Override
-//                public void handle(Void event) {
-//                    try {
-//                        doInvoke(client, job);
-//                    } catch (Exception ex) {
-//                        if (ex instanceof RuntimeException) {
-//                            throw (RuntimeException) ex;
-//                        }
-//                        throw new RuntimeException(ex);
-//                    }
-//                }
-//            });
-//        }
+        //        TODO: check the correct vertx implementation
+        //        Vertx vertx = Arc.container().instance(Vertx.class).get();
+        //        Context context = VertxContext.getOrCreateDuplicatedContext(vertx);
+        //        VertxContextSafetyToggle.setContextSafe(context, true);
+        //        if (invoker.isBlocking()) {
+        //            context.executeBlocking(new Handler<Promise<Object>>() {
+        //                @Override
+        //                public void handle(Promise<Object> p) {
+        //                    try {
+        //                        doInvoke(client, job);
+        //                    } catch (Exception ex) {
+        //                        if (ex instanceof RuntimeException) {
+        //                            throw (RuntimeException) ex;
+        //                        }
+        //                        throw new RuntimeException(ex);
+        //                    } finally {
+        //                        p.complete();
+        //                    }
+        //                }
+        //            }, false);
+        //        } else {
+        //            context.runOnContext(new Handler<Void>() {
+        //                @Override
+        //                public void handle(Void event) {
+        //                    try {
+        //                        doInvoke(client, job);
+        //                    } catch (Exception ex) {
+        //                        if (ex instanceof RuntimeException) {
+        //                            throw (RuntimeException) ex;
+        //                        }
+        //                        throw new RuntimeException(ex);
+        //                    }
+        //                }
+        //            });
+        //        }
     }
 
     private void doInvoke(JobClient client, ActivatedJob job) throws Exception {
