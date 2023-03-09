@@ -1,15 +1,14 @@
 package io.quarkiverse.zeebe.examples.reactive;
 
+import java.util.UUID;
+
 import io.quarkiverse.zeebe.JobWorker;
 import io.quarkiverse.zeebe.Variable;
 import io.quarkiverse.zeebe.VariablesAsType;
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
 
-import java.util.UUID;
-
 public class ParametersJobWorker {
-
 
     @JobWorker(type = "create-param")
     public Uni<Parameter> createParam(@Variable("_info") String info) {
