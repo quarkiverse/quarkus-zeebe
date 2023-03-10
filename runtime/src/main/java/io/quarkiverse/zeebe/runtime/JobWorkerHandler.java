@@ -46,8 +46,6 @@ public class JobWorkerHandler implements JobHandler {
 
     private String spanName;
 
-    private Vertx vertx;
-
     public JobWorkerHandler(JobWorkerMetadata jobWorkerMetadata, JobWorkerInvoker invoker,
             MetricsRecorder metricsRecorder,
             JobWorkerExceptionHandler exceptionHandler, ZeebeRuntimeConfig.AutoCompleteConfig autoCompleteConfig,
