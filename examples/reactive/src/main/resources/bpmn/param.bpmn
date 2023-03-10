@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0iaeq3v" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+  <bpmn:process id="param-process" name="param-process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_037chq7</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_037chq7" sourceRef="StartEvent_1" targetRef="create-param" />
+    <bpmn:sequenceFlow id="Flow_11do0fa" sourceRef="create-param" targetRef="update-param" />
+    <bpmn:sequenceFlow id="Flow_1qodrgb" sourceRef="update-param" targetRef="info-param" />
+    <bpmn:endEvent id="Event_0f5vdgu">
+      <bpmn:incoming>Flow_08moray</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_08moray" sourceRef="info-param" targetRef="Event_0f5vdgu" />
+    <bpmn:serviceTask id="create-param" name="create-param">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-param" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_037chq7</bpmn:incoming>
+      <bpmn:outgoing>Flow_11do0fa</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="update-param" name="update-param">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="update-param" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_11do0fa</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qodrgb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="info-param" name="info-param">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="info-param" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qodrgb</bpmn:incoming>
+      <bpmn:outgoing>Flow_08moray</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="param-process">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f5vdgu_di" bpmnElement="Event_0f5vdgu">
+        <dc:Bounds x="752" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16nino6_di" bpmnElement="create-param">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ud9o0n_di" bpmnElement="update-param">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kcdr75_di" bpmnElement="info-param">
+        <dc:Bounds x="590" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_037chq7_di" bpmnElement="Flow_037chq7">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11do0fa_di" bpmnElement="Flow_11do0fa">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qodrgb_di" bpmnElement="Flow_1qodrgb">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="590" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08moray_di" bpmnElement="Flow_08moray">
+        <di:waypoint x="690" y="117" />
+        <di:waypoint x="752" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

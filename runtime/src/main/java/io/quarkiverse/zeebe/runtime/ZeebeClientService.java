@@ -8,7 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 
 import org.jboss.logging.Logger;
 
@@ -24,22 +23,13 @@ public class ZeebeClientService {
 
     private static final Logger log = Logger.getLogger(ZeebeClientService.class);
 
-    ZeebeRuntimeConfig config;
-
     ZeebeClient client;
-
-    @Inject
-    JsonMapper jsonMapper;
-
-    @Inject
-    @Any
-    Instance<ZeebeClientInterceptor> interceptors;
 
     List<JobWorker> workers = new ArrayList<>();
 
-    void initialize(ZeebeRuntimeConfig config) {
+    public ZeebeClientService(ZeebeRuntimeConfig config, JsonMapper jsonMapper,
+            @Any Instance<ZeebeClientInterceptor> interceptors) {
         log.infof("Creating new zeebe client for %s", config.broker.gatewayAddress);
-        this.config = config;
         ZeebeClientBuilder builder = ZeebeClientBuilderFactory.createBuilder(config);
         if (jsonMapper != null) {
             builder.withJsonMapper(jsonMapper);

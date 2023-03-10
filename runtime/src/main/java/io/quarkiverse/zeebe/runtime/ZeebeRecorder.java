@@ -8,10 +8,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.enterprise.util.AnnotationLiteral;
-
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.annotation.RegistryType;
 import org.jboss.logging.Logger;
 
 import io.camunda.zeebe.client.ZeebeClient;
@@ -50,7 +46,6 @@ public class ZeebeRecorder {
     public void init(ZeebeRuntimeConfig config) {
         // client configuration
         ZeebeClientService clientService = Arc.container().instance(ZeebeClientService.class).get();
-        clientService.initialize(config);
         ZeebeClient client = clientService.client();
 
         // tracing configuration
@@ -205,25 +200,6 @@ public class ZeebeRecorder {
         return builder;
     }
 
-    private static long getConfigValueLong(long annotationValue, Optional<Long> itemConfig, Optional<Long> globalConfig) {
-        return itemConfig.orElseGet(() -> {
-            if (annotationValue > 0) {
-                return annotationValue;
-            }
-            return globalConfig.orElse(annotationValue);
-        });
-    }
-
-    private static double getConfigValueDouble(double annotationValue, Optional<Double> itemConfig,
-            Optional<Double> globalConfig) {
-        return itemConfig.orElseGet(() -> {
-            if (annotationValue > 0) {
-                return annotationValue;
-            }
-            return globalConfig.orElse(annotationValue);
-        });
-    }
-
     private static JobWorkerInvoker createJobWorkerInvoker(String name) {
         try {
             Class<?> invokerClazz = Thread.currentThread().getContextClassLoader().loadClass(name);
@@ -239,16 +215,4 @@ public class ZeebeRecorder {
         ZeebeRecorder.workers = new ArrayList<>(workers);
     }
 
-    public class RegistryTypeLiteral extends AnnotationLiteral<RegistryType> implements RegistryType {
-
-        private MetricRegistry.Type type;
-
-        public RegistryTypeLiteral(MetricRegistry.Type type) {
-            this.type = type;
-        }
-
-        public MetricRegistry.Type type() {
-            return type;
-        }
-    }
 }
