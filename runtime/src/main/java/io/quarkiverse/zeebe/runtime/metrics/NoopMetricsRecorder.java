@@ -1,6 +1,6 @@
 package io.quarkiverse.zeebe.runtime.metrics;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class NoopMetricsRecorder implements MetricsRecorder {

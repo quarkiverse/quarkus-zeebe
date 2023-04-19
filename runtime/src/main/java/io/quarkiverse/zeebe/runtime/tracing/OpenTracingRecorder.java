@@ -4,8 +4,8 @@ import static java.lang.String.valueOf;
 
 import java.util.*;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.jaegertracing.internal.JaegerSpanContext;

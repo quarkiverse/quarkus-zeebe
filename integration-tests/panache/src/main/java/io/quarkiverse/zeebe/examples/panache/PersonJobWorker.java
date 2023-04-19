@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import io.quarkiverse.zeebe.JobWorker;
 import io.quarkiverse.zeebe.Variable;

@@ -3,7 +3,7 @@ package io.quarkiverse.zeebe.test;
 import java.io.InputStream;
 import java.util.Map;
 
-import javax.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Produces;
 
 import io.camunda.zeebe.client.api.JsonMapper;
 import io.camunda.zeebe.client.impl.ZeebeObjectMapper;
