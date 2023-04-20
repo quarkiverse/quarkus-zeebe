@@ -15,7 +15,6 @@
     <modules>
         <module>bpmn</module>
         <module>docker</module>
-        <module>microprofile</module>
         <module>opentelemetry</module>
         <module>embedded</module>
         <module>panache</module>

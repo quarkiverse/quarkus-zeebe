@@ -147,17 +147,6 @@ If you already have your Quarkus project configured, you can add the `quarkus-mi
 ----
 https://quarkus.io/guides/telemetry-micrometer-tutorial[Quarkus Micrometer]
 
-==== Smallrye Metrics (Microprofile)
-If you already have your Quarkus project configured, you can add the `quarkus-smallrye-metrics` extension to your project.
-[source,xml]
-----
-<dependency>
-    <groupId>io.quarkus</groupId>
-    <artifactId>quarkus-smallrye-metrics</artifactId>
-</dependency>
-----
-https://quarkus.io/guides/smallrye-metrics[Quarkus Smallrye Metrics]
-
 === Tracing
 
 Whether `zeebe` tracing is enabled or not is done by `quarkus.zeebe.tracing.enabled` build time property. The default is `true`, but shown here to indicate how it can be disabled.

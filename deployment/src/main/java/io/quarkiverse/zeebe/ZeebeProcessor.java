@@ -34,7 +34,6 @@ import io.quarkiverse.zeebe.runtime.*;
 import io.quarkiverse.zeebe.runtime.health.ZeebeHealthCheck;
 import io.quarkiverse.zeebe.runtime.health.ZeebeTopologyHealthCheck;
 import io.quarkiverse.zeebe.runtime.metrics.MicrometerMetricsRecorder;
-import io.quarkiverse.zeebe.runtime.metrics.MicroprofileMetricsRecorder;
 import io.quarkiverse.zeebe.runtime.metrics.NoopMetricsRecorder;
 import io.quarkiverse.zeebe.runtime.tracing.*;
 import io.quarkus.arc.Arc;
@@ -109,9 +108,6 @@ public class ZeebeProcessor {
         if (metrics.isPresent()) {
             if (metrics.get().metricsSupported(MetricsFactory.MICROMETER)) {
                 additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(MicrometerMetricsRecorder.class));
-                return;
-            } else if (metrics.get().metricsSupported(MetricsFactory.MP_METRICS)) {
-                additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(MicroprofileMetricsRecorder.class));
                 return;
             }
         }
