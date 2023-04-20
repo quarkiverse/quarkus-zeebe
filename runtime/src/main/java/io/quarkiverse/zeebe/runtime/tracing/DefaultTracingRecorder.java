@@ -2,7 +2,7 @@ package io.quarkiverse.zeebe.runtime.tracing;
 
 import java.util.Collection;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 

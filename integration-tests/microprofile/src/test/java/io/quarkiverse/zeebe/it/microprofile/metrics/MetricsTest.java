@@ -7,7 +7,7 @@ import static org.awaitility.Awaitility.await;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
 package io.quarkiverse.zeebe.it.bpmn.sayhello;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class SayHelloBusinessService {

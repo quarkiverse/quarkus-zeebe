@@ -1,14 +1,15 @@
 package io.quarkiverse.zeebe.runtime.tracing;
 
-import static io.quarkus.opentelemetry.runtime.config.OpenTelemetryConfig.INSTRUMENTATION_NAME;
+import static io.quarkus.opentelemetry.runtime.config.build.OTelBuildConfig.INSTRUMENTATION_NAME;
 import static java.lang.String.valueOf;
 
 import java.util.Collection;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.opentelemetry.api.OpenTelemetry;

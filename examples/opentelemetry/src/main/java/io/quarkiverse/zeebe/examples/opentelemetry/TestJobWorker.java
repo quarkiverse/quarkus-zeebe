@@ -1,6 +1,6 @@
 package io.quarkiverse.zeebe.examples.opentelemetry;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;

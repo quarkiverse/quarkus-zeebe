@@ -3,8 +3,8 @@ package io.quarkiverse.zeebe.runtime.tracing;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import io.camunda.zeebe.client.api.JsonMapper;
 import io.camunda.zeebe.gateway.protocol.GatewayOuterClass;

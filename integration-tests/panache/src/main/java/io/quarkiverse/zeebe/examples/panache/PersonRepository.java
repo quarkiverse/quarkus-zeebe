@@ -1,6 +1,6 @@
 package io.quarkiverse.zeebe.examples.panache;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
