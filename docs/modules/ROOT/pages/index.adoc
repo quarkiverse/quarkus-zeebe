@@ -523,4 +523,4 @@ public class BaseTest {
 [[extension-configuration-reference]]
 == Extension Configuration Reference
 
-TIP: Remove this section if you don't have Quarkus configuration properties in your extension.
+include::includes/quarkus-zeebe.adoc[leveloffset=+1, opts=optional]
