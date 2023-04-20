@@ -14,7 +14,6 @@
 
     <modules>
         <module>base</module>
-        <module>opentracing</module>
         <module>opentelemetry</module>
         <module>reactive</module>
     </modules>

@@ -89,9 +89,6 @@ public class ZeebeProcessor {
         if (capabilities.isPresent(Capability.OPENTELEMETRY_TRACER)) {
             additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(OpenTelemetryTracingRecorder.class));
             additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpenTelemetryClientInterceptor.class));
-        } else if (capabilities.isPresent(Capability.SMALLRYE_OPENTRACING)) {
-            additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(OpenTracingRecorder.class));
-            additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(ZeebeOpenTracingClientInterceptor.class));
         } else {
             additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(DefaultTracingRecorder.class));
         }
@@ -227,7 +224,13 @@ public class ZeebeProcessor {
             }
         });
 
-        reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, JobWorkerInvoker.class));
+        reflectiveClass.produce(
+                ReflectiveClassBuildItem
+                        .builder(JobWorkerInvoker.class)
+                        .constructors(true)
+                        .methods(true)
+                        .fields(false)
+                        .build());
 
         List<JobWorkerMetadata> metadata = new ArrayList<>();
         for (JobWorkerMethodItem workerMethod : workerMethods) {
@@ -239,7 +242,13 @@ public class ZeebeProcessor {
             meta.methodName = workerMethod.getMethod().name();
             metadata.add(meta);
 
-            reflectiveClass.produce(new ReflectiveClassBuildItem(false, false, meta.invokerClass));
+            reflectiveClass.produce(
+                    ReflectiveClassBuildItem
+                            .builder(meta.invokerClass)
+                            .constructors(true)
+                            .methods(false)
+                            .fields(false)
+                            .build());
         }
 
         zeebeWorkers.produce(new ZeebeWorkersBuildItem(metadata));
@@ -263,7 +272,7 @@ public class ZeebeProcessor {
 
         resource.produce(new NativeImageResourceBuildItem("client-java.properties"));
 
-        reflective.produce(new ReflectiveClassBuildItem(true, true, true,
+        reflective.produce(ReflectiveClassBuildItem.builder(
                 "io.camunda.zeebe.client.impl.response.CreateProcessInstanceResponseImpl",
                 "io.camunda.zeebe.client.impl.response.ActivatedJobImpl",
                 "io.camunda.zeebe.client.impl.response.ActivateJobsResponseImpl",
@@ -283,7 +292,11 @@ public class ZeebeProcessor {
                 "io.camunda.zeebe.client.impl.response.ResolveIncidentResponseImpl",
                 "io.camunda.zeebe.client.impl.response.SetVariablesResponseImpl",
                 "io.camunda.zeebe.client.impl.response.TopologyImpl",
-                "io.camunda.zeebe.client.impl.response.UpdateRetriesJobResponseImpl"));
+                "io.camunda.zeebe.client.impl.response.UpdateRetriesJobResponseImpl")
+                .constructors(true)
+                .methods(true)
+                .fields(true)
+                .build());
 
         Collection<String> resources = discoverResources(config.resources);
         if (!resources.isEmpty()) {

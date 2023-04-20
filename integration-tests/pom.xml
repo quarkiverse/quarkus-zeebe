@@ -17,7 +17,6 @@
         <module>docker</module>
         <module>microprofile</module>
         <module>opentelemetry</module>
-        <module>opentracing</module>
         <module>embedded</module>
         <module>panache</module>
     </modules>

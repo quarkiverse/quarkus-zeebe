@@ -182,20 +182,6 @@ If you already have your Quarkus project configured, you can add the `quarkus-op
 * https://github.com/quarkiverse/quarkus-zeebe/tree/main/examples/opentelemetry[Zeebe OpenTelemetry Example]
 * https://quarkus.io/guides/opentelemetry[Quarkus OpenTelemetry]
 
-==== OpenTracing
-
-If you already have your Quarkus project configured, you can add the `smallrye-opentracing` extension to your project.
-[source,xml]
-----
-<dependency>
-    <groupId>io.quarkus</groupId>
-    <artifactId>quarkus-smallrye-opentracing</artifactId>
-</dependency>
-----
-
-* https://github.com/quarkiverse/quarkus-zeebe/tree/main/examples/opentracing[Zeebe OpenTracing Example]
-* https://quarkus.io/guides/opentracing[Quarkus OpenTracing]
-
 === Dev-Services
 Dev Services for Zeebe is automatically enabled unless:
 * `quarkus.zeebe.devservices.enabled` is set to false
