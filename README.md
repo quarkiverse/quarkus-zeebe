@@ -12,7 +12,7 @@
 
 Quarkus Zeebe provides two different version streams, one compatible with Quarkus 2.x and the other compatible with Quarkus 3.x.
 
-| Quarkus | Quarkus Unleash | Documentation                                                                                  |
+| Quarkus | Quarkus Zeebe | Documentation                                                                                  |
 |---------|-----------------|------------------------------------------------------------------------------------------------|
 | 2.x     | 0.x             | [Documentation](https://quarkiverse.github.io/quarkiverse-docs/quarkus-zeebe/0.x/index.html)   |
 | 3.x     | 1.x             | [Documentation](https://quarkiverse.github.io/quarkiverse-docs/quarkus-zeebe/dev/index.html) |
