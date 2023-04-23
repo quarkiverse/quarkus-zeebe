@@ -15,6 +15,7 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
+import io.camunda.zeebe.client.ZeebeClient;
 import io.quarkiverse.zeebe.ZeebeDevServiceBuildTimeConfig;
 import io.quarkus.deployment.IsNormal;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -32,6 +33,13 @@ import io.quarkus.runtime.configuration.ConfigUtils;
 import io.zeebe.containers.*;
 
 public class ZeebeDevServiceProcessor {
+
+    private static final String DEFAULT_ZEEBE_CONTAINER_IMAGE = "camunda/zeebe";
+
+    private static final String DEFAULT_ZEEBE_VERSION = ZeebeClient.class.getPackage().getImplementationVersion();
+
+    private static DockerImageName ZEEBE_IMAGE_NAME = DockerImageName.parse(DEFAULT_ZEEBE_CONTAINER_IMAGE)
+            .withTag(DEFAULT_ZEEBE_VERSION);
 
     private static final Logger log = Logger.getLogger(ZeebeDevServiceProcessor.class);
     static final String PROP_ZEEBE_GATEWAY_ADDRESS = "quarkus.zeebe.client.broker.gateway-address";
@@ -151,7 +159,7 @@ public class ZeebeDevServiceProcessor {
         // Starting the broker
         final Supplier<ZeebeRunningDevService> defaultZeebeBrokerSupplier = () -> {
 
-            DockerImageName image = ZeebeDefaults.getInstance().getDefaultDockerImage();
+            DockerImageName image = ZEEBE_IMAGE_NAME;
             if (config.imageName != null) {
                 image = DockerImageName.parse(config.imageName);
             }
