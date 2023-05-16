@@ -7,10 +7,22 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.quarkiverse.zeebe.JobWorker;
 import io.quarkiverse.zeebe.VariablesAsType;
 
+import java.util.Map;
+
 public class TestJobWorker {
 
     @Inject
     TestService service;
+
+    @JobWorker(name = "open-telemetry-step1", type = "open-telemetry-step1")
+    public Object openTelemetryStep1(ActivatedJob job) {
+        return Map.of("step1", true);
+    }
+
+    @JobWorker(name = "open-telemetry-step2", type = "open-telemetry-step2")
+    public Object openTelemetryStep2() {
+        return Map.of("step1", true);
+    }
 
     @JobWorker(name = "test.complete.action", type = "test.complete")
     public Parameter testComplete(@VariablesAsType Parameter p) {
