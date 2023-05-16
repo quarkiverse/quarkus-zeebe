@@ -1,13 +1,13 @@
 package io.quarkiverse.zeebe.examples.opentelemetry;
 
+import java.util.Map;
+
 import jakarta.inject.Inject;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.quarkiverse.zeebe.JobWorker;
 import io.quarkiverse.zeebe.VariablesAsType;
-
-import java.util.Map;
 
 public class TestJobWorker {
 
