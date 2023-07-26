@@ -29,8 +29,8 @@ public class ZeebeClientService {
 
     public ZeebeClientService(ZeebeRuntimeConfig config, JsonMapper jsonMapper,
             @Any Instance<ZeebeClientInterceptor> interceptors) {
-        log.infof("Creating new zeebe client for %s", config.broker.gatewayAddress);
-        ZeebeClientBuilder builder = ZeebeClientBuilderFactory.createBuilder(config);
+        log.infof("Creating new zeebe client for %s", config.client.broker.gatewayAddress);
+        ZeebeClientBuilder builder = ZeebeClientBuilderFactory.createBuilder(config.client);
         if (jsonMapper != null) {
             builder.withJsonMapper(jsonMapper);
         }

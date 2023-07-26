@@ -38,7 +38,7 @@ public class JobWorkerHandler implements JobHandler {
 
     private BackoffSupplier backoffSupplier;
 
-    private ZeebeRuntimeConfig.AutoCompleteConfig autoCompleteConfig;
+    private ZeebeClientRuntimeConfig.AutoCompleteConfig autoCompleteConfig;
 
     private MetricsRecorder metricsRecorder;
 
@@ -48,7 +48,7 @@ public class JobWorkerHandler implements JobHandler {
 
     public JobWorkerHandler(JobWorkerMetadata jobWorkerMetadata, JobWorkerInvoker invoker,
             MetricsRecorder metricsRecorder,
-            JobWorkerExceptionHandler exceptionHandler, ZeebeRuntimeConfig.AutoCompleteConfig autoCompleteConfig,
+            JobWorkerExceptionHandler exceptionHandler, ZeebeClientRuntimeConfig.AutoCompleteConfig autoCompleteConfig,
             TracingRecorder tracingRecorder) {
         this.jobWorkerMetadata = jobWorkerMetadata;
         this.invoker = invoker;

@@ -49,8 +49,8 @@ public class ZeebeRecorder {
         ZeebeClient client = clientService.client();
 
         // tracing configuration
-        if (config.tracing.attributes.isPresent()) {
-            List<String> attrs = config.tracing.attributes.get();
+        if (config.client.tracing.attributes.isPresent()) {
+            List<String> attrs = config.client.tracing.attributes.get();
             if (!attrs.isEmpty()) {
                 ZeebeTracing.setAttributes(attrs);
             }
@@ -102,7 +102,7 @@ public class ZeebeRecorder {
 
             for (JobWorkerMetadata meta : workers) {
                 try {
-                    JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = buildJobWorker(client, config, handler,
+                    JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = buildJobWorker(client, config.client, handler,
                             meta, metricsRecorder, tracingRecorder, tracingVariables);
                     if (builder != null) {
                         clientService.openWorker(builder);
@@ -118,7 +118,8 @@ public class ZeebeRecorder {
         }
     }
 
-    private static JobWorkerBuilderStep1.JobWorkerBuilderStep3 buildJobWorker(ZeebeClient client, ZeebeRuntimeConfig config,
+    private static JobWorkerBuilderStep1.JobWorkerBuilderStep3 buildJobWorker(ZeebeClient client,
+            ZeebeClientRuntimeConfig config,
             JobWorkerExceptionHandler exceptionHandler, JobWorkerMetadata meta, MetricsRecorder metricsRecorder,
             TracingRecorder tracingRecorder, Set<String> tracingVariables) {
         JobWorkerValue value = meta.workerValue;
@@ -131,7 +132,7 @@ public class ZeebeRecorder {
         }
 
         // overwrite the annotation with properties
-        ZeebeRuntimeConfig.JobHandlerConfig jonHandlerConfig = config.workers.get(type);
+        ZeebeClientRuntimeConfig.JobHandlerConfig jonHandlerConfig = config.workers.get(type);
         if (jonHandlerConfig != null) {
             jonHandlerConfig.name.ifPresent(n -> value.name = n);
             jonHandlerConfig.enabled.ifPresent(n -> value.enabled = n);
