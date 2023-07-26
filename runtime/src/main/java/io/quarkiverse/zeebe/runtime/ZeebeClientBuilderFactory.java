@@ -7,7 +7,7 @@ import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 
 public class ZeebeClientBuilderFactory {
 
-    public static ZeebeClientBuilder createBuilder(ZeebeRuntimeConfig config) {
+    public static ZeebeClientBuilder createBuilder(ZeebeClientRuntimeConfig config) {
         ZeebeClientBuilderImpl builder = new ZeebeClientBuilderImpl();
 
         builder.gatewayAddress(createGatewayAddress(config))
@@ -29,7 +29,7 @@ public class ZeebeClientBuilderFactory {
         return builder;
     }
 
-    private static String createGatewayAddress(ZeebeRuntimeConfig config) {
+    private static String createGatewayAddress(ZeebeClientRuntimeConfig config) {
         if (config.cloud.clusterId.isPresent()) {
             return String.format("%s.%s.%s:%d",
                     config.cloud.clusterId.get(),
@@ -40,8 +40,8 @@ public class ZeebeClientBuilderFactory {
         return config.broker.gatewayAddress;
     }
 
-    private static CredentialsProvider getCredentialsProvider(ZeebeRuntimeConfig config) {
-        ZeebeRuntimeConfig.CloudConfig cloud = config.cloud;
+    private static CredentialsProvider getCredentialsProvider(ZeebeClientRuntimeConfig config) {
+        ZeebeClientRuntimeConfig.CloudConfig cloud = config.cloud;
         if (cloud.clientId.isPresent() && cloud.clientSecret.isPresent() && cloud.clusterId.isPresent()) {
             OAuthCredentialsProviderBuilder builder = CredentialsProvider.newCredentialsProviderBuilder();
             builder.authorizationServerUrl(cloud.authUrl);
@@ -52,7 +52,7 @@ public class ZeebeClientBuilderFactory {
             return builder.build();
         }
 
-        ZeebeRuntimeConfig.OAuthConfig oauth = config.oauth;
+        ZeebeClientRuntimeConfig.OAuthConfig oauth = config.oauth;
         if (oauth.clientId.isPresent() && oauth.clientSecret.isPresent()) {
             OAuthCredentialsProviderBuilder builder = CredentialsProvider.newCredentialsProviderBuilder();
             builder.authorizationServerUrl(oauth.authUrl);

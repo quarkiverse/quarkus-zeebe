@@ -393,4 +393,728 @@ endif::add-copy-button-to-env-var[]
 --|boolean 
 |`true`
 
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.broker.gateway-address]]`link:#quarkus-zeebe_quarkus.zeebe.client.broker.gateway-address[quarkus.zeebe.client.broker.gateway-address]`
+
+[.description]
+--
+Zeebe gateway address. Default: localhost:26500
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_BROKER_GATEWAY_ADDRESS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_BROKER_GATEWAY_ADDRESS+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`localhost:26500`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.broker.keep-alive]]`link:#quarkus-zeebe_quarkus.zeebe.client.broker.keep-alive[quarkus.zeebe.client.broker.keep-alive]`
+
+[.description]
+--
+Client keep alive duration
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_BROKER_KEEP_ALIVE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_BROKER_KEEP_ALIVE+++`
+endif::add-copy-button-to-env-var[]
+--|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+|`PT45S`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.cluster-id]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.cluster-id[quarkus.zeebe.client.cloud.cluster-id]`
+
+[.description]
+--
+Cloud cluster ID
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_CLOUD_CLUSTER_ID+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_CLUSTER_ID+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.client-id]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.client-id[quarkus.zeebe.client.cloud.client-id]`
+
+[.description]
+--
+Cloud client secret ID
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_CLOUD_CLIENT_ID+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_CLIENT_ID+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.client-secret]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.client-secret[quarkus.zeebe.client.cloud.client-secret]`
+
+[.description]
+--
+Specify a client secret to request an access token.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_CLOUD_CLIENT_SECRET+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_CLIENT_SECRET+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.region]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.region[quarkus.zeebe.client.cloud.region]`
+
+[.description]
+--
+Cloud region
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_CLOUD_REGION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_REGION+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`bru-2`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.base-url]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.base-url[quarkus.zeebe.client.cloud.base-url]`
+
+[.description]
+--
+Cloud base URL
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_CLOUD_BASE_URL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_BASE_URL+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`zeebe.camunda.io`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.auth-url]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.auth-url[quarkus.zeebe.client.cloud.auth-url]`
+
+[.description]
+--
+Cloud authorization server URL
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_CLOUD_AUTH_URL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_AUTH_URL+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`https://login.cloud.camunda.io/oauth/token`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.port]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.port[quarkus.zeebe.client.cloud.port]`
+
+[.description]
+--
+Cloud port
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_CLOUD_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_PORT+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|`443`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.credentials-cache-path]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.credentials-cache-path[quarkus.zeebe.client.cloud.credentials-cache-path]`
+
+[.description]
+--
+Cloud credentials cache path
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_CLOUD_CREDENTIALS_CACHE_PATH+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_CREDENTIALS_CACHE_PATH+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.client-id]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.client-id[quarkus.zeebe.client.oauth.client-id]`
+
+[.description]
+--
+OAuth client secret ID
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_OAUTH_CLIENT_ID+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_CLIENT_ID+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.client-secret]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.client-secret[quarkus.zeebe.client.oauth.client-secret]`
+
+[.description]
+--
+Specify a client secret to request an access token.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_OAUTH_CLIENT_SECRET+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_CLIENT_SECRET+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.auth-url]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.auth-url[quarkus.zeebe.client.oauth.auth-url]`
+
+[.description]
+--
+Authorization server URL
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_OAUTH_AUTH_URL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_AUTH_URL+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`https://login.cloud.camunda.io/oauth/token`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.credentials-cache-path]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.credentials-cache-path[quarkus.zeebe.client.oauth.credentials-cache-path]`
+
+[.description]
+--
+Credentials cache path
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_OAUTH_CREDENTIALS_CACHE_PATH+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_CREDENTIALS_CACHE_PATH+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.connect-timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.connect-timeout[quarkus.zeebe.client.oauth.connect-timeout]`
+
+[.description]
+--
+OAuth connect timeout
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_OAUTH_CONNECT_TIMEOUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_CONNECT_TIMEOUT+++`
+endif::add-copy-button-to-env-var[]
+--|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+|`PT5S`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.read-timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.read-timeout[quarkus.zeebe.client.oauth.read-timeout]`
+
+[.description]
+--
+OAuth read timeout
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_OAUTH_READ_TIMEOUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_READ_TIMEOUT+++`
+endif::add-copy-button-to-env-var[]
+--|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+|`PT5S`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.max-retries]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.max-retries[quarkus.zeebe.client.auto-complete.max-retries]`
+
+[.description]
+--
+Maximum retries for the auto-completion command.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_MAX_RETRIES+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_MAX_RETRIES+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|`20`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.retry-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.retry-delay[quarkus.zeebe.client.auto-complete.retry-delay]`
+
+[.description]
+--
+Maximum retries for the auto-completion command.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_RETRY_DELAY+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_RETRY_DELAY+++`
+endif::add-copy-button-to-env-var[]
+--|long 
+|`50`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-backoff-factor]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-backoff-factor[quarkus.zeebe.client.auto-complete.exp-backoff-factor]`
+
+[.description]
+--
+Sets the backoff supplier. The supplier is called to determine the retry delay after each failed request; the worker then waits until the returned delay has elapsed before sending the next request. Note that this is used only for the polling mechanism - failures in the JobHandler should be handled there, and retried there if need be. Sets the backoff multiplication factor. The previous delay is multiplied by this factor. Default is 1.5.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_BACKOFF_FACTOR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_BACKOFF_FACTOR+++`
+endif::add-copy-button-to-env-var[]
+--|double 
+|`1.5`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-jitter-factor]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-jitter-factor[quarkus.zeebe.client.auto-complete.exp-jitter-factor]`
+
+[.description]
+--
+Sets the jitter factor. The next delay is changed randomly within a range of {plus}/- this factor. For example, if the next delay is calculated to be 1s and the jitterFactor is 0.1 then the actual next delay can be somewhere between 0.9 and 1.1s. Default is 0.2
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_JITTER_FACTOR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_JITTER_FACTOR+++`
+endif::add-copy-button-to-env-var[]
+--|double 
+|`0.2`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-max-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-max-delay[quarkus.zeebe.client.auto-complete.exp-max-delay]`
+
+[.description]
+--
+Sets the maximum retry delay. Note that the jitter may push the retry delay over this maximum. Default is 1000ms.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_MAX_DELAY+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_MAX_DELAY+++`
+endif::add-copy-button-to-env-var[]
+--|long 
+|`1000`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-min-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-min-delay[quarkus.zeebe.client.auto-complete.exp-min-delay]`
+
+[.description]
+--
+Sets the minimum retry delay. Note that the jitter may push the retry delay below this minimum. Default is 50ms.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_MIN_DELAY+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_MIN_DELAY+++`
+endif::add-copy-button-to-env-var[]
+--|long 
+|`50`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.message.time-to-live]]`link:#quarkus-zeebe_quarkus.zeebe.client.message.time-to-live[quarkus.zeebe.client.message.time-to-live]`
+
+[.description]
+--
+Client message time to live duration.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_MESSAGE_TIME_TO_LIVE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_MESSAGE_TIME_TO_LIVE+++`
+endif::add-copy-button-to-env-var[]
+--|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+|`PT1H`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.security.plaintext]]`link:#quarkus-zeebe_quarkus.zeebe.client.security.plaintext[quarkus.zeebe.client.security.plaintext]`
+
+[.description]
+--
+Client security plaintext flag.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_SECURITY_PLAINTEXT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_SECURITY_PLAINTEXT+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.security.cert-path]]`link:#quarkus-zeebe_quarkus.zeebe.client.security.cert-path[quarkus.zeebe.client.security.cert-path]`
+
+[.description]
+--
+Specify a path to a certificate with which to validate gateway requests.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_SECURITY_CERT_PATH+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_SECURITY_CERT_PATH+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.security.override-authority]]`link:#quarkus-zeebe_quarkus.zeebe.client.security.override-authority[quarkus.zeebe.client.security.override-authority]`
+
+[.description]
+--
+Overrides the authority used with TLS virtual hosting. Specifically, to override hostname verification in the TLS handshake. It does not change what host is actually connected to.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_SECURITY_OVERRIDE_AUTHORITY+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_SECURITY_OVERRIDE_AUTHORITY+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.max-jobs-active]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.max-jobs-active[quarkus.zeebe.client.job.max-jobs-active]`
+
+[.description]
+--
+Client worker maximum active jobs.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_MAX_JOBS_ACTIVE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_MAX_JOBS_ACTIVE+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|`32`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.worker-execution-threads]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.worker-execution-threads[quarkus.zeebe.client.job.worker-execution-threads]`
+
+[.description]
+--
+Client worker number of threads
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_WORKER_EXECUTION_THREADS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_WORKER_EXECUTION_THREADS+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|`1`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.worker-name]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.worker-name[quarkus.zeebe.client.job.worker-name]`
+
+[.description]
+--
+Client worker default name
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_WORKER_NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_WORKER_NAME+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`default`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.request-timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.request-timeout[quarkus.zeebe.client.job.request-timeout]`
+
+[.description]
+--
+Zeebe client request timeout configuration.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_REQUEST_TIMEOUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_REQUEST_TIMEOUT+++`
+endif::add-copy-button-to-env-var[]
+--|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+|`PT45S`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.default-type]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.default-type[quarkus.zeebe.client.job.default-type]`
+
+[.description]
+--
+Client worker global type
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_DEFAULT_TYPE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_DEFAULT_TYPE+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.timeout[quarkus.zeebe.client.job.timeout]`
+
+[.description]
+--
+Client job timeout
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_TIMEOUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_TIMEOUT+++`
+endif::add-copy-button-to-env-var[]
+--|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+|`PT5M`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.pool-interval]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.pool-interval[quarkus.zeebe.client.job.pool-interval]`
+
+[.description]
+--
+Client job pool interval
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_POOL_INTERVAL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_POOL_INTERVAL+++`
+endif::add-copy-button-to-env-var[]
+--|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+|`PT0.100S`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.exp-backoff-factor]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.exp-backoff-factor[quarkus.zeebe.client.job.exp-backoff-factor]`
+
+[.description]
+--
+Sets the backoff supplier. The supplier is called to determine the retry delay after each failed request; the worker then waits until the returned delay has elapsed before sending the next request. Note that this is used only for the polling mechanism - failures in the JobHandler should be handled there, and retried there if need be. Sets the backoff multiplication factor. The previous delay is multiplied by this factor. Default is 1.6.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_BACKOFF_FACTOR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_BACKOFF_FACTOR+++`
+endif::add-copy-button-to-env-var[]
+--|double 
+|`1.6`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.exp-jitter-factor]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.exp-jitter-factor[quarkus.zeebe.client.job.exp-jitter-factor]`
+
+[.description]
+--
+Sets the jitter factor. The next delay is changed randomly within a range of {plus}/- this factor. For example, if the next delay is calculated to be 1s and the jitterFactor is 0.1 then the actual next delay can be somewhere between 0.9 and 1.1s. Default is 0.1
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_JITTER_FACTOR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_JITTER_FACTOR+++`
+endif::add-copy-button-to-env-var[]
+--|double 
+|`0.1`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.exp-max-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.exp-max-delay[quarkus.zeebe.client.job.exp-max-delay]`
+
+[.description]
+--
+Sets the maximum retry delay. Note that the jitter may push the retry delay over this maximum. Default is 5000ms.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_MAX_DELAY+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_MAX_DELAY+++`
+endif::add-copy-button-to-env-var[]
+--|long 
+|`5000`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.job.exp-min-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.exp-min-delay[quarkus.zeebe.client.job.exp-min-delay]`
+
+[.description]
+--
+Sets the minimum retry delay. Note that the jitter may push the retry delay below this minimum. Default is 50ms.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_MIN_DELAY+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_MIN_DELAY+++`
+endif::add-copy-button-to-env-var[]
+--|long 
+|`50`
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.tracing.attributes]]`link:#quarkus-zeebe_quarkus.zeebe.client.tracing.attributes[quarkus.zeebe.client.tracing.attributes]`
+
+[.description]
+--
+List of span names
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_TRACING_ATTRIBUTES+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_TRACING_ATTRIBUTES+++`
+endif::add-copy-button-to-env-var[]
+--|list of string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.enabled[quarkus.zeebe.client.workers."workers".enabled]`
+
+[.description]
+--
+Zeebe worker enable or disable flag.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.name]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.name[quarkus.zeebe.client.workers."workers".name]`
+
+[.description]
+--
+Zeebe worker handler name.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__NAME+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__NAME+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.timeout[quarkus.zeebe.client.workers."workers".timeout]`
+
+[.description]
+--
+Zeebe worker timeout.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__TIMEOUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__TIMEOUT+++`
+endif::add-copy-button-to-env-var[]
+--|long 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.max-jobs-active]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.max-jobs-active[quarkus.zeebe.client.workers."workers".max-jobs-active]`
+
+[.description]
+--
+Zeebe worker maximum jobs active.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__MAX_JOBS_ACTIVE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__MAX_JOBS_ACTIVE+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.request-timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.request-timeout[quarkus.zeebe.client.workers."workers".request-timeout]`
+
+[.description]
+--
+Zeebe worker request timeout.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__REQUEST_TIMEOUT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__REQUEST_TIMEOUT+++`
+endif::add-copy-button-to-env-var[]
+--|long 
+|
+
+
+a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.poll-interval]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.poll-interval[quarkus.zeebe.client.workers."workers".poll-interval]`
+
+[.description]
+--
+Zeebe worker poll interval.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__POLL_INTERVAL+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_WORKERS__WORKERS__POLL_INTERVAL+++`
+endif::add-copy-button-to-env-var[]
+--|long 
+|
+
 |===
+ifndef::no-duration-note[]
+[NOTE]
+[id='duration-note-anchor-{summaryTableId}']
+.About the Duration format
+====
+The format for durations uses the standard `java.time.Duration` format.
+You can learn more about it in the link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html#parse-java.lang.CharSequence-[Duration#parse() javadoc].
+
+You can also provide duration values starting with a number.
+In this case, if the value consists only of a number, the converter treats the value as seconds.
+Otherwise, `PT` is implicitly prepended to the value to obtain a standard `java.time.Duration` format.
+====
+endif::no-duration-note[]

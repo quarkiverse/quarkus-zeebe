@@ -14,7 +14,7 @@ import io.camunda.zeebe.process.test.assertions.BpmnAssert;
 import io.camunda.zeebe.process.test.filters.RecordStream;
 import io.camunda.zeebe.protocol.record.Record;
 import io.quarkiverse.zeebe.runtime.ZeebeClientBuilderFactory;
-import io.quarkiverse.zeebe.runtime.ZeebeRuntimeConfig;
+import io.quarkiverse.zeebe.runtime.ZeebeClientRuntimeConfig;
 import io.quarkus.test.common.DevServicesContext;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import io.zeebe.containers.exporter.DebugReceiver;
@@ -51,7 +51,7 @@ public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager, D
     public void setIntegrationTestContext(DevServicesContext context) {
         String gateway = context.devServicesProperties().get("quarkiverse.zeebe.devservices.test.gateway-address");
         if (gateway != null) {
-            ZeebeRuntimeConfig config = new ZeebeRuntimeConfig();
+            ZeebeClientRuntimeConfig config = new ZeebeClientRuntimeConfig();
             config.broker.gatewayAddress = gateway;
             ZeebeClientBuilder builder = ZeebeClientBuilderFactory.createBuilder(config);
             CLIENT = builder.build();
