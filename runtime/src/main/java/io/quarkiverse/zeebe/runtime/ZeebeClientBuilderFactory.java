@@ -69,6 +69,7 @@ public class ZeebeClientBuilderFactory {
             // setup connection timeout
             builder.connectTimeout(oauth.connectTimeout);
             builder.readTimeout(oauth.readTimeout);
+            return builder.build();
         }
         return null;
     }
