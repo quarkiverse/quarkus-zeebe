@@ -666,7 +666,7 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_TOKEN_AUDIENCE+++`
 endif::add-copy-button-to-env-var[]
 --|string 
-|`zeebe.camunda.io`
+|
 
 
 a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.max-retries]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.max-retries[quarkus.zeebe.client.auto-complete.max-retries]`

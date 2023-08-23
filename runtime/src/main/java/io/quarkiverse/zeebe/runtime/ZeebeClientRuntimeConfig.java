@@ -441,8 +441,8 @@ public class ZeebeClientRuntimeConfig {
         /**
          * Zeebe token audience
          */
-        @ConfigItem(name = "token-audience", defaultValue = "zeebe.camunda.io")
-        public String tokenAudience;
+        @ConfigItem(name = "token-audience")
+        public Optional<String> tokenAudience;
     }
 
 }
