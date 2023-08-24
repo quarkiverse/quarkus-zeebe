@@ -437,6 +437,12 @@ public class ZeebeClientRuntimeConfig {
          */
         @ConfigItem(name = "read-timeout", defaultValue = "PT5S")
         public Duration readTimeout;
+
+        /**
+         * Zeebe token audience
+         */
+        @ConfigItem(name = "token-audience")
+        public Optional<String> tokenAudience;
     }
 
 }

@@ -60,11 +60,7 @@ public class ZeebeClientBuilderFactory {
             oauth.clientSecret.ifPresent(builder::clientSecret);
             oauth.credentialsCachePath.ifPresent(builder::credentialsCachePath);
 
-            // remove port from the gateway address
-            int index = config.broker.gatewayAddress.lastIndexOf(':');
-            if (index > 0) {
-                builder.audience(config.broker.gatewayAddress.substring(0, index));
-            }
+            builder.audience(createOauthAudience(config));
 
             // setup connection timeout
             builder.connectTimeout(oauth.connectTimeout);
@@ -72,6 +68,19 @@ public class ZeebeClientBuilderFactory {
             return builder.build();
         }
         return null;
+    }
+
+    private static String createOauthAudience(ZeebeClientRuntimeConfig config) {
+        return config.oauth.tokenAudience.orElseGet(
+                () -> removePortFromAddress(config.broker.gatewayAddress));
+    }
+
+    private static String removePortFromAddress(String address) {
+        int index = address.lastIndexOf(':');
+        if (index > 0) {
+            return address.substring(0, index);
+        }
+        return address;
     }
 
 }
