@@ -24,7 +24,7 @@
   </scm>
   <properties>
     <quarkus.version>3.2.3.Final</quarkus.version>
-    <zeebe.version>8.2.12</zeebe.version>
+    <zeebe.version>8.3.0</zeebe.version>
     <zeebe.testcontainers.version>3.6.0</zeebe.testcontainers.version>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
