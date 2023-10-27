@@ -4,12 +4,16 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 public class TestResources implements QuarkusTestResourceLifecycleManager {
+
+    private static final Logger log = LoggerFactory.getLogger(TestResources.class);
 
     public static String JAEGER_HOST;
     public static Integer JAEGER_PORT;
@@ -23,22 +27,16 @@ public class TestResources implements QuarkusTestResourceLifecycleManager {
     public Map<String, String> start() {
         jaeger.start();
 
-        JAEGER_HOST = getBaseUrl(jaeger);
+        JAEGER_HOST = String.format("http://%s", jaeger.getHost());
         JAEGER_PORT = jaeger.getMappedPort(16686);
-        return Map.of("quarkus.otel.exporter.otlp.traces.endpoint", getUrl(jaeger, 4317));
+        log.info("JAEGER_HOST: {}, JAEGER_PORT: {}", JAEGER_HOST, JAEGER_PORT);
+        return Map.of("quarkus.otel.exporter.otlp.traces.endpoint",
+                String.format("http://%s:%s", jaeger.getHost(), jaeger.getMappedPort(4317)));
     }
 
     @Override
     public void stop() {
         jaeger.stop();
-    }
-
-    private String getUrl(GenericContainer<?> container, int port) {
-        return String.format("http://%s:%s", container.getHost(), container.getMappedPort(port));
-    }
-
-    private String getBaseUrl(GenericContainer<?> container) {
-        return String.format("http://%s", container.getHost());
     }
 
     public static class BoundPortHttpWaitStrategy extends HttpWaitStrategy {

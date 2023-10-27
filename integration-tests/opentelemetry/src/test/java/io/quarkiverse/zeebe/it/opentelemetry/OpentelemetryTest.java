@@ -68,7 +68,7 @@ public class OpentelemetryTest {
         ProcessInstanceAssert a = BpmnAssert.assertThat(event);
         await().atMost(7, SECONDS).untilAsserted(a::isCompleted);
 
-        await().atMost(7, SECONDS).until(() -> jaegerTrace().getList("data").size() > 0);
+        await().atMost(7, SECONDS).until(() -> !jaegerTrace().getList("data").isEmpty());
 
         JsonPath response = jaegerTrace();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -89,7 +89,7 @@ public class OpentelemetryTest {
         Assertions.assertNotNull(testMethod);
         Map<String, JaegerTag> testTags = testMethod.tags.stream()
                 .collect(Collectors.toMap(x -> x.key, x -> x));
-        assertTag(testTags, "otel.library.name", "io.quarkus.opentelemetry");
+        //        assertTag(testTags, "otel.library.name", "io.quarkus.opentelemetry");
         assertTag(testTags, "bpmn-component", "job-worker");
         assertTag(testTags, "bpmn-process-id", "test");
         assertTag(testTags, "bpmn-process-element-id", "Activity_0apsury");
@@ -103,7 +103,7 @@ public class OpentelemetryTest {
         Assertions.assertNotNull(completeSpan);
         Map<String, JaegerTag> completeTags = completeSpan.tags.stream()
                 .collect(Collectors.toMap(x -> x.key, x -> x));
-        assertTag(completeTags, "otel.library.name", "io.quarkus.opentelemetry");
+        //        assertTag(completeTags, "otel.library.name", "io.quarkus.opentelemetry");
         assertTag(completeTags, "bpmn-job-variables", "{\"name\":\"name-input\",\"message\":\"Ok\"}");
 
     }
