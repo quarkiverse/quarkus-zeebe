@@ -24,7 +24,7 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <quarkus.version>3.2.3.Final</quarkus.version>
+    <quarkus.version>3.5.0</quarkus.version>
     <zeebe.version>8.3.1</zeebe.version>
     <zeebe.testcontainers.version>3.6.0</zeebe.testcontainers.version>
     <maven.compiler.source>11</maven.compiler.source>
@@ -34,7 +34,7 @@
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <surefire-plugin.version>3.2.1</surefire-plugin.version>
-    <quarkus-mockserver.version>1.1.0</quarkus-mockserver.version>
+    <quarkus-mockserver.version>1.2.0</quarkus-mockserver.version>
   </properties>
   <dependencyManagement>
     <dependencies>

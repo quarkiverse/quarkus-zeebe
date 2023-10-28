@@ -14,7 +14,7 @@ import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.ClientCall;
 import io.grpc.MethodDescriptor;
-import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
@@ -27,14 +27,8 @@ import io.quarkiverse.zeebe.ZeebeClientInterceptor;
 @ApplicationScoped
 public class ZeebeOpenTelemetryClientInterceptor implements ZeebeClientInterceptor {
 
-    private final OpenTelemetry openTelemetry;
-
     @Inject
     JsonMapper mapper;
-
-    public ZeebeOpenTelemetryClientInterceptor(OpenTelemetry openTelemetry) {
-        this.openTelemetry = openTelemetry;
-    }
 
     @Override
     public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method, CallOptions callOptions,
@@ -51,7 +45,7 @@ public class ZeebeOpenTelemetryClientInterceptor implements ZeebeClientIntercept
             @Override
             protected void createTracingMessage(ReqT message) {
                 // create new span for the request
-                Span callSpan = openTelemetry.getTracer(INSTRUMENTATION_NAME)
+                Span callSpan = GlobalOpenTelemetry.getTracer(INSTRUMENTATION_NAME)
                         .spanBuilder(message.getClass().getSimpleName())
                         .setSpanKind(SpanKind.CLIENT).startSpan();
                 try (Scope ignored = callSpan.makeCurrent()) {
@@ -71,7 +65,7 @@ public class ZeebeOpenTelemetryClientInterceptor implements ZeebeClientIntercept
                         .newBuilder(request);
 
                 Map<String, Object> variables = mapper.fromJsonAsMap(request.getVariables());
-                ContextPropagators propagators = openTelemetry.getPropagators();
+                ContextPropagators propagators = GlobalOpenTelemetry.getPropagators();
                 TextMapPropagator textMapPropagator = propagators.getTextMapPropagator();
 
                 textMapPropagator.inject(Context.current(), variables, Map::put);

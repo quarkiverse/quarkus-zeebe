@@ -9,10 +9,9 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
@@ -24,19 +23,16 @@ import io.opentelemetry.context.propagation.TextMapPropagator;
 @ApplicationScoped
 public class OpenTelemetryTracingRecorder implements TracingRecorder {
 
-    @Inject
-    OpenTelemetry openTelemetry;
-
     @Override
     public TracingContext createTracingContext(String clazz, String method, String name, ActivatedJob job) {
-        Span span = createSpan(openTelemetry, clazz, method, name, job);
+        Span span = createSpan(clazz, method, name, job);
         Scope scope = span.makeCurrent();
         return new OpenTelemetryTracingContext(span, scope);
     }
 
     @Override
     public Collection<String> fields() {
-        return openTelemetry.getPropagators().getTextMapPropagator().fields();
+        return GlobalOpenTelemetry.getPropagators().getTextMapPropagator().fields();
     }
 
     public static class OpenTelemetryTracingContext implements TracingContext {
@@ -68,9 +64,9 @@ public class OpenTelemetryTracingRecorder implements TracingRecorder {
         }
     }
 
-    private static Span createSpan(OpenTelemetry openTelemetry, String clazz, String method, String spanName,
+    private static Span createSpan(String clazz, String method, String spanName,
             ActivatedJob job) {
-        TextMapPropagator textMapPropagator = openTelemetry.getPropagators().getTextMapPropagator();
+        TextMapPropagator textMapPropagator = GlobalOpenTelemetry.getPropagators().getTextMapPropagator();
 
         Context context = textMapPropagator.extract(Context.current(), job.getVariablesAsMap(), new TextMapGetter<>() {
             @Override
@@ -92,7 +88,7 @@ public class OpenTelemetryTracingRecorder implements TracingRecorder {
             }
         });
 
-        Span span = openTelemetry.getTracer(INSTRUMENTATION_NAME).spanBuilder(spanName).setParent(context)
+        Span span = GlobalOpenTelemetry.getTracer(INSTRUMENTATION_NAME).spanBuilder(spanName).setParent(context)
                 .setSpanKind(SpanKind.CONSUMER).startSpan();
 
         ZeebeTracing.setAttributes(clazz, method, job, new ZeebeTracing.AttributeConfigCallback() {
