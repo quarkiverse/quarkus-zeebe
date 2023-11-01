@@ -52,12 +52,14 @@ public class ZeebeDevProcessor {
             try {
                 Enumeration<URL> location = Thread.currentThread().getContextClassLoader()
                         .getResources(config.resources.location);
-                Files.walk(Path.of(location.nextElement().toURI()))
-                        .filter(Files::isDirectory)
-                        .map(Path::toString)
-                        .map(dir -> dir.replace('\\', '/'))
-                        .peek(dir -> log.infof("Watched bpmn sub-directory %s", dir))
-                        .forEach(dir -> watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(dir)));
+                if (location.hasMoreElements()) {
+                    Files.walk(Path.of(location.nextElement().toURI()))
+                            .filter(Files::isDirectory)
+                            .map(Path::toString)
+                            .map(dir -> dir.replace('\\', '/'))
+                            .peek(dir -> log.infof("Watched bpmn sub-directory %s", dir))
+                            .forEach(dir -> watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(dir)));
+                }
             } catch (Exception ex) {
                 throw new RuntimeException("Error find all sub-directories of " + config.resources.location, ex);
             }
