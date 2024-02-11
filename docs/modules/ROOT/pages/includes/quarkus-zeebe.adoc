@@ -10,7 +10,7 @@ h|[[quarkus-zeebe_configuration]]link:#quarkus-zeebe_configuration[Configuration
 h|Type
 h|Default
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.enabled[quarkus.zeebe.devservices.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-enabled[quarkus.zeebe.devservices.enabled]`
 
 
 [.description]
@@ -29,7 +29,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.port[quarkus.zeebe.devservices.port]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-port]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-port[quarkus.zeebe.devservices.port]`
 
 
 [.description]
@@ -48,7 +48,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.shared]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.shared[quarkus.zeebe.devservices.shared]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-shared]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-shared[quarkus.zeebe.devservices.shared]`
 
 
 [.description]
@@ -69,7 +69,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.service-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.service-name[quarkus.zeebe.devservices.service-name]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-service-name]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-service-name[quarkus.zeebe.devservices.service-name]`
 
 
 [.description]
@@ -88,7 +88,7 @@ endif::add-copy-button-to-env-var[]
 |`zeebe`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.image-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.image-name[quarkus.zeebe.devservices.image-name]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-image-name]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-image-name[quarkus.zeebe.devservices.image-name]`
 
 
 [.description]
@@ -105,7 +105,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.reuse]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.reuse[quarkus.zeebe.devservices.reuse]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-reuse]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-reuse[quarkus.zeebe.devservices.reuse]`
 
 
 [.description]
@@ -122,7 +122,7 @@ endif::add-copy-button-to-env-var[]
 |`false`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.enabled[quarkus.zeebe.devservices.monitor.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-monitor-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-monitor-enabled[quarkus.zeebe.devservices.monitor.enabled]`
 
 
 [.description]
@@ -139,7 +139,7 @@ endif::add-copy-button-to-env-var[]
 |`false`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.port[quarkus.zeebe.devservices.monitor.port]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-monitor-port]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-monitor-port[quarkus.zeebe.devservices.monitor.port]`
 
 
 [.description]
@@ -158,7 +158,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.image-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.image-name[quarkus.zeebe.devservices.monitor.image-name]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-monitor-image-name]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-monitor-image-name[quarkus.zeebe.devservices.monitor.image-name]`
 
 
 [.description]
@@ -175,7 +175,7 @@ endif::add-copy-button-to-env-var[]
 |`ghcr.io/lorislab/zeebe-dev-monitor:8.3`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.service-name]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.service-name[quarkus.zeebe.devservices.monitor.service-name]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-monitor-service-name]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-monitor-service-name[quarkus.zeebe.devservices.monitor.service-name]`
 
 
 [.description]
@@ -194,7 +194,7 @@ endif::add-copy-button-to-env-var[]
 |`zeebe-dev-monitor`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.monitor.reuse]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.monitor.reuse[quarkus.zeebe.devservices.monitor.reuse]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-monitor-reuse]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-monitor-reuse[quarkus.zeebe.devservices.monitor.reuse]`
 
 
 [.description]
@@ -211,7 +211,7 @@ endif::add-copy-button-to-env-var[]
 |`false`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.test.receiver-port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.test.receiver-port[quarkus.zeebe.devservices.test.receiver-port]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-test-receiver-port]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-test-receiver-port[quarkus.zeebe.devservices.test.receiver-port]`
 
 
 [.description]
@@ -230,7 +230,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.test.exporter]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.test.exporter[quarkus.zeebe.devservices.test.exporter]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-test-exporter]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-test-exporter[quarkus.zeebe.devservices.test.exporter]`
 
 
 [.description]
@@ -247,7 +247,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.debug-exporter.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.debug-exporter.enabled[quarkus.zeebe.devservices.debug-exporter.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-debug-exporter-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-debug-exporter-enabled[quarkus.zeebe.devservices.debug-exporter.enabled]`
 
 
 [.description]
@@ -264,7 +264,7 @@ endif::add-copy-button-to-env-var[]
 |`false`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.devservices.debug-exporter.receiver-port]]`link:#quarkus-zeebe_quarkus.zeebe.devservices.debug-exporter.receiver-port[quarkus.zeebe.devservices.debug-exporter.receiver-port]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-debug-exporter-receiver-port]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-debug-exporter-receiver-port[quarkus.zeebe.devservices.debug-exporter.receiver-port]`
 
 
 [.description]
@@ -281,7 +281,7 @@ endif::add-copy-button-to-env-var[]
 |`8080`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-files]]`link:#quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-files[quarkus.zeebe.dev-mode.watch-bpmn-files]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-files]]`link:#quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-files[quarkus.zeebe.dev-mode.watch-bpmn-files]`
 
 
 [.description]
@@ -298,7 +298,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-dir]]`link:#quarkus-zeebe_quarkus.zeebe.dev-mode.watch-bpmn-dir[quarkus.zeebe.dev-mode.watch-bpmn-dir]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-dir]]`link:#quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-dir[quarkus.zeebe.dev-mode.watch-bpmn-dir]`
 
 
 [.description]
@@ -315,7 +315,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.dev-mode.watch-job-worker]]`link:#quarkus-zeebe_quarkus.zeebe.dev-mode.watch-job-worker[quarkus.zeebe.dev-mode.watch-job-worker]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-watch-job-worker]]`link:#quarkus-zeebe_quarkus-zeebe-dev-mode-watch-job-worker[quarkus.zeebe.dev-mode.watch-job-worker]`
 
 
 [.description]
@@ -332,7 +332,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.resources.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.resources.enabled[quarkus.zeebe.resources.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-resources-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-resources-enabled[quarkus.zeebe.resources.enabled]`
 
 
 [.description]
@@ -349,7 +349,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.resources.location]]`link:#quarkus-zeebe_quarkus.zeebe.resources.location[quarkus.zeebe.resources.location]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-resources-location]]`link:#quarkus-zeebe_quarkus-zeebe-resources-location[quarkus.zeebe.resources.location]`
 
 
 [.description]
@@ -366,7 +366,7 @@ endif::add-copy-button-to-env-var[]
 |`bpmn`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.metrics.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.metrics.enabled[quarkus.zeebe.metrics.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-metrics-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-metrics-enabled[quarkus.zeebe.metrics.enabled]`
 
 
 [.description]
@@ -383,7 +383,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.health.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.health.enabled[quarkus.zeebe.health.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-health-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-health-enabled[quarkus.zeebe.health.enabled]`
 
 
 [.description]
@@ -400,7 +400,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus.zeebe.tracing.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.tracing.enabled[quarkus.zeebe.tracing.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-tracing-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-tracing-enabled[quarkus.zeebe.tracing.enabled]`
 
 
 [.description]
@@ -417,7 +417,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.broker.gateway-address]]`link:#quarkus-zeebe_quarkus.zeebe.client.broker.gateway-address[quarkus.zeebe.client.broker.gateway-address]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-broker-gateway-address]]`link:#quarkus-zeebe_quarkus-zeebe-client-broker-gateway-address[quarkus.zeebe.client.broker.gateway-address]`
 
 
 [.description]
@@ -434,7 +434,7 @@ endif::add-copy-button-to-env-var[]
 |`localhost:26500`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.broker.keep-alive]]`link:#quarkus-zeebe_quarkus.zeebe.client.broker.keep-alive[quarkus.zeebe.client.broker.keep-alive]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-broker-keep-alive]]`link:#quarkus-zeebe_quarkus-zeebe-client-broker-keep-alive[quarkus.zeebe.client.broker.keep-alive]`
 
 
 [.description]
@@ -448,11 +448,11 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_CLIENT_BROKER_KEEP_ALIVE+++`
 endif::add-copy-button-to-env-var[]
 --|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
-  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[title=More information about the Duration format]]
 |`PT45S`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.cluster-id]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.cluster-id[quarkus.zeebe.client.cloud.cluster-id]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-cluster-id]]`link:#quarkus-zeebe_quarkus-zeebe-client-cloud-cluster-id[quarkus.zeebe.client.cloud.cluster-id]`
 
 
 [.description]
@@ -469,7 +469,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.client-id]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.client-id[quarkus.zeebe.client.cloud.client-id]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-client-id]]`link:#quarkus-zeebe_quarkus-zeebe-client-cloud-client-id[quarkus.zeebe.client.cloud.client-id]`
 
 
 [.description]
@@ -486,7 +486,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.client-secret]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.client-secret[quarkus.zeebe.client.cloud.client-secret]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-client-secret]]`link:#quarkus-zeebe_quarkus-zeebe-client-cloud-client-secret[quarkus.zeebe.client.cloud.client-secret]`
 
 
 [.description]
@@ -503,7 +503,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.region]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.region[quarkus.zeebe.client.cloud.region]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-region]]`link:#quarkus-zeebe_quarkus-zeebe-client-cloud-region[quarkus.zeebe.client.cloud.region]`
 
 
 [.description]
@@ -520,7 +520,7 @@ endif::add-copy-button-to-env-var[]
 |`bru-2`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.base-url]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.base-url[quarkus.zeebe.client.cloud.base-url]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-base-url]]`link:#quarkus-zeebe_quarkus-zeebe-client-cloud-base-url[quarkus.zeebe.client.cloud.base-url]`
 
 
 [.description]
@@ -537,7 +537,7 @@ endif::add-copy-button-to-env-var[]
 |`zeebe.camunda.io`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.auth-url]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.auth-url[quarkus.zeebe.client.cloud.auth-url]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-auth-url]]`link:#quarkus-zeebe_quarkus-zeebe-client-cloud-auth-url[quarkus.zeebe.client.cloud.auth-url]`
 
 
 [.description]
@@ -554,7 +554,7 @@ endif::add-copy-button-to-env-var[]
 |`https://login.cloud.camunda.io/oauth/token`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.port]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.port[quarkus.zeebe.client.cloud.port]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-port]]`link:#quarkus-zeebe_quarkus-zeebe-client-cloud-port[quarkus.zeebe.client.cloud.port]`
 
 
 [.description]
@@ -571,7 +571,7 @@ endif::add-copy-button-to-env-var[]
 |`443`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.cloud.credentials-cache-path]]`link:#quarkus-zeebe_quarkus.zeebe.client.cloud.credentials-cache-path[quarkus.zeebe.client.cloud.credentials-cache-path]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-credentials-cache-path]]`link:#quarkus-zeebe_quarkus-zeebe-client-cloud-credentials-cache-path[quarkus.zeebe.client.cloud.credentials-cache-path]`
 
 
 [.description]
@@ -588,7 +588,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.client-id]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.client-id[quarkus.zeebe.client.oauth.client-id]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-client-id]]`link:#quarkus-zeebe_quarkus-zeebe-client-oauth-client-id[quarkus.zeebe.client.oauth.client-id]`
 
 
 [.description]
@@ -605,7 +605,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.client-secret]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.client-secret[quarkus.zeebe.client.oauth.client-secret]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-client-secret]]`link:#quarkus-zeebe_quarkus-zeebe-client-oauth-client-secret[quarkus.zeebe.client.oauth.client-secret]`
 
 
 [.description]
@@ -622,7 +622,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.auth-url]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.auth-url[quarkus.zeebe.client.oauth.auth-url]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-auth-url]]`link:#quarkus-zeebe_quarkus-zeebe-client-oauth-auth-url[quarkus.zeebe.client.oauth.auth-url]`
 
 
 [.description]
@@ -639,7 +639,7 @@ endif::add-copy-button-to-env-var[]
 |`https://login.cloud.camunda.io/oauth/token`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.credentials-cache-path]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.credentials-cache-path[quarkus.zeebe.client.oauth.credentials-cache-path]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-credentials-cache-path]]`link:#quarkus-zeebe_quarkus-zeebe-client-oauth-credentials-cache-path[quarkus.zeebe.client.oauth.credentials-cache-path]`
 
 
 [.description]
@@ -656,7 +656,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.connect-timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.connect-timeout[quarkus.zeebe.client.oauth.connect-timeout]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-connect-timeout]]`link:#quarkus-zeebe_quarkus-zeebe-client-oauth-connect-timeout[quarkus.zeebe.client.oauth.connect-timeout]`
 
 
 [.description]
@@ -670,11 +670,11 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_CONNECT_TIMEOUT+++`
 endif::add-copy-button-to-env-var[]
 --|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
-  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[title=More information about the Duration format]]
 |`PT5S`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.read-timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.read-timeout[quarkus.zeebe.client.oauth.read-timeout]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-read-timeout]]`link:#quarkus-zeebe_quarkus-zeebe-client-oauth-read-timeout[quarkus.zeebe.client.oauth.read-timeout]`
 
 
 [.description]
@@ -688,11 +688,11 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_READ_TIMEOUT+++`
 endif::add-copy-button-to-env-var[]
 --|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
-  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[title=More information about the Duration format]]
 |`PT5S`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.oauth.token-audience]]`link:#quarkus-zeebe_quarkus.zeebe.client.oauth.token-audience[quarkus.zeebe.client.oauth.token-audience]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-token-audience]]`link:#quarkus-zeebe_quarkus-zeebe-client-oauth-token-audience[quarkus.zeebe.client.oauth.token-audience]`
 
 
 [.description]
@@ -709,7 +709,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.max-retries]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.max-retries[quarkus.zeebe.client.auto-complete.max-retries]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-max-retries]]`link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-max-retries[quarkus.zeebe.client.auto-complete.max-retries]`
 
 
 [.description]
@@ -726,7 +726,7 @@ endif::add-copy-button-to-env-var[]
 |`20`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.retry-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.retry-delay[quarkus.zeebe.client.auto-complete.retry-delay]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-retry-delay]]`link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-retry-delay[quarkus.zeebe.client.auto-complete.retry-delay]`
 
 
 [.description]
@@ -743,7 +743,7 @@ endif::add-copy-button-to-env-var[]
 |`50`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-backoff-factor]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-backoff-factor[quarkus.zeebe.client.auto-complete.exp-backoff-factor]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-backoff-factor]]`link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-backoff-factor[quarkus.zeebe.client.auto-complete.exp-backoff-factor]`
 
 
 [.description]
@@ -760,7 +760,7 @@ endif::add-copy-button-to-env-var[]
 |`1.5`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-jitter-factor]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-jitter-factor[quarkus.zeebe.client.auto-complete.exp-jitter-factor]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-jitter-factor]]`link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-jitter-factor[quarkus.zeebe.client.auto-complete.exp-jitter-factor]`
 
 
 [.description]
@@ -777,7 +777,7 @@ endif::add-copy-button-to-env-var[]
 |`0.2`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-max-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-max-delay[quarkus.zeebe.client.auto-complete.exp-max-delay]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-max-delay]]`link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-max-delay[quarkus.zeebe.client.auto-complete.exp-max-delay]`
 
 
 [.description]
@@ -794,7 +794,7 @@ endif::add-copy-button-to-env-var[]
 |`1000`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-min-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.auto-complete.exp-min-delay[quarkus.zeebe.client.auto-complete.exp-min-delay]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-min-delay]]`link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-min-delay[quarkus.zeebe.client.auto-complete.exp-min-delay]`
 
 
 [.description]
@@ -811,7 +811,7 @@ endif::add-copy-button-to-env-var[]
 |`50`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.message.time-to-live]]`link:#quarkus-zeebe_quarkus.zeebe.client.message.time-to-live[quarkus.zeebe.client.message.time-to-live]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-message-time-to-live]]`link:#quarkus-zeebe_quarkus-zeebe-client-message-time-to-live[quarkus.zeebe.client.message.time-to-live]`
 
 
 [.description]
@@ -825,11 +825,11 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_CLIENT_MESSAGE_TIME_TO_LIVE+++`
 endif::add-copy-button-to-env-var[]
 --|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
-  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[title=More information about the Duration format]]
 |`PT1H`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.security.plaintext]]`link:#quarkus-zeebe_quarkus.zeebe.client.security.plaintext[quarkus.zeebe.client.security.plaintext]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-security-plaintext]]`link:#quarkus-zeebe_quarkus-zeebe-client-security-plaintext[quarkus.zeebe.client.security.plaintext]`
 
 
 [.description]
@@ -846,7 +846,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.security.cert-path]]`link:#quarkus-zeebe_quarkus.zeebe.client.security.cert-path[quarkus.zeebe.client.security.cert-path]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-security-cert-path]]`link:#quarkus-zeebe_quarkus-zeebe-client-security-cert-path[quarkus.zeebe.client.security.cert-path]`
 
 
 [.description]
@@ -863,7 +863,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.security.override-authority]]`link:#quarkus-zeebe_quarkus.zeebe.client.security.override-authority[quarkus.zeebe.client.security.override-authority]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-security-override-authority]]`link:#quarkus-zeebe_quarkus-zeebe-client-security-override-authority[quarkus.zeebe.client.security.override-authority]`
 
 
 [.description]
@@ -880,7 +880,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.max-jobs-active]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.max-jobs-active[quarkus.zeebe.client.job.max-jobs-active]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-max-jobs-active]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-max-jobs-active[quarkus.zeebe.client.job.max-jobs-active]`
 
 
 [.description]
@@ -897,7 +897,7 @@ endif::add-copy-button-to-env-var[]
 |`32`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.worker-execution-threads]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.worker-execution-threads[quarkus.zeebe.client.job.worker-execution-threads]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-worker-execution-threads]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-worker-execution-threads[quarkus.zeebe.client.job.worker-execution-threads]`
 
 
 [.description]
@@ -914,7 +914,7 @@ endif::add-copy-button-to-env-var[]
 |`1`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.worker-name]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.worker-name[quarkus.zeebe.client.job.worker-name]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-worker-name]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-worker-name[quarkus.zeebe.client.job.worker-name]`
 
 
 [.description]
@@ -931,7 +931,7 @@ endif::add-copy-button-to-env-var[]
 |`default`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.request-timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.request-timeout[quarkus.zeebe.client.job.request-timeout]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-request-timeout]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-request-timeout[quarkus.zeebe.client.job.request-timeout]`
 
 
 [.description]
@@ -945,11 +945,11 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_REQUEST_TIMEOUT+++`
 endif::add-copy-button-to-env-var[]
 --|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
-  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[title=More information about the Duration format]]
 |`PT45S`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.default-type]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.default-type[quarkus.zeebe.client.job.default-type]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-default-type]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-default-type[quarkus.zeebe.client.job.default-type]`
 
 
 [.description]
@@ -966,7 +966,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.timeout[quarkus.zeebe.client.job.timeout]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-timeout]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-timeout[quarkus.zeebe.client.job.timeout]`
 
 
 [.description]
@@ -980,11 +980,11 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_TIMEOUT+++`
 endif::add-copy-button-to-env-var[]
 --|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
-  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[title=More information about the Duration format]]
 |`PT5M`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.pool-interval]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.pool-interval[quarkus.zeebe.client.job.pool-interval]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-pool-interval]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-pool-interval[quarkus.zeebe.client.job.pool-interval]`
 
 
 [.description]
@@ -998,11 +998,11 @@ ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_POOL_INTERVAL+++`
 endif::add-copy-button-to-env-var[]
 --|link:https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html[Duration]
-  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[], title=More information about the Duration format]
+  link:#duration-note-anchor-{summaryTableId}[icon:question-circle[title=More information about the Duration format]]
 |`PT0.100S`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.exp-backoff-factor]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.exp-backoff-factor[quarkus.zeebe.client.job.exp-backoff-factor]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-exp-backoff-factor]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-exp-backoff-factor[quarkus.zeebe.client.job.exp-backoff-factor]`
 
 
 [.description]
@@ -1019,7 +1019,7 @@ endif::add-copy-button-to-env-var[]
 |`1.6`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.exp-jitter-factor]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.exp-jitter-factor[quarkus.zeebe.client.job.exp-jitter-factor]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-exp-jitter-factor]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-exp-jitter-factor[quarkus.zeebe.client.job.exp-jitter-factor]`
 
 
 [.description]
@@ -1036,7 +1036,7 @@ endif::add-copy-button-to-env-var[]
 |`0.1`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.exp-max-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.exp-max-delay[quarkus.zeebe.client.job.exp-max-delay]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-exp-max-delay]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-exp-max-delay[quarkus.zeebe.client.job.exp-max-delay]`
 
 
 [.description]
@@ -1053,7 +1053,7 @@ endif::add-copy-button-to-env-var[]
 |`5000`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.job.exp-min-delay]]`link:#quarkus-zeebe_quarkus.zeebe.client.job.exp-min-delay[quarkus.zeebe.client.job.exp-min-delay]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-job-exp-min-delay]]`link:#quarkus-zeebe_quarkus-zeebe-client-job-exp-min-delay[quarkus.zeebe.client.job.exp-min-delay]`
 
 
 [.description]
@@ -1070,7 +1070,7 @@ endif::add-copy-button-to-env-var[]
 |`50`
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.tracing.attributes]]`link:#quarkus-zeebe_quarkus.zeebe.client.tracing.attributes[quarkus.zeebe.client.tracing.attributes]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-tracing-attributes]]`link:#quarkus-zeebe_quarkus-zeebe-client-tracing-attributes[quarkus.zeebe.client.tracing.attributes]`
 
 
 [.description]
@@ -1087,7 +1087,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.enabled]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.enabled[quarkus.zeebe.client.workers."workers".enabled]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-workers-workers-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-client-workers-workers-enabled[quarkus.zeebe.client.workers."workers".enabled]`
 
 
 [.description]
@@ -1104,7 +1104,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.name]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.name[quarkus.zeebe.client.workers."workers".name]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-workers-workers-name]]`link:#quarkus-zeebe_quarkus-zeebe-client-workers-workers-name[quarkus.zeebe.client.workers."workers".name]`
 
 
 [.description]
@@ -1121,7 +1121,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.timeout[quarkus.zeebe.client.workers."workers".timeout]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-workers-workers-timeout]]`link:#quarkus-zeebe_quarkus-zeebe-client-workers-workers-timeout[quarkus.zeebe.client.workers."workers".timeout]`
 
 
 [.description]
@@ -1138,7 +1138,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.max-jobs-active]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.max-jobs-active[quarkus.zeebe.client.workers."workers".max-jobs-active]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-workers-workers-max-jobs-active]]`link:#quarkus-zeebe_quarkus-zeebe-client-workers-workers-max-jobs-active[quarkus.zeebe.client.workers."workers".max-jobs-active]`
 
 
 [.description]
@@ -1155,7 +1155,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.request-timeout]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.request-timeout[quarkus.zeebe.client.workers."workers".request-timeout]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-workers-workers-request-timeout]]`link:#quarkus-zeebe_quarkus-zeebe-client-workers-workers-request-timeout[quarkus.zeebe.client.workers."workers".request-timeout]`
 
 
 [.description]
@@ -1172,7 +1172,7 @@ endif::add-copy-button-to-env-var[]
 |
 
 
-a| [[quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.poll-interval]]`link:#quarkus-zeebe_quarkus.zeebe.client.workers.-workers-.poll-interval[quarkus.zeebe.client.workers."workers".poll-interval]`
+a| [[quarkus-zeebe_quarkus-zeebe-client-workers-workers-poll-interval]]`link:#quarkus-zeebe_quarkus-zeebe-client-workers-workers-poll-interval[quarkus.zeebe.client.workers."workers".poll-interval]`
 
 
 [.description]
@@ -1195,7 +1195,7 @@ ifndef::no-duration-note[]
 .About the Duration format
 ====
 To write duration values, use the standard `java.time.Duration` format.
-See the link:https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html#parse(java.lang.CharSequence)[Duration#parse() javadoc] for more information.
+See the link:https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html#parse(java.lang.CharSequence)[Duration#parse() Java API documentation] for more information.
 
 You can also use a simplified format, starting with a number:
 

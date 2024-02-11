@@ -25,10 +25,11 @@
   </scm>
   <properties>
     <quarkus.version>3.7.2</quarkus.version>
-    <zeebe.version>8.3.1</zeebe.version>
+    <zeebe.version>8.4.2</zeebe.version>
     <zeebe.testcontainers.version>3.6.3</zeebe.testcontainers.version>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
