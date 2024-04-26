@@ -2,6 +2,7 @@ package io.quarkiverse.zeebe.runtime;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionException;
 
 import org.slf4j.Logger;
@@ -79,12 +80,9 @@ public class JobWorkerHandler implements JobHandler {
         Context context = VertxContext.getOrCreateDuplicatedContext(vertx);
         VertxContextSafetyToggle.setContextSafe(context, true);
         if (invoker.isBlocking()) {
-            context.executeBlocking(p -> {
-                try {
-                    doInvoke(client, job);
-                } finally {
-                    p.complete();
-                }
+            context.executeBlocking((Callable<Void>) () -> {
+                doInvoke(client, job);
+                return null;
             }, false);
         } else {
             context.runOnContext(event -> doInvoke(client, job));
