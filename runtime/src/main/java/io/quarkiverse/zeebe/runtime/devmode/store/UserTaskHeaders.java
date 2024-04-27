@@ -1,4 +1,4 @@
-package io.quarkiverse.zeebe.runtime.devmode.models;
+package io.quarkiverse.zeebe.runtime.devmode.store;
 
 public final class UserTaskHeaders {
 

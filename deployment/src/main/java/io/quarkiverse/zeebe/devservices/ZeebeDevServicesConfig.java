@@ -63,7 +63,7 @@ public class ZeebeDevServicesConfig {
     /**
      * Helper to define the stop strategy for containers created by DevServices.
      * In particular, we don't want to actually stop the containers when they
-     * have been flagged for reuse, and when the Testcontainers configuration
+     * have been flagged for reuse, and when the Test-containers configuration
      * has been explicitly set to allow container reuse.
      * To enable reuse, ass {@literal testcontainers.reuse.enable=true} in your
      * {@literal .testcontainers.properties} file, to be stored in your home.
@@ -72,12 +72,6 @@ public class ZeebeDevServicesConfig {
      */
     @ConfigItem(name = "reuse", defaultValue = "false")
     public boolean reuse;
-
-    /**
-     * Zeebe simple monitor configuration
-     */
-    @ConfigItem(name = "monitor")
-    public MonitorConfig monitor = new MonitorConfig();
 
     /**
      * Optional fixed debug export receiver port the dev service will listen to.
@@ -129,59 +123,6 @@ public class ZeebeDevServicesConfig {
          */
         @ConfigItem(name = "receiver-port", defaultValue = "8080")
         public int receiverPort;
-    }
-
-    /**
-     * Zeebe dev monitor configuration.
-     */
-    @ConfigGroup
-    public static class MonitorConfig {
-
-        /**
-         * Enable or disable dev monitor for dev-services.
-         */
-        @ConfigItem(name = "enabled", defaultValue = "false")
-        public boolean enabled;
-
-        /**
-         * Optional fixed port the dev monitor will listen to.
-         * <p>
-         * If not defined, the port will be chosen randomly.
-         */
-        @ConfigItem(name = "port")
-        public OptionalInt port;
-
-        /**
-         * The container image name to use, for container based zeebe simple monitor.
-         */
-        @ConfigItem(name = "image-name", defaultValue = "ghcr.io/lorislab/zeebe-dev-monitor:8.4")
-        public String imageName;
-
-        /**
-         * The value of the {@code quarkus-dev-service-zeebe} label attached to the started container.
-         * This property is used when {@code shared} is set to {@code true}.
-         * In this case, before starting a container, Dev Services for Zeebe looks for a container with the
-         * {@code quarkus-dev-service-zeebe} label
-         * set to the configured value. If found, it will use this container instead of starting a new one. Otherwise, it
-         * starts a new container with the {@code quarkus-dev-service-zeebe} label set to the specified value.
-         * <p>
-         * This property is used when you need multiple shared Zeebe servers.
-         */
-        @ConfigItem(name = "service-name", defaultValue = "zeebe-dev-monitor")
-        public String serviceName;
-
-        /**
-         * Helper to define the stop strategy for containers created by DevServices.
-         * In particular, we don't want to actually stop the containers when they
-         * have been flagged for reuse, and when the Testcontainers configuration
-         * has been explicitly set to allow container reuse.
-         * To enable reuse, ass {@literal testcontainers.reuse.enable=true} in your
-         * {@literal .testcontainers.properties} file, to be stored in your home.
-         *
-         * @see <a href="https://www.testcontainers.org/features/configuration/">Testcontainers Configuration</a>.
-         */
-        @ConfigItem(name = "reuse", defaultValue = "false")
-        public boolean reuse;
     }
 
 }
