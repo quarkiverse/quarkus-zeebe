@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.protocol.jackson.ZeebeProtocolModule;
 import io.camunda.zeebe.protocol.record.Record;
 import io.camunda.zeebe.protocol.record.RecordType;
+import io.quarkiverse.zeebe.runtime.devmode.store.RecordStore;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
@@ -29,8 +30,6 @@ public class MonitorHandler implements Handler<RoutingContext> {
     private static final Logger log = LoggerFactory.getLogger(MonitorHandler.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new ZeebeProtocolModule());
-
-    ImportDataService importDataService = new ImportDataService();
 
     private static final Map<Integer, Long> positions = new HashMap<>();
 
@@ -57,23 +56,24 @@ public class MonitorHandler implements Handler<RoutingContext> {
             }
 
             for (final Record<?> record : records) {
-//                log.info("Add record {}}/{} ==> {}", record.getValueType(), record.getPosition(), record.getRecordType());
+                //                log.info("Add record {}}/{} ==> {}", record.getValueType(), record.getPosition(), record.getRecordType());
                 //                log.info("{}", record);
                 if (record.getRecordType() == RecordType.EVENT) {
                     switch (record.getValueType()) {
-                        case PROCESS_INSTANCE -> importDataService.importProcessInstance(value(record));
-                        case PROCESS -> importDataService.importProcess(value(record));
-                        case TIMER -> importDataService.importTimer(value(record));
-                        case PROCESS_MESSAGE_SUBSCRIPTION -> importDataService.importMessageSubscription(value(record));
-                        case MESSAGE_START_EVENT_SUBSCRIPTION -> importDataService.importMessageStartEventSubscription(value(record));
-                        case ERROR -> importDataService.importError(value(record));
-                        case INCIDENT -> importDataService.importIncident(value(record));
-                        case JOB -> importDataService.importJob(value(record));
-                        case MESSAGE -> importDataService.importMessage(value(record));
-                        case VARIABLE -> importDataService.importVariable(value(record));
-                        case SIGNAL -> importDataService.importSignal(value(record));
-                        case SIGNAL_SUBSCRIPTION -> importDataService.importSignalSubscription(value(record));
-                        case ESCALATION -> importDataService.importEscalation(value(record));
+                        case PROCESS_INSTANCE -> RecordStore.importProcessInstance(value(record));
+                        case PROCESS -> RecordStore.importProcess(value(record));
+                        case TIMER -> RecordStore.importTimer(value(record));
+                        case PROCESS_MESSAGE_SUBSCRIPTION -> RecordStore.importMessageSubscription(value(record));
+                        case MESSAGE_START_EVENT_SUBSCRIPTION ->
+                            RecordStore.importMessageStartEventSubscription(value(record));
+                        case ERROR -> RecordStore.importError(value(record));
+                        case INCIDENT -> RecordStore.importIncident(value(record));
+                        case JOB -> RecordStore.importJob(value(record));
+                        case MESSAGE -> RecordStore.importMessage(value(record));
+                        case VARIABLE -> RecordStore.importVariable(value(record));
+                        case SIGNAL -> RecordStore.importSignal(value(record));
+                        case SIGNAL_SUBSCRIPTION -> RecordStore.importSignalSubscription(value(record));
+                        case ESCALATION -> RecordStore.importEscalation(value(record));
                     }
                 }
 

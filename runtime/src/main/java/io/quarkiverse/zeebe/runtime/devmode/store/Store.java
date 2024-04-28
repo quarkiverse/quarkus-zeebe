@@ -1,14 +1,11 @@
 package io.quarkiverse.zeebe.runtime.devmode.store;
 
-import io.camunda.zeebe.protocol.record.Record;
-import io.camunda.zeebe.protocol.record.RecordValue;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import io.camunda.zeebe.protocol.record.Record;
+import io.camunda.zeebe.protocol.record.RecordValue;
 
 public class Store<RECORD extends RecordValue> {
 
@@ -34,8 +31,11 @@ public class Store<RECORD extends RecordValue> {
     }
 
     private RecordStoreItem<RECORD> put(Object id, Record<RECORD> record) {
-        var item = new RecordStoreItem<>(id, record);
-        data.put(item.id(), item);
+        var item = createItem(id, record);
+        var old = data.put(item.id(), item);
+        if (old != null && !old.data().isEmpty()) {
+            item.data().putAll(old.data());
+        }
         return item;
     }
 
@@ -51,4 +51,7 @@ public class Store<RECORD extends RecordValue> {
         return data.values().stream().filter(x -> filter.test(x.record())).findFirst();
     }
 
+    protected RecordStoreItem<RECORD> createItem(Object id, Record<RECORD> record) {
+        return new RecordStoreItem<>(id, record, new HashMap<>());
+    }
 }
