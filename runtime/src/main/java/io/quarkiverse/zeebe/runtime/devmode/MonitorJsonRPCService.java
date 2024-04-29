@@ -21,7 +21,23 @@ public class MonitorJsonRPCService {
     }
 
     @NonBlocking
+    public RecordStoreItem<ProcessInstanceRecordValue> instance(String id) {
+        return RecordStore.INSTANCES.get(id);
+    }
+
+    @NonBlocking
     public Collection<RecordStoreItem<Process>> processes() {
         return RecordStore.PROCESS_DEFINITIONS.values();
     }
+
+    @NonBlocking
+    public RecordStoreItem<Process> process(long id) {
+        return RecordStore.PROCESS_DEFINITIONS_XML.get(id);
+    }
+
+    @NonBlocking
+    public String xml(long id) {
+        return new String(RecordStore.PROCESS_DEFINITIONS_XML.get(id).record().getValue().getResource());
+    }
+
 }

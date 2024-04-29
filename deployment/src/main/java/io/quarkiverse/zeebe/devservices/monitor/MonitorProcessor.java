@@ -39,13 +39,13 @@ public class MonitorProcessor {
         cardPageBuildItem.addPage(Page.webComponentPageBuilder()
                 .title("Instances")
                 .icon("font-awesome-solid:cubes")
-                .componentLink("qwc-zeebe-monitor-instances.js"));
+                .componentLink("qwc-zeebe-instances.js"));
         cardsProducer.produce(cardPageBuildItem);
 
         var t = Page.webComponentPageBuilder()
                 .title("Processes")
                 .icon("font-awesome-solid:cubes")
-                .componentLink("qwc-zeebe-monitor-processes.js");
+                .componentLink("qwc-zeebe-processes.js");
         cardPageBuildItem.addPage(t);
         cardsProducer.produce(cardPageBuildItem);
 

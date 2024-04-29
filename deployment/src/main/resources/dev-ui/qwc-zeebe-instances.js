@@ -1,10 +1,11 @@
 import { LitElement, html, css} from 'lit';
 import { JsonRpc } from 'jsonrpc';
 import '@vaadin/grid';
+import '@vaadin/button';
 import { columnBodyRenderer } from '@vaadin/grid/lit.js';
 import 'qui-badge';
 
-export class ZeebeMonitorInstances extends LitElement {
+export class ZeebeInstances extends LitElement {
 
     jsonRpc = new JsonRpc(this);
 
@@ -62,6 +63,11 @@ export class ZeebeMonitorInstances extends LitElement {
 
     render() {
         return html`
+            <div class="buttonBar">
+                <vaadin-button class="button" theme="success" @click=${() => this._fetchData()}>
+                    <vaadin-icon icon="font-awesome-solid:comment"></vaadin-icon>Refresh
+                </vaadin-button>
+            </div>
             <vaadin-grid .items="${this._instances}" class="arctable" theme="no-border">
                 <vaadin-grid-column header="Process Instance Key" ${columnBodyRenderer(this._idRenderer, [])} resizable></vaadin-grid-column>
                 <vaadin-grid-column header="Process Id" ${columnBodyRenderer(this._processIdRenderer, [])} resizable></vaadin-grid-column>
@@ -99,4 +105,4 @@ export class ZeebeMonitorInstances extends LitElement {
       return html`${item.data.end}`;
     }
 }
-customElements.define('qwc-zeebe-monitor-instances', ZeebeMonitorInstances);
+customElements.define('qwc-zeebe-instances', ZeebeInstances);
