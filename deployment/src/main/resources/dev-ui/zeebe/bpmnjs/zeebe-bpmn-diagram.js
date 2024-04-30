@@ -2,7 +2,7 @@ import { LitElement, html, css} from 'lit';
 import {} from "./bpmn-navigated-viewer.development.js";
 import '@vaadin/icon';
 
-export class ZeebeDiagram extends LitElement {
+export class ZeebeBpmnDiagram extends LitElement {
 
     static styles = css`
         .right-2 {
@@ -96,4 +96,4 @@ export class ZeebeDiagram extends LitElement {
     }
 }
 
-customElements.define('qwc-zeebe-diagram', ZeebeDiagram);
+customElements.define('zeebe-bpmn-diagram', ZeebeBpmnDiagram);

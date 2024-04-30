@@ -2,7 +2,8 @@ import { LitElement, html, css} from 'lit';
 import { JsonRpc } from 'jsonrpc';
 import '@vaadin/grid';
 import { columnBodyRenderer } from '@vaadin/grid/lit.js';
-import './bpmnjs/qwc-zeebe-diagram.js';
+import './zeebe/zeebe-process.js';
+import './zeebe/bpmnjs/zeebe-bpmn-diagram.js';
 
 export class ZeebeProcesses extends LitElement {
 
@@ -56,7 +57,11 @@ export class ZeebeProcesses extends LitElement {
         if (this._item == null) {
             return this._table();
         }
-        return this._process();
+        return html`
+            <a @click=${() => this._item = null}>&lt; Back</a>
+            <zeebe-bpmn-diagram id="diagram" .xml=${this._xml}></zeebe-bpmn-diagram>
+            <zeebe-process id="process" .item=${this._item}></zeebe-process>
+        `;
     }
 
     _table() {
@@ -101,12 +106,6 @@ export class ZeebeProcesses extends LitElement {
             });
     }
 
-    _process() {
-        return html`
-            <a @click=${() => this._item = null}>&lt; Back</a>
-            <qwc-zeebe-diagram xml="${this._xml}"></qwc-zeebe-diagram>
-        `;
-    }
 }
 
 customElements.define('qwc-zeebe-processes', ZeebeProcesses);
