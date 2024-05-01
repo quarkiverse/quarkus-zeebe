@@ -1,17 +1,29 @@
-import { LitElement, html, css} from 'lit';
+import { JsonRpc } from 'jsonrpc';
+import { LitElement, html} from 'lit';
 import './bpmnjs/zeebe-bpmn-diagram.js';
 import '@vaadin/tabs';
 import '@vaadin/grid';
 import '@vaadin/tabsheet';
+import '@vaadin/form-layout';
+import '@vaadin/text-field';
+import './bpmnjs/zeebe-bpmn-diagram.js';
 
 export class ZeebeProcess extends LitElement {
 
     static properties = {
         item: { type: Object },
+        xml: {},
+        extension: {type: String},
     };
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.jsonRpc = new JsonRpc(this.extension);
+    }
 
     render() {
         return html`
+            <zeebe-bpmn-diagram id="diagram" .xml=${this.xml}></zeebe-bpmn-diagram>
             <vaadin-tabsheet>
                 <vaadin-tabs slot="tabs">
                     <vaadin-tab id="process-info" theme="icon">
@@ -37,8 +49,12 @@ export class ZeebeProcess extends LitElement {
                 </vaadin-tabs>
 
                 <div tab="process-info">
-                    Key:
-                    <p>${this.item.id}</p>
+                    <vaadin-form-layout>
+                        <vaadin-text-field readonly label="Key" value="${this.item.id}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="BPMN process id" value="${this.item.record.value.bpmnProcessId}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="Version" value="${this.item.record.value.version}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="Deploy time" value="${this.item.data.time}"></vaadin-text-field>
+                    </vaadin-form-layout>
                 </div>
                 <div tab="process-instances">2 This is the Dashboard tab content</div>
                 <div tab="process-messages">3 This is the Dashboard tab content</div>

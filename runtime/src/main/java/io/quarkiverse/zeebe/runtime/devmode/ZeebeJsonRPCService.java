@@ -9,7 +9,7 @@ import io.quarkiverse.zeebe.runtime.devmode.store.RecordStoreItem;
 import io.smallrye.common.annotation.NonBlocking;
 import io.smallrye.mutiny.Multi;
 
-public class MonitorJsonRPCService {
+public class ZeebeJsonRPCService {
 
     public Multi<RecordStore.NotificationEvent> notifications() {
         return RecordStore.NOTIFICATIONS;

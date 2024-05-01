@@ -21,13 +21,13 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
-public class MonitorHandler implements Handler<RoutingContext> {
+public class ZeebeRecordsHandler implements Handler<RoutingContext> {
 
     private static final String SERVER_HEADER = "Server";
 
     private static final String SERVER_INFO = "zpt-debug/1.1";
 
-    private static final Logger log = LoggerFactory.getLogger(MonitorHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(ZeebeRecordsHandler.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper().registerModule(new ZeebeProtocolModule());
 
