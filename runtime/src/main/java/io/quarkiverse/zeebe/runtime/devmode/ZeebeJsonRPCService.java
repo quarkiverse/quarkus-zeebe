@@ -21,7 +21,7 @@ public class ZeebeJsonRPCService {
     }
 
     @NonBlocking
-    public RecordStoreItem<ProcessInstanceRecordValue> instance(String id) {
+    public RecordStoreItem<ProcessInstanceRecordValue> instance(long id) {
         return RecordStore.INSTANCES.get(id);
     }
 
@@ -32,7 +32,7 @@ public class ZeebeJsonRPCService {
 
     @NonBlocking
     public RecordStoreItem<Process> process(long id) {
-        return RecordStore.PROCESS_DEFINITIONS_XML.get(id);
+        return RecordStore.PROCESS_DEFINITIONS.get(id);
     }
 
     @NonBlocking

@@ -5,21 +5,7 @@ import '@vaadin/icon';
 export class ZeebeBpmnDiagram extends LitElement {
 
     static styles = css`
-        .right-2 {
-            right: 0.5rem;
-        }
-        .h-16 {
-            width: 4rem;
-        }
-        .w-16 {
-            width: 4rem;
-        }
-        .top-0 {
-            top: 0;
-        }        
-        .absolute {
-            position: absolute;
-        }        
+        
         .relative {
             position: relative;
         }
@@ -86,7 +72,7 @@ export class ZeebeBpmnDiagram extends LitElement {
         return html`
             <div class="relative">
                 <div id="zeebe-diagram" class="bpmn-diagram"></div>
-                <vaadin-icon  @click=${() => this._resetView()} class="absolute top-0 right-2 w-16 h-16 focus:outline-none" icon='font-awesome-solid:location-crosshairs'></vaadin-icon>
+                <vaadin-icon  @click=${() => this._resetView()} style="position: absolute; top: 0.625rem; right: 0.625rem; width: 2.25rem; height: 2.25rem;" icon='font-awesome-solid:location-crosshairs'></vaadin-icon>
             </div>
         `;
     }

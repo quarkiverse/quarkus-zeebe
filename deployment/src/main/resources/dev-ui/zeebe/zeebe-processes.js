@@ -2,7 +2,6 @@ import { LitElement, html, css} from 'lit';
 import { JsonRpc } from 'jsonrpc';
 import '@vaadin/grid';
 import { columnBodyRenderer } from '@vaadin/grid/lit.js';
-import './zeebe-process.js';
 
 export class ZeebeProcesses extends LitElement {
 
@@ -23,14 +22,12 @@ export class ZeebeProcesses extends LitElement {
     static properties = {
         _items: {state: true},
         _filteredItems: {state: true},
-        _item: {state: true},
-        _xml: {state: true},
-        extension: {type: String},
+        navigation: {},
     };
 
     connectedCallback() {
         super.connectedCallback();
-        this.jsonRpc = new JsonRpc(this.extension);
+        this.jsonRpc = new JsonRpc(this.context.extension);
         this._fetchData();
 
         this._observer = this.jsonRpc.notifications().onNext(eventResponse => {
@@ -61,21 +58,6 @@ export class ZeebeProcesses extends LitElement {
     }
 
     render() {
-        if (this._item == null) {
-            return this._table();
-        }
-        return html`
-            <vaadin-horizontal-layout theme="spacing-xs padding">
-                <a @click=${() => this._item = null}>Processes</a>
-                <div>/</div>
-                <div>${this._item.id}</div>
-            </vaadin-horizontal-layout>
-
-            <zeebe-process id="process" .item=${this._item} .xml=${this._xml} .extension=${this.extension}></zeebe-process>
-        `;
-    }
-
-    _table() {
         return html`
             <vaadin-horizontal-layout theme="spacing padding"  style="align-items: stretch">
                 <vaadin-text-field style="align-self: start" placeholder="Search" @value-changed=${this._searchTable}>
@@ -87,7 +69,7 @@ export class ZeebeProcesses extends LitElement {
                     Deploy process
                 </vaadin-button>
             </vaadin-horizontal-layout>
-            
+
             <vaadin-grid .items="${this._filteredItems}" class="arctable" theme="no-border">
                 <vaadin-grid-column header="Process Definition Key" ${columnBodyRenderer(this._definitionKeyRenderer, [])} resizable></vaadin-grid-column>
                 <vaadin-grid-column header="BPMN Process Id" path="bpmnProcessId" resizable></vaadin-grid-column>
@@ -112,18 +94,9 @@ export class ZeebeProcesses extends LitElement {
 
     _definitionKeyRenderer(item) {
         return html`
-            <a @click=${() => this._fetchProcess(item)}>${item.id}</a>
+            <a @click=${() => this.navigation({ nav: "process", id: item.id})}>${item.id}</a>
         `;
     }
-
-    _fetchProcess(item) {
-        this.jsonRpc.xml({id: item.id})
-            .then(itemResponse => {
-                this._xml = itemResponse.result;
-                this._item = item;
-            });
-    }
-
 }
 
 customElements.define('zeebe-processes', ZeebeProcesses);
