@@ -65,6 +65,12 @@ public class RecordStore {
                     sendEvent(
                             new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(),
                                     RecordStore.ProcessInstanceEventType.CREATED));
+
+                    // update process definitions
+                    var pd = PROCESS_DEFINITIONS.get(record.getValue().getProcessDefinitionKey());
+                    if (pd != null) {
+                        pd.data().merge("active", 0, (v, n) -> ((int) v) + 1);
+                    }
                 }
                 case ELEMENT_TERMINATED, ELEMENT_COMPLETED -> {
                     if (intent == ProcessInstanceIntent.ELEMENT_COMPLETED) {
@@ -73,6 +79,13 @@ public class RecordStore {
                         item.data().put("state", "TERMINATED");
                     }
                     item.data().put("end", localDateTime(record.getTimestamp()));
+
+                    // update process definitions
+                    var pd = PROCESS_DEFINITIONS.get(record.getValue().getProcessDefinitionKey());
+                    if (pd != null) {
+                        pd.data().merge("active", 0, (v, n) -> ((int) v) - 1);
+                        pd.data().merge("ended", 0, (v, n) -> ((int) v) + 1);
+                    }
                     sendEvent(
                             new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(),
                                     ProcessInstanceEventType.REMOVED));
@@ -98,6 +111,8 @@ public class RecordStore {
 
         var item = PROCESS_DEFINITIONS.put(ic.withValue(p.withResource()), r -> r.getValue().getProcessDefinitionKey());
         item.data().put("time", localDateTime(record.getTimestamp()));
+        item.data().put("active", 0);
+        item.data().put("ended", 0);
 
         PROCESS_DEFINITIONS_XML.put(record, r -> r.getValue().getProcessDefinitionKey());
 

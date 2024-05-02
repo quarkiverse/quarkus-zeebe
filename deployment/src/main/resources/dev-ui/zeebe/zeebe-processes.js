@@ -53,6 +53,8 @@ export class ZeebeProcesses extends LitElement {
                     bpmnProcessId: `${item.record.value.bpmnProcessId}`,
                     version: `${item.record.value.version}`,
                     time: `${item.data.time}`,
+                    active: `${item.data.active}`,
+                    ended: `${item.data.ended}`,
                 }));
                 this._filteredItems = this._items;
             });
@@ -90,6 +92,8 @@ export class ZeebeProcesses extends LitElement {
                 <vaadin-grid-column header="Process Definition Key" ${columnBodyRenderer(this._definitionKeyRenderer, [])} resizable></vaadin-grid-column>
                 <vaadin-grid-column header="BPMN Process Id" path="bpmnProcessId" resizable></vaadin-grid-column>
                 <vaadin-grid-column header="Version" path="version"></vaadin-grid-column>
+                <vaadin-grid-column header="#Active" path="active"></vaadin-grid-column>
+                <vaadin-grid-column header="#Ended" path="ended"></vaadin-grid-column>
                 <vaadin-grid-column header="Deployment time" path="time" resizable></vaadin-grid-column>
             </vaadin-grid>
         `;
