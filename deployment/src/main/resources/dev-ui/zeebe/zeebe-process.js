@@ -23,17 +23,18 @@ export class ZeebeProcess extends LitElement {
         this.jsonRpc.process({id: this.context.id})
             .then(itemResponse => {
                 this._item = itemResponse.result;
+                return this.jsonRpc.xml({id: this.context.id})
+                    .then(itemResponse => {
+                        this._xml = itemResponse.result;
+                    });
             });
-        this.jsonRpc.xml({id: this.context.id})
-            .then(itemResponse => {
-                this._xml = itemResponse.result;
-            });
+
     }
 
     render() {
         return html`
             ${when(this._xml, 
-                    () => html`<zeebe-bpmn-diagram id="diagram" .xml="${this._xml}"></zeebe-bpmn-diagram>`,
+                    () => html`<zeebe-bpmn-diagram id="diagram" .xml="${this._xml}" .data=${this._item.data}></zeebe-bpmn-diagram>`,
                     () => html`<p style="position: relative; overflow: hidden; width: 100%; height: 100%;"></p>`
             )}
             ${when(this._item,

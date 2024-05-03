@@ -32,7 +32,12 @@ public class ZeebeJsonRPCService {
 
     @NonBlocking
     public RecordStoreItem<Process> process(long id) {
-        return RecordStore.PROCESS_DEFINITIONS.get(id);
+
+        var item = RecordStore.PROCESS_DEFINITIONS.get(id);
+        if (item != null) {
+            item.data().put("diagram_e", RecordStore.findProcessElements((Long) item.id()));
+        }
+        return item;
     }
 
     @NonBlocking

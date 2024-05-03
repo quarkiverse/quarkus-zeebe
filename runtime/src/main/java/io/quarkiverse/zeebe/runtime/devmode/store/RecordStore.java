@@ -3,10 +3,14 @@ package io.quarkiverse.zeebe.runtime.devmode.store;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.camunda.zeebe.protocol.Protocol;
 import io.camunda.zeebe.protocol.record.ImmutableRecord;
 import io.camunda.zeebe.protocol.record.Record;
+import io.camunda.zeebe.protocol.record.intent.Intent;
 import io.camunda.zeebe.protocol.record.intent.MessageIntent;
 import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent;
 import io.camunda.zeebe.protocol.record.value.*;
@@ -235,4 +239,23 @@ public class RecordStore {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneOffset.systemDefault()).toString();
     }
 
+    static Set<BpmnElementType> PROCESS_ELEMENTS_TYPES = Set.of(BpmnElementType.PROCESS, BpmnElementType.MULTI_INSTANCE_BODY);
+    static Set<Intent> PROCESS_ELEMENT_INTENTS = Set.of(ProcessInstanceIntent.ELEMENT_ACTIVATED,
+            ProcessInstanceIntent.ELEMENT_COMPLETED);
+
+    public static Map<String, Map<String, Long>> findProcessElements(Long pdk) {
+        return ELEMENT_INSTANCES.findBy(
+                record -> record.getValue().getProcessDefinitionKey() == pdk
+                && !PROCESS_ELEMENTS_TYPES.contains(record.getValue().getBpmnElementType())
+                && PROCESS_ELEMENT_INTENTS.contains(record.getIntent())
+        ).collect(
+                Collectors.groupingBy(
+                        x -> x.record().getValue().getElementId(),
+                        Collectors.mapping(
+                            x -> x.record().getIntent(),
+                            Collectors.groupingBy(Intent::name, Collectors.counting())
+                        )
+                )
+        );
+    }
 }
