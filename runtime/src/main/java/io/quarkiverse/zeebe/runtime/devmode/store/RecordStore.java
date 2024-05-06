@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import io.camunda.zeebe.protocol.Protocol;
 import io.camunda.zeebe.protocol.record.ImmutableRecord;
 import io.camunda.zeebe.protocol.record.Record;
+import io.camunda.zeebe.protocol.record.intent.IncidentIntent;
 import io.camunda.zeebe.protocol.record.intent.Intent;
 import io.camunda.zeebe.protocol.record.intent.MessageIntent;
 import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent;
@@ -127,15 +128,17 @@ public class RecordStore {
     public static void importJob(final Record<JobRecordValue> record) {
         JobRecordValue value = record.getValue();
         if (UserTaskHeaders.JOB_TYPE.equals(value.getType())) {
-            USER_TASKS.put(record, Record::getKey);
+            var ut = USER_TASKS.put(record, Record::getKey);
+            ut.data().put("time", localDateTime(record.getTimestamp()));
             return;
         }
-        JOBS.put(record, Record::getKey);
+        var job = JOBS.put(record, Record::getKey);
+        job.data().put("time", localDateTime(record.getTimestamp()));
     }
 
     public static void importVariable(final Record<VariableRecordValue> record) {
-        var absent = VARIABLES.putIfAbsent(record, r -> r.getPartitionId() + "#" + r.getPosition());
-        if (absent) {
+        var variable = VARIABLES.putIfAbsent(record, r -> r.getPartitionId() + "#" + r.getPosition());
+        if (variable != null) {
             VariableRecordValue value = record.getValue();
             sendEvent(
                     new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(),
@@ -144,7 +147,10 @@ public class RecordStore {
     }
 
     public static void importError(final Record<ErrorRecordValue> record) {
-        ERRORS.putIfAbsent(record, Record::getPosition);
+        var error = ERRORS.putIfAbsent(record, Record::getPosition);
+        if (error != null) {
+            error.data().put("created", localDateTime(record.getTimestamp()));
+        }
     }
 
     public static void importTimer(final Record<TimerRecordValue> record) {
@@ -167,7 +173,15 @@ public class RecordStore {
     }
 
     public static void importIncident(final Record<IncidentRecordValue> record) {
-        INCIDENTS.put(record, Record::getKey);
+        var incident = INCIDENTS.put(record, Record::getKey);
+        IncidentIntent intent = (IncidentIntent) record.getIntent();
+        if (intent == IncidentIntent.CREATED) {
+            incident.data().put("created", localDateTime(record.getTimestamp()));
+            incident.data().put("resolved", "");
+        }
+        if (intent == IncidentIntent.RESOLVED) {
+            incident.data().put("resolved", localDateTime(record.getTimestamp()));
+        }
     }
 
     public static void importSignalSubscription(final Record<SignalSubscriptionRecordValue> record) {

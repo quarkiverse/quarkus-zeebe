@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1qm93fg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <bpmn:process id="Start_Timer" name="Start_Timer" isExecutable="true">
+    <bpmn:endEvent id="Event_1ssve85">
+      <bpmn:incoming>Flow_1ra9im1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ra9im1" sourceRef="StartTimer" targetRef="Event_1ssve85" />
+    <bpmn:startEvent id="StartTimer" name="StartTimer">
+      <bpmn:outgoing>Flow_1ra9im1</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_042qljt">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">2030-10-01T12:00:00Z</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Start_Timer">
+      <bpmndi:BPMNShape id="Event_1ssve85_di" bpmnElement="Event_1ssve85">
+        <dc:Bounds x="312" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0s6cdfh_di" bpmnElement="StartTimer">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="172" y="122" width="51" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ra9im1_di" bpmnElement="Flow_1ra9im1">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="312" y="97" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

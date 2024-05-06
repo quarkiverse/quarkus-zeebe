@@ -99,9 +99,13 @@ export class ZeebeBpmnDiagram extends LitElement {
 
                 const overlays = this._viewer.get('overlays');
 
-                console.log(this.data.elements);
                 Object.entries(this.data.elements).forEach(([key, value]) => {
-
+                    if (!value.ELEMENT_ACTIVATED) {
+                        value.ELEMENT_ACTIVATED = 0;
+                    }
+                    if (!value.ELEMENT_COMPLETED) {
+                        value.ELEMENT_COMPLETED = 0;
+                    }
                     const active = (value.ELEMENT_ACTIVATED - value.ELEMENT_COMPLETED);
                     const sclass = ((active > 0) ? 'diagram_e_active' : 'diagram_e_completed');
 

@@ -6,7 +6,9 @@ import './zeebe/zeebe-processes.js';
 import './zeebe/zeebe-process.js';
 import './zeebe/zeebe-instances.js';
 import './zeebe/zeebe-instance.js';
-
+import './zeebe/zeebe-jobs.js';
+import './zeebe/zeebe-incidents.js';
+import './zeebe/zeebe-errors.js';
 
 export class ZeebeDashboard extends LitElement {
 
@@ -45,7 +47,10 @@ export class ZeebeDashboard extends LitElement {
                 ['processes', () => html`<zeebe-processes .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-processes>`], 
                 ['process', () => html`<zeebe-process .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-process>`],
                 ['instances', () => html`<zeebe-instances .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-instances>`], 
-                ['instance', () => html`<zeebe-instance .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-instance>`]
+                ['instance', () => html`<zeebe-instance .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-instance>`],
+                ['jobs', () => html`<zeebe-jobs .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-jobs>`],
+                ['incidents', () => html`<zeebe-incidents .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-incidents>`],
+                ['errors', () => html`<zeebe-errors .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-errors>`],    
             ],
             () => html`<p>Not defined ${this._nav}</p>`)}
         `;

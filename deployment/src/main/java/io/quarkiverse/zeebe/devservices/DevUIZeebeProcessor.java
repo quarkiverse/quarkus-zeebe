@@ -1,5 +1,6 @@
 package io.quarkiverse.zeebe.devservices;
 
+import io.quarkiverse.zeebe.ZeebeDevServiceBuildTimeConfig;
 import io.quarkiverse.zeebe.runtime.devmode.ZeebeJsonRPCService;
 import io.quarkiverse.zeebe.runtime.devmode.ZeebeProcessHandler;
 import io.quarkiverse.zeebe.runtime.devmode.ZeebeRecordsHandler;
@@ -23,7 +24,8 @@ public class DevUIZeebeProcessor {
 
     @BuildStep(onlyIf = IsDevelopment.class)
     @Consume(RuntimeConfigSetupCompleteBuildItem.class)
-    public void pages(BuildProducer<RouteBuildItem> routes,
+    public void pages(ZeebeDevServiceBuildTimeConfig buildTimeConfig,
+            BuildProducer<RouteBuildItem> routes,
             BuildProducer<CardPageBuildItem> cardsProducer,
             NonApplicationRootPathBuildItem nonApplicationRootPathBuildItem,
             BuildProducer<MenuPageBuildItem> menuProducer) {
@@ -39,12 +41,12 @@ public class DevUIZeebeProcessor {
                 .build());
 
         routes.produce(nonApplicationRootPathBuildItem.routeBuilder()
-                .nestedRoute(ROOT_PATH, "ui/process")
-                .handler(BodyHandler.create(true))
+                .nestedRoute(ROOT_PATH, "ui/cmd/:cmd")
+                .handler(BodyHandler.create(buildTimeConfig.devMode.uploadFilesDir))
                 .build());
 
         routes.produce(nonApplicationRootPathBuildItem.routeBuilder()
-                .nestedRoute(ROOT_PATH, "ui/process")
+                .nestedRoute(ROOT_PATH, "ui/cmd/:cmd")
                 .handler(new ZeebeProcessHandler())
                 .build());
 

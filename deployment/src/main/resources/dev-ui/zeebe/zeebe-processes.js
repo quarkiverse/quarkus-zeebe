@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit';
 import { JsonRpc } from 'jsonrpc';
 import { columnBodyRenderer } from '@vaadin/grid/lit.js';
-import { dialogRenderer } from '@vaadin/dialog/lit.js';
+import { dialogRenderer, dialogHeaderRenderer } from '@vaadin/dialog/lit.js';
 import '@vaadin/upload';
 import './components/zeebe-table.js';
 
@@ -54,14 +54,22 @@ export class ZeebeProcesses extends LitElement {
                 <vaadin-grid-column header="#Ended" path="data.ended"></vaadin-grid-column>
                 <vaadin-grid-column header="Deployment time" path="data.time" resizable></vaadin-grid-column>
             </zeebe-table>
-            <vaadin-dialog header-title="Deploy process" .opened=${this._deployDialogOpened}
-               @opened-changed=${(event) => {
-                   this._deployDialogOpened = event.detail.value;
-               }}
+            <vaadin-dialog header-title="Deploy process to Zeebe" .opened=${this._deployDialogOpened}
+               @opened-changed=${(event) => { this._deployDialogOpened = event.detail.value; }}
+               ${dialogHeaderRenderer(
+                       () => html`
+                           <vaadin-icon @click=${() => {this._deployDialogOpened = false}} icon="font-awesome-solid:xmark"></vaadin-icon>
+                       `, [] )}                           
                ${dialogRenderer(() => html`
-                <vaadin-upload id="upload-drop-disabled" nodrop no-auto
+                <p>Accepted file formats: BPMN (.bpmn)</p>
+                <vaadin-upload id="deploy-process" nodrop style="width: 400px; max-width: 100%; align-items: stretch;"
+                               accept=".bpmn"
                                method="POST"
-                               target="/q/zeebe/ui/process"
+                               target="/q/zeebe/ui/cmd/process-deploy"
+                               @upload-success=${(e) => { 
+                                   document.getElementById("deploy-process").files = [];
+                                   this._deployDialogOpened = false
+                               }}
                 ></vaadin-upload>
                `, [])}
             >

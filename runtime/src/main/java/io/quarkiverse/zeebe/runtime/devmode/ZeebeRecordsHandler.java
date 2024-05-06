@@ -57,7 +57,6 @@ public class ZeebeRecordsHandler implements Handler<RoutingContext> {
 
             for (final Record<?> record : records) {
                 //                log.info("Add record {}}/{} ==> {}", record.getValueType(), record.getPosition(), record.getRecordType());
-                //                log.info("{}", record);
                 if (record.getRecordType() == RecordType.EVENT) {
                     switch (record.getValueType()) {
                         case PROCESS_INSTANCE -> RecordStore.importProcessInstance(value(record));

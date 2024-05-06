@@ -4,10 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import io.camunda.zeebe.protocol.record.value.MessageStartEventSubscriptionRecordValue;
-import io.camunda.zeebe.protocol.record.value.ProcessInstanceRecordValue;
-import io.camunda.zeebe.protocol.record.value.SignalSubscriptionRecordValue;
-import io.camunda.zeebe.protocol.record.value.TimerRecordValue;
+import io.camunda.zeebe.protocol.record.value.*;
 import io.camunda.zeebe.protocol.record.value.deployment.Process;
 import io.quarkiverse.zeebe.runtime.devmode.store.RecordStore;
 import io.quarkiverse.zeebe.runtime.devmode.store.RecordStoreItem;
@@ -16,6 +13,19 @@ import io.smallrye.mutiny.Multi;
 
 public class ZeebeJsonRPCService {
 
+    public Collection<RecordStoreItem<ErrorRecordValue>> errors() {
+        return RecordStore.ERRORS.values();
+    }
+
+    public Collection<RecordStoreItem<IncidentRecordValue>> incidents() {
+        return RecordStore.INCIDENTS.values();
+    }
+
+    public Collection<RecordStoreItem<JobRecordValue>> jobs() {
+        return RecordStore.JOBS.values();
+    }
+
+    @NonBlocking
     public Multi<RecordStore.NotificationEvent> notifications() {
         return RecordStore.NOTIFICATIONS;
     }

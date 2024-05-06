@@ -23,6 +23,13 @@ public class ZeebeDevServiceBuildTimeConfig {
 
     @ConfigGroup
     public static class DevMode {
+
+        /**
+         * Upload files directory.
+         */
+        @ConfigItem(name = "upload-files-dir", defaultValue = "target")
+        public String uploadFilesDir;
+
         /**
          * Observe changes in the bpmn files.
          */
