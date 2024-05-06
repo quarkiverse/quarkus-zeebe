@@ -1,8 +1,13 @@
 package io.quarkiverse.zeebe.runtime.devmode;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
+import io.camunda.zeebe.protocol.record.value.MessageStartEventSubscriptionRecordValue;
 import io.camunda.zeebe.protocol.record.value.ProcessInstanceRecordValue;
+import io.camunda.zeebe.protocol.record.value.SignalSubscriptionRecordValue;
+import io.camunda.zeebe.protocol.record.value.TimerRecordValue;
 import io.camunda.zeebe.protocol.record.value.deployment.Process;
 import io.quarkiverse.zeebe.runtime.devmode.store.RecordStore;
 import io.quarkiverse.zeebe.runtime.devmode.store.RecordStoreItem;
@@ -21,8 +26,20 @@ public class ZeebeJsonRPCService {
     }
 
     @NonBlocking
-    public RecordStoreItem<ProcessInstanceRecordValue> instance(long id) {
-        return RecordStore.INSTANCES.get(id);
+    public InstanceWrapper instance(long id) {
+
+        String xml = null;
+
+        var item = RecordStore.INSTANCES.get(id);
+        if (item != null) {
+            var tmp = RecordStore.PROCESS_DEFINITIONS_XML.get(item.record().getValue().getProcessDefinitionKey());
+            if (tmp != null) {
+                xml = new String(tmp.record().getValue().getResource());
+            }
+
+        }
+
+        return new InstanceWrapper(item, xml, new Diagram(null));
     }
 
     @NonBlocking
@@ -31,13 +48,42 @@ public class ZeebeJsonRPCService {
     }
 
     @NonBlocking
-    public RecordStoreItem<Process> process(long id) {
+    public ProcessWrapper process(long id) {
+
+        List<RecordStoreItem<ProcessInstanceRecordValue>> instances = null;
+        List<RecordStoreItem<MessageStartEventSubscriptionRecordValue>> messages = null;
+        List<RecordStoreItem<SignalSubscriptionRecordValue>> signals = null;
+        List<RecordStoreItem<TimerRecordValue>> timers = null;
+
+        Map<String, Map<String, Long>> elements = null;
+        String xml = null;
 
         var item = RecordStore.PROCESS_DEFINITIONS.get(id);
         if (item != null) {
-            item.data().put("diagram_e", RecordStore.findProcessElements((Long) item.id()));
+            elements = RecordStore.findProcessElements((Long) item.id());
+            var tmp = RecordStore.PROCESS_DEFINITIONS_XML.get(id);
+            if (tmp != null) {
+                xml = new String(tmp.record().getValue().getResource());
+            }
+
+            instances = RecordStore.INSTANCES.findBy(x -> x.getValue().getProcessDefinitionKey() == item.record().getKey())
+                    .toList();
+
+            messages = RecordStore.START_EVENT_SUBSCRIPTIONS
+                    .findBy(x -> x.getValue().getProcessDefinitionKey() == item.record().getKey())
+                    .toList();
+
+            signals = RecordStore.SIGNAL_SUBSCRIPTIONS
+                    .findBy(x -> x.getValue().getProcessDefinitionKey() == item.record().getKey())
+                    .toList();
+
+            timers = RecordStore.TIMERS.findBy(x -> x.getValue().getProcessDefinitionKey() == item.record().getKey())
+                    .filter(x -> x.record().getValue().getProcessInstanceKey() > 0)
+                    .toList();
+
         }
-        return item;
+
+        return new ProcessWrapper(item, xml, new Diagram(elements), instances, messages, signals, timers);
     }
 
     @NonBlocking
@@ -45,4 +91,18 @@ public class ZeebeJsonRPCService {
         return new String(RecordStore.PROCESS_DEFINITIONS_XML.get(id).record().getValue().getResource());
     }
 
+    public record InstanceWrapper(RecordStoreItem<ProcessInstanceRecordValue> item,
+            String xml,
+            Diagram diagram) {
+    }
+
+    public record ProcessWrapper(RecordStoreItem<Process> item, String xml, Diagram diagram,
+            List<RecordStoreItem<ProcessInstanceRecordValue>> instances,
+            List<RecordStoreItem<MessageStartEventSubscriptionRecordValue>> messages,
+            List<RecordStoreItem<SignalSubscriptionRecordValue>> signals,
+            List<RecordStoreItem<TimerRecordValue>> timers) {
+    }
+
+    public record Diagram(Map<String, Map<String, Long>> elements) {
+    }
 }

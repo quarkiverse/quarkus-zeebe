@@ -1,6 +1,5 @@
 import { JsonRpc } from 'jsonrpc';
 import { LitElement, html, css } from 'lit';
-import {when} from 'lit/directives/when.js';
 import './bpmnjs/zeebe-bpmn-diagram.js';
 import '@vaadin/tabs';
 import '@vaadin/grid';
@@ -18,8 +17,7 @@ export class ZeebeInstance extends LitElement {
     `;
 
     static properties = {
-        _item: {},
-        _xml: {state: true},
+        _item: {state: true},
         context: {},
         navigation: {},
     };
@@ -30,31 +28,23 @@ export class ZeebeInstance extends LitElement {
         this.jsonRpc.instance({id: this.context.id})
             .then(itemResponse => {
                 this._item = itemResponse.result;
-                return this.jsonRpc.xml({id: this._item.record.value.processDefinitionKey})
-                    .then(itemResponse => {
-                        this._xml = itemResponse.result;
-                    });
             });
 
     }
 
     render() {
-        return html`
-            ${when(this._xml,
-                    () => html`<zeebe-bpmn-diagram id="diagram" .xml="${this._xml}"></zeebe-bpmn-diagram>`,
-                    () => html`<p style="position: relative; overflow: hidden; width: 100%; height: 100%;"></p>`
-            )}
-            ${when(this._item,
-                () => this._body(),
-                () => html`<p style="position: relative; overflow: hidden; width: 100%; height: 100%;">Loading...</p>`
-            )}
-        `;
+        if (this._item) {
+            return this._body();
+        } else {
+            return html`<p style="position: relative; overflow: hidden; width: 100%; height: 100%;"></p>`
+        }
     }
 
     detailsColumn = [{ minWidth: 0, columns: 1 },{ minWidth: '600px', columns: 2 }, { minWidth: '1280px', columns: 3 }];
 
     _body() {
         return html`
+            <zeebe-bpmn-diagram id="diagram" .xml="${this._item.xml}" .data=${this._item.diagram}></zeebe-bpmn-diagram>
             <vaadin-tabsheet>
                 <vaadin-tabs slot="tabs">
                     <vaadin-tab id="process-info" theme="icon">
@@ -109,16 +99,16 @@ export class ZeebeInstance extends LitElement {
 
                 <div tab="process-info">
                     <vaadin-form-layout .responsiveSteps="${this.detailsColumn}">
-                        <vaadin-text-field readonly label="Key" value="${this._item.id}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="Key" value="${this._item.item.id}"></vaadin-text-field>
                         <vaadin-text-field readonly class="link" label="Process definition key"
-                                           value="${this._item.record.value.processDefinitionKey}"
-                                           @click=${() => this.navigation({ nav: "process", id: this._item.record.value.processDefinitionKey})}>
+                                           value="${this._item.item.record.value.processDefinitionKey}"
+                                           @click=${() => this.navigation({ nav: "process", id: this._item.item.record.value.processDefinitionKey})}>
                         </vaadin-text-field>                        
-                        <vaadin-text-field readonly label="BPMN process id" value="${this._item.record.value.bpmnProcessId}"></vaadin-text-field>
-                        <vaadin-text-field readonly label="State" value="${this._item.data.state}"></vaadin-text-field>
-                        <vaadin-text-field readonly label="Start time" value="${this._item.data.start}"></vaadin-text-field>
-                        <vaadin-text-field readonly label="End time" value="${this._item.data.end}"></vaadin-text-field>
-                        <vaadin-text-field readonly label="Version" value="${this._item.record.value.version}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="BPMN process id" value="${this._item.item.record.value.bpmnProcessId}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="State" value="${this._item.item.data.state}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="Start time" value="${this._item.item.data.start}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="End time" value="${this._item.item.data.end}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="Version" value="${this._item.item.record.value.version}"></vaadin-text-field>
                     </vaadin-form-layout>
                 </div>
                 <div tab="process-variables">2 This is the Dashboard tab content</div>

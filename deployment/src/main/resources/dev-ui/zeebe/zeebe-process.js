@@ -1,18 +1,17 @@
 import { JsonRpc } from 'jsonrpc';
 import { LitElement, html} from 'lit';
-import {when} from 'lit/directives/when.js';
+import { columnBodyRenderer } from '@vaadin/grid/lit.js';
 import './bpmnjs/zeebe-bpmn-diagram.js';
 import '@vaadin/tabs';
-import '@vaadin/grid';
 import '@vaadin/tabsheet';
 import '@vaadin/form-layout';
 import '@vaadin/text-field';
+import './components/zeebe-table.js';
 
 export class ZeebeProcess extends LitElement {
 
     static properties = {
-        _item: {},
-        _xml: {state: true},
+        _item: {state: true},
         context: {},
         navigation: {},
     };
@@ -23,29 +22,25 @@ export class ZeebeProcess extends LitElement {
         this.jsonRpc.process({id: this.context.id})
             .then(itemResponse => {
                 this._item = itemResponse.result;
-                return this.jsonRpc.xml({id: this.context.id})
-                    .then(itemResponse => {
-                        this._xml = itemResponse.result;
-                    });
+                this._item.instances = this._item.instances.map((item) => ({
+                    ...item,
+                    searchTerms: `${item.id} ${item.record.value.bpmnProcessId} ${item.record.value.processDefinitionKey}`,
+                }));
             });
 
     }
 
     render() {
-        return html`
-            ${when(this._xml, 
-                    () => html`<zeebe-bpmn-diagram id="diagram" .xml="${this._xml}" .data=${this._item.data}></zeebe-bpmn-diagram>`,
-                    () => html`<p style="position: relative; overflow: hidden; width: 100%; height: 100%;"></p>`
-            )}
-            ${when(this._item,
-                    () => this._body(),
-                    () => html`<p style="position: relative; overflow: hidden; width: 100%; height: 100%;">Loading...</p>`
-            )}
-        `;
+        if (this._item) {
+            return this._body();
+        } else {
+            return html`<p style="position: relative; overflow: hidden; width: 100%; height: 100%;"></p>`
+        }
     }
 
     _body() {
         return html`
+            <zeebe-bpmn-diagram id="diagram" .xml="${this._item.xml}" .data=${this._item.diagram}></zeebe-bpmn-diagram>
             <vaadin-tabsheet>
                 <vaadin-tabs slot="tabs">
                     <vaadin-tab id="process-info" theme="icon">
@@ -72,18 +67,40 @@ export class ZeebeProcess extends LitElement {
 
                 <div tab="process-info">
                     <vaadin-form-layout>
-                        <vaadin-text-field readonly label="Key" value="${this._item.id}"></vaadin-text-field>
-                        <vaadin-text-field readonly label="BPMN process id" value="${this._item.record.value.bpmnProcessId}"></vaadin-text-field>
-                        <vaadin-text-field readonly label="Version" value="${this._item.record.value.version}"></vaadin-text-field>
-                        <vaadin-text-field readonly label="Deploy time" value="${this._item.data.time}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="Key" value="${this._item.item.id}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="BPMN process id" value="${this._item.item.record.value.bpmnProcessId}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="Version" value="${this._item.item.record.value.version}"></vaadin-text-field>
+                        <vaadin-text-field readonly label="Deploy time" value="${this._item.item.data.time}"></vaadin-text-field>
                     </vaadin-form-layout>
                 </div>
-                <div tab="process-instances">2 This is the Dashboard tab content</div>
-                <div tab="process-messages">3 This is the Dashboard tab content</div>
+                <div tab="process-instances">
+                    <zeebe-table .items=${this._item.instances}>
+                        <vaadin-grid-column header="Process Instance Key" ${columnBodyRenderer(this._instanceKeyRenderer, [])} resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Process Id" path="record.value.bpmnProcessId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Process key" path="record.value.processDefinitionKey"></vaadin-grid-column>
+                        <vaadin-grid-column header="State" path="data.state"></vaadin-grid-column>
+                        <vaadin-grid-column header="Start time" path="data.start" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="End time" path="data.end" resizable></vaadin-grid-column>
+                    </zeebe-table>                    
+                </div>
+                <div tab="process-messages">
+                    <zeebe-table .items=${this._item.messages}>
+                        <vaadin-grid-column header="Id" path="id" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Message name" path="record.value.messageName" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="State" path="record.intent"></vaadin-grid-column>
+                        <vaadin-grid-column header="Time" path="data.time"></vaadin-grid-column>
+                    </zeebe-table>
+                </div>
                 <div tab="process-signals">4 This is the Dashboard tab content</div>
                 <div tab="process-timers">5 This is the Dashboard tab content</div>
 
             </vaadin-tabsheet>            
+        `;
+    }
+
+    _instanceKeyRenderer(item) {
+        return html`
+            <a @click=${() => this.navigation({ nav: "instance", id: item.id })}>${item.id}</a>
         `;
     }
 }

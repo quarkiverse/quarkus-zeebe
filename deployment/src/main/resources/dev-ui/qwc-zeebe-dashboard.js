@@ -56,7 +56,6 @@ export class ZeebeDashboard extends LitElement {
     }
 
     navigation(request) {
-        console.log(request);
         this._context = { nav: request.nav, id: request.id, extension: this.jsonRpc.getExtensionName() };
         this._tab = this._tabs.get(request.nav);
         this._nav = request.nav;

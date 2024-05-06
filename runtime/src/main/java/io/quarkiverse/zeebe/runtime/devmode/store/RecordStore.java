@@ -65,6 +65,7 @@ public class RecordStore {
             switch (intent) {
                 case ELEMENT_ACTIVATED -> {
                     item.data().put("start", localDateTime(record.getTimestamp()));
+                    item.data().put("end", "");
                     item.data().put("state", "ACTIVE");
                     sendEvent(
                             new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(),
@@ -178,8 +179,9 @@ public class RecordStore {
     }
 
     public static void importMessageSubscription(final Record<ProcessMessageSubscriptionRecordValue> record) {
-        PROCESS_MESSAGE_SUBSCRIPTIONS.put(record,
+        var item = PROCESS_MESSAGE_SUBSCRIPTIONS.put(record,
                 r -> r.getValue().getElementInstanceKey() + "#" + r.getValue().getMessageName());
+        item.data().put("time", localDateTime(record.getTimestamp()));
     }
 
     public static void importMessageStartEventSubscription(final Record<MessageStartEventSubscriptionRecordValue> record) {
@@ -246,16 +248,13 @@ public class RecordStore {
     public static Map<String, Map<String, Long>> findProcessElements(Long pdk) {
         return ELEMENT_INSTANCES.findBy(
                 record -> record.getValue().getProcessDefinitionKey() == pdk
-                && !PROCESS_ELEMENTS_TYPES.contains(record.getValue().getBpmnElementType())
-                && PROCESS_ELEMENT_INTENTS.contains(record.getIntent())
-        ).collect(
-                Collectors.groupingBy(
-                        x -> x.record().getValue().getElementId(),
-                        Collectors.mapping(
-                            x -> x.record().getIntent(),
-                            Collectors.groupingBy(Intent::name, Collectors.counting())
-                        )
-                )
-        );
+                        && !PROCESS_ELEMENTS_TYPES.contains(record.getValue().getBpmnElementType())
+                        && PROCESS_ELEMENT_INTENTS.contains(record.getIntent()))
+                .collect(
+                        Collectors.groupingBy(
+                                x -> x.record().getValue().getElementId(),
+                                Collectors.mapping(
+                                        x -> x.record().getIntent(),
+                                        Collectors.groupingBy(Intent::name, Collectors.counting()))));
     }
 }

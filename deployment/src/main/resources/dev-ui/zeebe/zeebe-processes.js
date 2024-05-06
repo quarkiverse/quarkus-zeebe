@@ -1,32 +1,21 @@
-import { LitElement, html, css} from 'lit';
+import { LitElement, html } from 'lit';
 import { JsonRpc } from 'jsonrpc';
-import '@vaadin/grid';
 import { columnBodyRenderer } from '@vaadin/grid/lit.js';
+import { dialogRenderer } from '@vaadin/dialog/lit.js';
+import '@vaadin/upload';
+import './components/zeebe-table.js';
 
 export class ZeebeProcesses extends LitElement {
 
-    static styles = css`
-        .arctable {
-            height: 100%;
-            padding-bottom: 10px;
-        }
-        .flex-auto {
-            flex: 1 1 auto;
-        }
-        a {
-            cursor: pointer;
-            color: var(--quarkus-blue);
-        }
-    `;
-
     static properties = {
         _items: {state: true},
-        _filteredItems: {state: true},
         navigation: {},
+        _deployDialogOpened: { state: true},
     };
 
     connectedCallback() {
         super.connectedCallback();
+        this._deployDialogOpened = false;
         this.jsonRpc = new JsonRpc(this.context.extension);
         this._fetchData();
 
@@ -41,55 +30,44 @@ export class ZeebeProcesses extends LitElement {
     }
 
     _fetchData() {
-        this._items = [];
         this.jsonRpc.processes()
             .then(itemResponse => {
                 this._items = itemResponse.result.map((item) => ({
                     ...item,
-                    key: `${item.id}`,
-                    bpmnProcessId: `${item.record.value.bpmnProcessId}`,
-                    version: `${item.record.value.version}`,
-                    time: `${item.data.time}`,
-                    active: `${item.data.active}`,
-                    ended: `${item.data.ended}`,
+                    searchTerms: `${item.id} ${item.record.value.bpmnProcessId}`,
                 }));
-                this._filteredItems = this._items;
             });
     }
 
     render() {
         return html`
-            <vaadin-horizontal-layout theme="spacing padding"  style="align-items: stretch">
-                <vaadin-text-field style="align-self: start" placeholder="Search" @value-changed=${this._searchTable}>
-                    <vaadin-icon slot="prefix" icon="font-awesome-solid:magnifying-glass"></vaadin-icon>
-                </vaadin-text-field>
-                <div class="flex-auto"></div>
-                <vaadin-button style="align-self: end">
+            <zeebe-table .items=${this._items}>
+                <vaadin-button slot="toolbar" style="align-self: end" @click=${() => this._deployDialogOpened = true}>
                     <vaadin-icon slot="prefix" icon="font-awesome-solid:cloud-arrow-up"></vaadin-icon>
                     Deploy process
                 </vaadin-button>
-            </vaadin-horizontal-layout>
-
-            <vaadin-grid .items="${this._filteredItems}" class="arctable" theme="no-border">
+                
                 <vaadin-grid-column header="Process Definition Key" ${columnBodyRenderer(this._definitionKeyRenderer, [])} resizable></vaadin-grid-column>
-                <vaadin-grid-column header="BPMN Process Id" path="bpmnProcessId" resizable></vaadin-grid-column>
-                <vaadin-grid-column header="Version" path="version"></vaadin-grid-column>
-                <vaadin-grid-column header="#Active" path="active"></vaadin-grid-column>
-                <vaadin-grid-column header="#Ended" path="ended"></vaadin-grid-column>
-                <vaadin-grid-column header="Deployment time" path="time" resizable></vaadin-grid-column>
-            </vaadin-grid>
+                <vaadin-grid-column header="BPMN Process Id" path="record.value.bpmnProcessId" resizable></vaadin-grid-column>
+                <vaadin-grid-column header="Version" path="record.value.version"></vaadin-grid-column>
+                <vaadin-grid-column header="#Active" path="data.active"></vaadin-grid-column>
+                <vaadin-grid-column header="#Ended" path="data.ended"></vaadin-grid-column>
+                <vaadin-grid-column header="Deployment time" path="data.time" resizable></vaadin-grid-column>
+            </zeebe-table>
+            <vaadin-dialog header-title="Deploy process" .opened=${this._deployDialogOpened}
+               @opened-changed=${(event) => {
+                   this._deployDialogOpened = event.detail.value;
+               }}
+               ${dialogRenderer(() => html`
+                <vaadin-upload id="upload-drop-disabled" nodrop no-auto
+                               method="POST"
+                               target="/q/zeebe/ui/process"
+                ></vaadin-upload>
+               `, [])}
+            >
+                
+            </vaadin-dialog>
         `;
-    }
-
-    _searchTable(e) {
-        const searchTerm = (e.detail.value || '').trim();
-        const matchesTerm = (value) => value.toLowerCase().includes(searchTerm.toLowerCase());
-        this._filteredItems = this._items.filter(
-            ({ key, bpmnProcessId }) =>
-                !searchTerm ||
-                matchesTerm(key) ||
-                matchesTerm(bpmnProcessId)
-        );
     }
 
     _definitionKeyRenderer(item) {
