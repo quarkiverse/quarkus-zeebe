@@ -4,23 +4,38 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.protocol.record.value.*;
 import io.camunda.zeebe.protocol.record.value.deployment.Process;
+import io.quarkiverse.zeebe.runtime.ZeebeClientService;
 import io.quarkiverse.zeebe.runtime.devmode.store.RecordStore;
 import io.quarkiverse.zeebe.runtime.devmode.store.RecordStoreItem;
+import io.quarkus.arc.Arc;
 import io.smallrye.common.annotation.NonBlocking;
 import io.smallrye.mutiny.Multi;
 
 public class ZeebeJsonRPCService {
 
+    public ProcessInstanceEvent createProcessInstance(Long processDefinitionKey, Map<String, Object> variables) {
+        ZeebeClientService clientService = Arc.container().instance(ZeebeClientService.class).get();
+        ZeebeClient client = clientService.client();
+        return client.newCreateInstanceCommand()
+                .processDefinitionKey(processDefinitionKey).variables(variables)
+                .send().join();
+    };
+
+    @NonBlocking
     public Collection<RecordStoreItem<ErrorRecordValue>> errors() {
         return RecordStore.ERRORS.values();
     }
 
+    @NonBlocking
     public Collection<RecordStoreItem<IncidentRecordValue>> incidents() {
         return RecordStore.INCIDENTS.values();
     }
 
+    @NonBlocking
     public Collection<RecordStoreItem<JobRecordValue>> jobs() {
         return RecordStore.JOBS.values();
     }

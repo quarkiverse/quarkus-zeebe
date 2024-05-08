@@ -5,7 +5,6 @@ export class ZeebeTable extends LitElement {
 
     static styles = css`
         .table {
-            padding-bottom: 10px;
         }
         .flex-auto {
             flex: 1 1 auto;
@@ -44,7 +43,7 @@ export class ZeebeTable extends LitElement {
                 <slot name="toolbar"></slot>
             </vaadin-horizontal-layout>
             
-            <vaadin-grid .items="${this._filteredItems}" class="table" theme="no-border">
+            <vaadin-grid .items="${this._filteredItems}" class="table" theme="no-border" all-rows-visible>
                 <slot></slot>
             </vaadin-grid>
         `;

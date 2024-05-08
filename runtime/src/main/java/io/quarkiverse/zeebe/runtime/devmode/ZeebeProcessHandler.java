@@ -29,7 +29,7 @@ public class ZeebeProcessHandler implements Handler<RoutingContext> {
                     deployProcess(rc.response(), rc.fileUploads());
                 }
                 break;
-            case "instance-start":
+            case "process-start":
                 break;
         }
     }

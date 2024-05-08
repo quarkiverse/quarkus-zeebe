@@ -42,7 +42,7 @@ export class ZeebeProcesses extends LitElement {
     render() {
         return html`
             <zeebe-table .items=${this._items}>
-                <vaadin-button slot="toolbar" style="align-self: end" @click=${() => this._deployDialogOpened = true}>
+                <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._deployDialogOpened = true}>
                     <vaadin-icon slot="prefix" icon="font-awesome-solid:cloud-arrow-up"></vaadin-icon>
                     Deploy process
                 </vaadin-button>

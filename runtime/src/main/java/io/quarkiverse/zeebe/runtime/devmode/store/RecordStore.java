@@ -139,6 +139,8 @@ public class RecordStore {
     public static void importVariable(final Record<VariableRecordValue> record) {
         var variable = VARIABLES.putIfAbsent(record, r -> r.getPartitionId() + "#" + r.getPosition());
         if (variable != null) {
+            variable.data().put("time", localDateTime(record.getTimestamp()));
+
             VariableRecordValue value = record.getValue();
             sendEvent(
                     new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(),
@@ -154,11 +156,13 @@ public class RecordStore {
     }
 
     public static void importTimer(final Record<TimerRecordValue> record) {
-        TIMERS.put(record, Record::getKey);
+        var timer = TIMERS.put(record, Record::getKey);
+        timer.data().put("time", localDateTime(record.getTimestamp()));
     }
 
     public static void importSignal(final Record<SignalRecordValue> record) {
-        SIGNALS.putIfAbsent(record, Record::getKey);
+        var signal = SIGNALS.putIfAbsent(record, Record::getKey);
+        signal.data().put("time", localDateTime(record.getTimestamp()));
     }
 
     public static void importMessage(final Record<MessageRecordValue> record) {
@@ -185,11 +189,17 @@ public class RecordStore {
     }
 
     public static void importSignalSubscription(final Record<SignalSubscriptionRecordValue> record) {
-        SIGNAL_SUBSCRIPTIONS.putIfAbsent(record, Record::getKey);
+        var signal = SIGNAL_SUBSCRIPTIONS.putIfAbsent(record, Record::getKey);
+        if (signal != null) {
+            signal.data().put("time", localDateTime(record.getTimestamp()));
+        }
     }
 
     public static void importEscalation(final Record<EscalationRecordValue> record) {
-        ESCALATIONS.putIfAbsent(record, Record::getKey);
+        var escalation = ESCALATIONS.putIfAbsent(record, Record::getKey);
+        if (escalation != null) {
+            escalation.data().put("time", localDateTime(record.getTimestamp()));
+        }
     }
 
     public static void importMessageSubscription(final Record<ProcessMessageSubscriptionRecordValue> record) {
