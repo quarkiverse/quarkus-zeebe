@@ -23,6 +23,8 @@ public class ZeebeRuntimeConfig {
     static final ZeebeClientBuilderImpl DEFAULT = (ZeebeClientBuilderImpl) new ZeebeClientBuilderImpl()
             .withProperties(new Properties());
 
+    static final String DEFAULT_AUTH_URL = "https://login.cloud.camunda.io/oauth/token";
+
     /**
      * Zeebe client broker configuration.
      */
@@ -34,6 +36,12 @@ public class ZeebeRuntimeConfig {
      */
     @ConfigItem(name = "cloud")
     public CloudConfig cloud = new CloudConfig();
+
+    /**
+     * Zeebe client OAuth configuration.
+     */
+    @ConfigItem(name = "oauth")
+    public OAuthConfig oauth = new OAuthConfig();
 
     /**
      * Zeebe client worker type optional configuration.
@@ -145,6 +153,55 @@ public class ZeebeRuntimeConfig {
         @ConfigItem(name = "credentials-cache-path")
         public Optional<String> credentialsCachePath;
 
+    }
+
+    /**
+     * Zeebe client OAuth configuration.
+     */
+    @ConfigGroup
+    public static class OAuthConfig {
+
+        /**
+         * OAuth client secret ID
+         */
+        @ConfigItem(name = "client-id")
+        public Optional<String> clientId = Optional.empty();
+
+        /**
+         * Specify a client secret to request an access token.
+         */
+        @ConfigItem(name = "client-secret")
+        public Optional<String> clientSecret;
+
+        /**
+         * Authorization server URL
+         */
+        @ConfigItem(name = "auth-url", defaultValue = DEFAULT_AUTH_URL)
+        public String authUrl = DEFAULT_AUTH_URL;
+
+        /**
+         * Credentials cache path
+         */
+        @ConfigItem(name = "credentials-cache-path")
+        public Optional<String> credentialsCachePath;
+
+        /**
+         * OAuth connect timeout
+         */
+        @ConfigItem(name = "connect-timeout", defaultValue = "PT5S")
+        public Duration connectTimeout;
+
+        /**
+         * OAuth read timeout
+         */
+        @ConfigItem(name = "read-timeout", defaultValue = "PT5S")
+        public Duration readTimeout;
+
+        /**
+         * Zeebe token audience
+         */
+        @ConfigItem(name = "token-audience")
+        public Optional<String> tokenAudience;
     }
 
     /**

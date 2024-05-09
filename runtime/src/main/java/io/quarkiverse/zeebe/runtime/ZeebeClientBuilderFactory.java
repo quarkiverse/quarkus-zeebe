@@ -1,11 +1,15 @@
 package io.quarkiverse.zeebe.runtime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.camunda.zeebe.client.CredentialsProvider;
 import io.camunda.zeebe.client.ZeebeClientBuilder;
 import io.camunda.zeebe.client.impl.ZeebeClientBuilderImpl;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 
 public class ZeebeClientBuilderFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZeebeClientBuilderFactory.class);
 
     public static ZeebeClientBuilder createBuilder(ZeebeRuntimeConfig config) {
         ZeebeClientBuilderImpl builder = new ZeebeClientBuilderImpl();
@@ -18,7 +22,7 @@ public class ZeebeClientBuilderFactory {
                 .defaultMessageTimeToLive(config.message.timeToLive)
                 .numJobWorkerExecutionThreads(config.job.workerExecutionThreads)
                 .defaultRequestTimeout(config.job.requestTimeout)
-                .credentialsProvider(getCredentialsProvider(config.cloud));
+                .credentialsProvider(getCredentialsProvider(config));
 
         config.security.overrideAuthority.ifPresent(builder::overrideAuthority);
         config.security.certPath.ifPresent(builder::caCertificatePath);
@@ -39,16 +43,46 @@ public class ZeebeClientBuilderFactory {
         return config.broker.gatewayAddress;
     }
 
-    private static CredentialsProvider getCredentialsProvider(ZeebeRuntimeConfig.CloudConfig config) {
-        if (config.clientId.isPresent() && config.clientSecret.isPresent() && config.clusterId.isPresent()) {
+    private static CredentialsProvider getCredentialsProvider(ZeebeRuntimeConfig config) {
+        ZeebeRuntimeConfig.CloudConfig cloud = config.cloud;
+        if (cloud.clientId.isPresent() && cloud.clientSecret.isPresent() && cloud.clusterId.isPresent()) {
+            LOGGER.debug("CloudConfig is active");
             OAuthCredentialsProviderBuilder builder = CredentialsProvider.newCredentialsProviderBuilder();
-            builder.authorizationServerUrl(config.authUrl);
-            config.clientId.ifPresent(builder::clientId);
-            config.clientSecret.ifPresent(builder::clientSecret);
-            config.credentialsCachePath.ifPresent(builder::credentialsCachePath);
-            builder.audience(String.format("%s.%s.%s", config.clusterId.get(), config.region, config.baseUrl));
+            builder.authorizationServerUrl(cloud.authUrl);
+            cloud.clientId.ifPresent(builder::clientId);
+            cloud.clientSecret.ifPresent(builder::clientSecret);
+            cloud.credentialsCachePath.ifPresent(builder::credentialsCachePath);
+            builder.audience(String.format("%s.%s.%s", cloud.clusterId.get(), cloud.region, cloud.baseUrl));
+            return builder.build();
+        }
+
+        ZeebeRuntimeConfig.OAuthConfig oauth = config.oauth;
+        if (oauth.clientId.isPresent() && oauth.clientSecret.isPresent()) {
+            LOGGER.debug("OAuthConfig is active");
+            OAuthCredentialsProviderBuilder builder = CredentialsProvider.newCredentialsProviderBuilder();
+            builder.authorizationServerUrl(oauth.authUrl);
+            oauth.clientId.ifPresent(builder::clientId);
+            oauth.clientSecret.ifPresent(builder::clientSecret);
+            oauth.credentialsCachePath.ifPresent(builder::credentialsCachePath);
+            builder.audience(createOauthAudience(config));
+            // setup connection timeout
+            builder.connectTimeout(oauth.connectTimeout);
+            builder.readTimeout(oauth.readTimeout);
             return builder.build();
         }
         return null;
+    }
+
+    private static String createOauthAudience(ZeebeRuntimeConfig config) {
+        return config.oauth.tokenAudience.orElseGet(
+                () -> removePortFromAddress(config.broker.gatewayAddress));
+    }
+
+    private static String removePortFromAddress(String address) {
+        int index = address.lastIndexOf(':');
+        if (index > 0) {
+            return address.substring(0, index);
+        }
+        return address;
     }
 }

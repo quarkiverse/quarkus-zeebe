@@ -108,6 +108,31 @@ quarkus.zeebe.client.cloud.port=443
 quarkus.zeebe.client.security.plaintext=false
 ----
 
+==== Direct interaction with Camunda Self-Managed instance
+Oauth configuration is essential if you want to use Camunda Self-Managed instance with turned on Identity.
+[source,properties]
+----
+
+# Enter your cloud credentials from the zeebe portal
+quarkus.zeebe.client.broker.gateway-address= [e.g. zeebe-gateway-camunda.<your-domain>:443]
+# Specify a client id.
+quarkus.zeebe.client.oauth.client-id= [e.g. available in identity-camunda]
+# Specify a client secret to request an access token.
+quarkus.zeebe.client.oauth.client-secret= [e.g. available in identity-camunda]
+# Specify an oauth server
+quarkus.zeebe.client.oauth.auth-url= [e.g. https://<your-domain>/auth/realms/camunda-platform/protocol/openid-connect/token]
+# Make sure you are disabling plaintext security, otherwise connection will fail
+quarkus.zeebe.client.security.plaintext=false
+----
+[source,bash]
+----
+QUARKUS_ZEEBE_CLIENT_BROKER_GATEWAY_ADDRESS: [e.g. zeebe-gateway-camunda.<your-domain>:443]
+QUARKUS_ZEEBE_CLIENT_OAUTH_CLIENT_ID: [e.g. available in identity-camunda]
+QUARKUS_ZEEBE_CLIENT_OAUTH_CLIENT_SECRET: [e.g. available in identity-camunda]
+QUARKUS_ZEEBE_CLIENT_OAUTH_AUTH_URL: [e.g. https://<your-domain>/auth/realms/camunda-platform/protocol/openid-connect/token]
+QUARKUS_ZEEBE_CLIENT_SECURITY_PLAINTEXT: false
+----
+
 === Metrics
 Whether `zeebe` metrics is enabled or not is done by `quarkus.zeebe.metrics.enabled` build time property.
 The default is `true`, but shown here to indicate how it can be disabled.
