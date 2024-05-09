@@ -37,7 +37,7 @@ export class ZeebeJobs extends LitElement {
 
     render() {
         return html`
-            <zeebe-table .items=${this._items}>
+            <zeebe-table id="jobs-table" .items=${this._items}>
                 <vaadin-grid-column header="Job Key" path="record.key" resizable></vaadin-grid-column>
                 <vaadin-grid-column header="Job Type" path="record.value.type" resizable></vaadin-grid-column>
                 <vaadin-grid-column header="Process Instance Key" ${columnBodyRenderer(this._instanceKeyRenderer, [])}></vaadin-grid-column>

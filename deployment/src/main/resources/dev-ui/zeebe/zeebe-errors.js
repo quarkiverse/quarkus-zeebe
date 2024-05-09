@@ -37,7 +37,7 @@ export class ZeebeErrors extends LitElement {
 
     render() {
         return html`
-            <zeebe-table .items=${this._items}>
+            <zeebe-table id="errors-table" .items=${this._items}>
                 <vaadin-grid-column header="Position" path="record.position"></vaadin-grid-column>
                 <vaadin-grid-column header="Error Event Position" path="record.value.errorEventPosition"
                                     ></vaadin-grid-column>

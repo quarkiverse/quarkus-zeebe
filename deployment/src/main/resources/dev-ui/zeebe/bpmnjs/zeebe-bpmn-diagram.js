@@ -1,6 +1,7 @@
 import { LitElement, html, css} from 'lit';
 import {} from "./bpmn-navigated-viewer.development.js";
 import '@vaadin/icon';
+import {ref, createRef} from 'lit/directives/ref.js';
 
 export class ZeebeBpmnDiagram extends LitElement {
 
@@ -73,41 +74,42 @@ export class ZeebeBpmnDiagram extends LitElement {
         }
     `;
 
+    _containerRef = createRef();
+
     static properties = {
         _xml: { state: true },
         _data: { state: true },
         _viewer: {state: true},
     };
 
+    connectedCallback() {
+        super.connectedCallback();
+
+    }
+
     set data(val) {
         this._data = val;
     }
 
     set xml(val) {
+        console.log("SET XML");
         this._xml = val;
     }
 
     firstUpdated() {
+        this._viewer = new BpmnJS({container: this._containerRef.value, width: '100%', height: '100%'});
+        this._viewer.on('import.done', event => this._afterXmlImport(event));
+
         this._renderDiagram();
     }
 
     updated(changedProperties) {
         if (changedProperties.has('_data')) {
-            this._afterXmlImport({error: null, warnings: null});
+            this._renderDiagram();
         }
     }
 
-    _afterXmlImport(event) {
-        const { error, warnings } = event;
-        if (error) {
-            console.log(error);
-            return;
-        }
-        if (warnings && warnings.length) {
-            console.log(warnings);
-            return;
-        }
-
+    _afterXmlImport() {
         if (this._data) {
             if (this._data.elements) {
 
@@ -123,19 +125,21 @@ export class ZeebeBpmnDiagram extends LitElement {
                     const active = (value.ELEMENT_ACTIVATED - value.ELEMENT_COMPLETED);
                     const status = ((active > 0) ? 'diagram_e_active' : 'diagram_e_completed');
 
-                    overlays.add(key, {
-                        position: {top: -27, left: 0},
-                        html: '<span class="diagram_e ' + status + '">' + active + ' | ' + value.ELEMENT_COMPLETED + ' </span>'
-                    });
+                    try {
+                        overlays.add(key, {
+                            id: key,
+                            position: {top: -27, left: 0},
+                            html: '<span class="diagram_e ' + status + '">' + active + ' | ' + value.ELEMENT_COMPLETED + ' </span>'
+                        });
+                    } catch (err) {
+                        // console.log(err);
+                    }
                 });
             }
         }
     }
 
     async _renderDiagram() {
-        this._viewer = new BpmnJS({container: this.renderRoot.querySelector('#zeebe-diagram'), width: '100%', height: '100%'});
-        this._viewer.on('import.done', event => this._afterXmlImport(event));
-
         try {
             const result = await this._viewer.importXML(this._xml);
             const { warnings } = result;
@@ -150,7 +154,7 @@ export class ZeebeBpmnDiagram extends LitElement {
     render() {
         return html`
             <div class="relative">
-                <div id="zeebe-diagram" class="bpmn-diagram"></div>
+                <div id="zeebe-diagram" class="bpmn-diagram" ${ref(this._containerRef)}></div>
                 <vaadin-icon  @click=${() => this._resetView()} style="position: absolute; top: 0.625rem; right: 0.625rem; width: 2.25rem; height: 2.25rem;" icon='font-awesome-solid:location-crosshairs'></vaadin-icon>
             </div>
         `;

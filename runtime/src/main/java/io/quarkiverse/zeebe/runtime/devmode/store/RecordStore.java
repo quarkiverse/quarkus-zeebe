@@ -58,24 +58,26 @@ public class RecordStore {
     public static final Store<MessageStartEventSubscriptionRecordValue> START_EVENT_SUBSCRIPTIONS = Store.create();
 
     public static void importProcessInstance(final Record<ProcessInstanceRecordValue> record) {
+
+        ELEMENT_INSTANCES.putIfAbsent(record, r -> r.getPartitionId() + "-" + r.getPosition());
+        RecordStore.ProcessInstanceEventType type = ProcessInstanceEventType.UPDATED;
+        ProcessInstanceIntent intent = (ProcessInstanceIntent) record.getIntent();
+
         if (record.getValue().getProcessInstanceKey() == record.getKey()) {
             var item = INSTANCES.put(record, r -> r.getValue().getProcessInstanceKey());
 
-            ProcessInstanceIntent intent = (ProcessInstanceIntent) record.getIntent();
-            ProcessInstanceRecordValue value = record.getValue();
             switch (intent) {
                 case ELEMENT_ACTIVATED -> {
                     item.data().put("start", localDateTime(record.getTimestamp()));
                     item.data().put("end", "");
                     item.data().put("state", "ACTIVE");
-                    sendEvent(
-                            new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(),
-                                    RecordStore.ProcessInstanceEventType.CREATED));
+                    type = RecordStore.ProcessInstanceEventType.CREATED;
 
                     // update process definitions
                     var pd = PROCESS_DEFINITIONS.get(record.getValue().getProcessDefinitionKey());
                     if (pd != null) {
                         pd.data().merge("active", 0, (v, n) -> ((int) v) + 1);
+                        pd.data().putIfAbsent("ended", 0);
                     }
                 }
                 case ELEMENT_TERMINATED, ELEMENT_COMPLETED -> {
@@ -92,13 +94,17 @@ public class RecordStore {
                         pd.data().merge("active", 0, (v, n) -> ((int) v) - 1);
                         pd.data().merge("ended", 0, (v, n) -> ((int) v) + 1);
                     }
-                    sendEvent(
-                            new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(),
-                                    ProcessInstanceEventType.REMOVED));
+                    type = ProcessInstanceEventType.ENDED;
                 }
             }
         }
-        ELEMENT_INSTANCES.putIfAbsent(record, r -> r.getPartitionId() + "-" + r.getPosition());
+
+        if (intent == ProcessInstanceIntent.ELEMENT_ACTIVATED || intent == ProcessInstanceIntent.ELEMENT_TERMINATED
+                || intent == ProcessInstanceIntent.ELEMENT_COMPLETED) {
+
+            ProcessInstanceRecordValue value = record.getValue();
+            sendEvent(new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(), type));
+        }
     }
 
     public static void importProcess(final Record<Process> record) {
@@ -157,6 +163,7 @@ public class RecordStore {
 
     public static void importTimer(final Record<TimerRecordValue> record) {
         var timer = TIMERS.put(record, Record::getKey);
+        timer.data().put("dueDate", localDateTime(record.getValue().getDueDate()));
         timer.data().put("time", localDateTime(record.getTimestamp()));
     }
 
@@ -209,8 +216,9 @@ public class RecordStore {
     }
 
     public static void importMessageStartEventSubscription(final Record<MessageStartEventSubscriptionRecordValue> record) {
-        START_EVENT_SUBSCRIPTIONS.put(record,
+        var item = START_EVENT_SUBSCRIPTIONS.put(record,
                 r -> r.getValue().getProcessDefinitionKey() + "#" + r.getValue().getMessageName());
+        item.data().put("time", localDateTime(record.getTimestamp()));
     }
 
     private static void sendEvent(ProcessEvent data) {
@@ -258,7 +266,7 @@ public class RecordStore {
     public enum ProcessInstanceEventType {
         UPDATED,
         CREATED,
-        REMOVED;
+        ENDED;
     }
 
     private static String localDateTime(long timestamp) {

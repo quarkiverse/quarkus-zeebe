@@ -37,7 +37,7 @@ export class ZeebeInstances extends LitElement {
 
     render() {
         return html`
-            <zeebe-table .items=${this._items}>
+            <zeebe-table id="instances-table" .items=${this._items}>
                 <vaadin-grid-column header="Process Instance Key" ${columnBodyRenderer(this._instanceKeyRenderer, [])} resizable></vaadin-grid-column>
                 <vaadin-grid-column header="Process Id" path="record.value.bpmnProcessId" resizable></vaadin-grid-column>
                 <vaadin-grid-column header="Process key" path="record.value.processDefinitionKey"></vaadin-grid-column>

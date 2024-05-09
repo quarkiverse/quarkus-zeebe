@@ -19,8 +19,12 @@ export class ZeebeProcesses extends LitElement {
         this.jsonRpc = new JsonRpc(this.context.extension);
         this._fetchData();
 
-        this._observer = this.jsonRpc.notifications().onNext(eventResponse => {
-            this._fetchData();
+        this._observer = this.jsonRpc.notifications().onNext(response => {
+            if (response.result.type === 'PROCESS') {
+                if (response.result.data.type === 'DEPLOYED') {
+                    this._fetchData();
+                }
+            }
         });
     }
 
@@ -41,7 +45,7 @@ export class ZeebeProcesses extends LitElement {
 
     render() {
         return html`
-            <zeebe-table .items=${this._items}>
+            <zeebe-table id="processes-table" .items=${this._items}>
                 <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._deployDialogOpened = true}>
                     <vaadin-icon slot="prefix" icon="font-awesome-solid:cloud-arrow-up"></vaadin-icon>
                     Deploy process

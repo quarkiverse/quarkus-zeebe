@@ -103,7 +103,7 @@ public class ZeebeJsonRPCService {
                     .toList();
 
             timers = RecordStore.TIMERS.findBy(x -> x.getValue().getProcessDefinitionKey() == item.record().getKey())
-                    .filter(x -> x.record().getValue().getProcessInstanceKey() > 0)
+                    .filter(x -> x.record().getValue().getProcessInstanceKey() <= 0)
                     .toList();
 
         }
