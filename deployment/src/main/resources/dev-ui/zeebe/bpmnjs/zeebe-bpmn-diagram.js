@@ -74,13 +74,27 @@ export class ZeebeBpmnDiagram extends LitElement {
     `;
 
     static properties = {
-        xml: {},
-        data: { state: true },
+        _xml: { state: true },
+        _data: { state: true },
         _viewer: {state: true},
     };
 
+    set data(val) {
+        this._data = val;
+    }
+
+    set xml(val) {
+        this._xml = val;
+    }
+
     firstUpdated() {
         this._renderDiagram();
+    }
+
+    updated(changedProperties) {
+        if (changedProperties.has('_data')) {
+            this._afterXmlImport({error: null, warnings: null});
+        }
     }
 
     _afterXmlImport(event) {
@@ -94,12 +108,12 @@ export class ZeebeBpmnDiagram extends LitElement {
             return;
         }
 
-        if (this.data) {
-            if (this.data.elements) {
+        if (this._data) {
+            if (this._data.elements) {
 
                 const overlays = this._viewer.get('overlays');
 
-                Object.entries(this.data.elements).forEach(([key, value]) => {
+                Object.entries(this._data.elements).forEach(([key, value]) => {
                     if (!value.ELEMENT_ACTIVATED) {
                         value.ELEMENT_ACTIVATED = 0;
                     }
@@ -107,11 +121,11 @@ export class ZeebeBpmnDiagram extends LitElement {
                         value.ELEMENT_COMPLETED = 0;
                     }
                     const active = (value.ELEMENT_ACTIVATED - value.ELEMENT_COMPLETED);
-                    const sclass = ((active > 0) ? 'diagram_e_active' : 'diagram_e_completed');
+                    const status = ((active > 0) ? 'diagram_e_active' : 'diagram_e_completed');
 
                     overlays.add(key, {
                         position: {top: -27, left: 0},
-                        html: '<span class="diagram_e ' + sclass + '">' + active + ' | ' + value.ELEMENT_COMPLETED + ' </span>'
+                        html: '<span class="diagram_e ' + status + '">' + active + ' | ' + value.ELEMENT_COMPLETED + ' </span>'
                     });
                 });
             }
@@ -123,7 +137,7 @@ export class ZeebeBpmnDiagram extends LitElement {
         this._viewer.on('import.done', event => this._afterXmlImport(event));
 
         try {
-            const result = await this._viewer.importXML(this.xml);
+            const result = await this._viewer.importXML(this._xml);
             const { warnings } = result;
             if (warnings.length > 0) {
                 console.log("Diagram warnings " + warnings);
