@@ -75,7 +75,7 @@ export class ZeebeBpmnDiagram extends LitElement {
 
     static properties = {
         xml: {},
-        data: {},
+        data: { state: true },
         _viewer: {state: true},
     };
 
