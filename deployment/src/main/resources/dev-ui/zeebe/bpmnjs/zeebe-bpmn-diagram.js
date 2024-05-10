@@ -92,7 +92,6 @@ export class ZeebeBpmnDiagram extends LitElement {
     }
 
     set xml(val) {
-        console.log("SET XML");
         this._xml = val;
     }
 

@@ -1,11 +1,14 @@
 package io.quarkiverse.zeebe.runtime.devmode;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
+import io.camunda.zeebe.client.api.response.PublishMessageResponse;
 import io.camunda.zeebe.protocol.record.value.*;
 import io.camunda.zeebe.protocol.record.value.deployment.Process;
 import io.quarkiverse.zeebe.runtime.ZeebeClientService;
@@ -17,13 +20,28 @@ import io.smallrye.mutiny.Multi;
 
 public class ZeebeJsonRPCService {
 
+    public PublishMessageResponse sendMessage(String name, String correlationKey, String duration,
+            Map<String, Object> variables) {
+
+        var tmp = getClient().newPublishMessageCommand().messageName(name);
+        PublishMessageCommandStep1.PublishMessageCommandStep3 step3;
+        if (correlationKey == null) {
+            step3 = tmp.withoutCorrelationKey();
+        } else {
+            step3 = tmp.correlationKey(correlationKey);
+        }
+        return step3.variables(variables).timeToLive(Duration.parse(duration)).send().join();
+    }
+
     public ProcessInstanceEvent createProcessInstance(Long processDefinitionKey, Map<String, Object> variables) {
-        ZeebeClientService clientService = Arc.container().instance(ZeebeClientService.class).get();
-        ZeebeClient client = clientService.client();
-        return client.newCreateInstanceCommand()
+        return getClient().newCreateInstanceCommand()
                 .processDefinitionKey(processDefinitionKey).variables(variables)
                 .send().join();
     };
+
+    private ZeebeClient getClient() {
+        return Arc.container().instance(ZeebeClientService.class).get().client();
+    }
 
     @NonBlocking
     public Collection<RecordStoreItem<ErrorRecordValue>> errors() {

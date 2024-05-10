@@ -1,6 +1,7 @@
 package io.quarkiverse.zeebe.runtime.devmode.store;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -10,9 +11,9 @@ import io.camunda.zeebe.protocol.record.RecordValue;
 
 public class Store<RECORD extends RecordValue> {
 
-    private final Map<Object, RecordStoreItem<RECORD>> data = new TreeMap<>(Collections.reverseOrder());
+    private final Map<Object, RecordStoreItem<RECORD>> data = new ConcurrentSkipListMap<>(Collections.reverseOrder());
 
-    public static <KEY, RECORD extends RecordValue> Store<RECORD> create() {
+    public static <RECORD extends RecordValue> Store<RECORD> create() {
         return new Store<>();
     }
 

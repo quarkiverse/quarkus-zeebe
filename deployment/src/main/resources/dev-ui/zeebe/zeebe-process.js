@@ -10,6 +10,7 @@ import '@vaadin/form-layout';
 import '@vaadin/text-field';
 import './components/zeebe-table.js';
 import './components/zeebe-dialog.js';
+import './components/zeebe-send-message-dialog.js';
 import { notifier } from 'notifier';
 
 export class ZeebeProcess extends LitElement {
@@ -20,13 +21,16 @@ export class ZeebeProcess extends LitElement {
         navigation: {},
         _createInstanceOpened: { state: true},
         _createInstanceVariables: { state: true },
+        _sendMessageOpened: { state: true },
     };
 
     _createInstanceTextAreaRef = createRef();
+    _sendMessageDialogRef = createRef();
 
     connectedCallback() {
         super.connectedCallback();
         this._createInstanceOpened = false;
+        this._sendMessageOpened = false;
         this._createInstanceVariables = null;
         this.jsonRpc = new JsonRpc(this.context.extension);
         this._fetchData();
@@ -102,7 +106,7 @@ export class ZeebeProcess extends LitElement {
                         <vaadin-grid-column header="Start time" path="data.start" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="End time" path="data.end" resizable></vaadin-grid-column>
                     </zeebe-table>
-                    <zeebe-dialog id="dialog" title="Create new process instance" titleAction="Create" .opened=${this._createInstanceOpened}
+                    <zeebe-dialog id="process-create-instance-dialog" title="Create new process instance" titleAction="Create" .opened=${this._createInstanceOpened}
                             .renderDialog=${() => this._createInstanceRenderDialog()}
                             .actionDialog=${() => this._createInstanceAction()}      
                             .closeDialog=${() => this._createInstanceClose()}
@@ -115,8 +119,9 @@ export class ZeebeProcess extends LitElement {
                         <vaadin-grid-column header="Message name" path="record.value.messageName" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="State" path="record.intent"></vaadin-grid-column>
                         <vaadin-grid-column header="Time" path="data.time"></vaadin-grid-column>
-                        <vaadin-grid-column header="Actions"></vaadin-grid-column>
+                        <vaadin-grid-column header="Actions" ${columnBodyRenderer(this._messageSubscriptionActionRenderer, [])}></vaadin-grid-column>
                     </zeebe-table>
+                    <zeebe-send-message-dialog ${ref(this._sendMessageDialogRef)} id="process-send-message-dialog" .context=${this.context}></zeebe-send-message-dialog>
                 </div>
                 <div tab="process-signals">
                     <zeebe-table id="process-messages-signals" .items=${this._item.signals}>
@@ -148,6 +153,14 @@ export class ZeebeProcess extends LitElement {
         `;
     }
 
+    _messageSubscriptionActionRenderer(item) {
+        return html`
+            <vaadin-icon slot="prefix" icon="font-awesome-regular:envelope" 
+                         @click=${() => this._sendMessageDialogRef.value.open({ name: item.record.value.messageName, key: null, editName: false })}
+            ></vaadin-icon>
+        `;
+    }
+
     _createInstanceRenderDialog() {
         return html`
             <vaadin-text-area
@@ -155,7 +168,7 @@ export class ZeebeProcess extends LitElement {
                     style="width:100%; min-width: 400px; min-height: 200px; max-height: 400px;"
                     helper-text="Variables in JSON format"
                     label="Variables"
-                    placeholder='{"variable1":"value"}'
+                    placeholder='{"variable":"value"}'
                     value="${this._createInstanceVariables}"
                     @value-changed=${(e) => {this._createInstanceVariables = e.detail.value;}}
             >

@@ -7,6 +7,7 @@ export class ZeebeDialog extends LitElement {
         title: {},
         titleAction: {},
         renderDialog: {},
+        renderDialogParams: {},
         actionDialog: {},
         closeDialog: {},
         _opened: { state: true },
@@ -23,6 +24,7 @@ export class ZeebeDialog extends LitElement {
         this.titleAction = "Action";
         this.actionDialog = this._close;
         this.renderDialog = this._renderDialog;
+        this.renderDialogParams = [];
     }
 
     connectedCallback() {
@@ -35,7 +37,7 @@ export class ZeebeDialog extends LitElement {
             <vaadin-dialog header-title="${this.title}" .opened=${this._opened}
                    @opened-changed=${(e) => {this.opened = e.detail.value;}}
                    ${dialogHeaderRenderer(this._dialogHeaderRenderer, [] )}
-                   ${dialogRenderer(this.renderDialog, [])}
+                   ${dialogRenderer(this.renderDialog, this.renderDialogParams)}
                    ${dialogFooterRenderer(this._renderFooter, [])}
             >
             </vaadin-dialog>        
