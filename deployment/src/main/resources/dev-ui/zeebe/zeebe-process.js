@@ -10,6 +10,7 @@ import '@vaadin/form-layout';
 import '@vaadin/text-field';
 import './components/zeebe-table.js';
 import './components/zeebe-send-message-dialog.js';
+import './components/zeebe-send-signal-dialog.js';
 import './components/zeebe-create-instance-dialog.js';
 
 export class ZeebeProcess extends LitElement {
@@ -21,6 +22,7 @@ export class ZeebeProcess extends LitElement {
     };
 
     _sendMessageDialogRef = createRef();
+    _sendSignalDialogRef = createRef();
     _createInstanceDialogRef = createRef();
 
     connectedCallback() {
@@ -118,8 +120,9 @@ export class ZeebeProcess extends LitElement {
                         <vaadin-grid-column header="Signal Name" path="record.value.signalName"></vaadin-grid-column>
                         <vaadin-grid-column header="Status" path="record.intent"></vaadin-grid-column>
                         <vaadin-grid-column header="Time" path="data.time"></vaadin-grid-column>
-                        <vaadin-grid-column header="Actions"></vaadin-grid-column>
-                    </zeebe-table>                    
+                        <vaadin-grid-column header="Actions" ${columnBodyRenderer(this._signalSubscriptionActionRenderer, [])}></vaadin-grid-column>
+                    </zeebe-table>
+                    <zeebe-send-signal-dialog ${ref(this._sendSignalDialogRef)} id="process-send-signal-dialog" .context=${this.context}></zeebe-send-signal-dialog>
                 </div>
                 <div tab="process-timers">
                     <zeebe-table id="process-timers-table" .items=${this._item.timers}>
@@ -138,6 +141,14 @@ export class ZeebeProcess extends LitElement {
     _instanceKeyRenderer(item) {
         return html`
             <a @click=${() => this.navigation({ nav: "instance", id: item.id })}>${item.id}</a>
+        `;
+    }
+
+    _signalSubscriptionActionRenderer(item) {
+        return html`
+            <vaadin-icon slot="prefix" icon="font-awesome-regular:envelope" 
+                         @click=${() => this._sendSignalDialogRef.value.open(item.record.value.signalName)}
+            ></vaadin-icon>
         `;
     }
 

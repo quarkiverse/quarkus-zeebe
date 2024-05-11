@@ -7,6 +7,7 @@ import java.util.Map;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1;
+import io.camunda.zeebe.client.api.response.BroadcastSignalResponse;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.client.api.response.PublishMessageResponse;
 import io.camunda.zeebe.protocol.record.value.*;
@@ -19,6 +20,13 @@ import io.smallrye.common.annotation.NonBlocking;
 import io.smallrye.mutiny.Multi;
 
 public class ZeebeJsonRPCService {
+
+    public BroadcastSignalResponse sendSignal(String name, Map<String, Object> variables) {
+        return getClient().newBroadcastSignalCommand()
+                .signalName(name)
+                .variables(variables)
+                .send().join();
+    }
 
     public PublishMessageResponse sendMessage(String name, String correlationKey, String duration,
             Map<String, Object> variables) {
