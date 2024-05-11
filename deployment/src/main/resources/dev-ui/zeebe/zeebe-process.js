@@ -156,7 +156,7 @@ export class ZeebeProcess extends LitElement {
     _messageSubscriptionActionRenderer(item) {
         return html`
             <vaadin-icon slot="prefix" icon="font-awesome-regular:envelope" 
-                         @click=${() => this._sendMessageDialogRef.value.open({ name: item.record.value.messageName, key: null, editName: false })}
+                         @click=${() => this._sendMessageDialogRef.value.open(item.record.value.messageName)}
             ></vaadin-icon>
         `;
     }
