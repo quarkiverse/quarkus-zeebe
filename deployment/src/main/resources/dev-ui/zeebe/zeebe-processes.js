@@ -1,9 +1,9 @@
 import { LitElement, html } from 'lit';
 import { JsonRpc } from 'jsonrpc';
 import { columnBodyRenderer } from '@vaadin/grid/lit.js';
-import { dialogRenderer, dialogHeaderRenderer } from '@vaadin/dialog/lit.js';
-import '@vaadin/upload';
+import {ref, createRef} from 'lit/directives/ref.js';
 import './components/zeebe-table.js';
+import './components/zeebe-process-deploy-dialog.js';
 
 export class ZeebeProcesses extends LitElement {
 
@@ -12,6 +12,8 @@ export class ZeebeProcesses extends LitElement {
         navigation: {},
         _deployDialogOpened: { state: true},
     };
+
+    _processDeployDialogRef = createRef();
 
     connectedCallback() {
         super.connectedCallback();
@@ -46,7 +48,7 @@ export class ZeebeProcesses extends LitElement {
     render() {
         return html`
             <zeebe-table id="processes-table" .items=${this._items}>
-                <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._deployDialogOpened = true}>
+                <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._processDeployDialogRef.value.open()}>
                     <vaadin-icon slot="prefix" icon="font-awesome-solid:cloud-arrow-up"></vaadin-icon>
                     Deploy process
                 </vaadin-button>
@@ -58,27 +60,7 @@ export class ZeebeProcesses extends LitElement {
                 <vaadin-grid-column header="#Ended" path="data.ended"></vaadin-grid-column>
                 <vaadin-grid-column header="Deployment time" path="data.time" resizable></vaadin-grid-column>
             </zeebe-table>
-            <vaadin-dialog header-title="Deploy process to Zeebe" .opened=${this._deployDialogOpened}
-               @opened-changed=${(event) => { this._deployDialogOpened = event.detail.value; }}
-               ${dialogHeaderRenderer(
-                       () => html`
-                           <vaadin-icon @click=${() => {this._deployDialogOpened = false}} icon="font-awesome-solid:xmark"></vaadin-icon>
-                       `, [] )}                           
-               ${dialogRenderer(() => html`
-                <p>Accepted file formats: BPMN (.bpmn)</p>
-                <vaadin-upload id="deploy-process" nodrop style="width: 400px; max-width: 100%; align-items: stretch;"
-                               accept=".bpmn"
-                               method="POST"
-                               target="/q/zeebe/ui/cmd/process-deploy"
-                               @upload-success=${(e) => { 
-                                   document.getElementById("deploy-process").files = [];
-                                   this._deployDialogOpened = false
-                               }}
-                ></vaadin-upload>
-               `, [])}
-            >
-                
-            </vaadin-dialog>
+            <zeebe-process-deploy-dialog ${ref(this._processDeployDialogRef)}></zeebe-process-deploy-dialog>
         `;
     }
 
