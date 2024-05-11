@@ -12,7 +12,7 @@ export class ZeebeSendMessageDialog extends LitElement {
         _name: { state: true },
         _key: { state: true },
         _duration: { state: true },
-        _parameters: { state: true },
+        _variables: { state: true },
         _editName: { state: true },
     }
 
@@ -27,7 +27,7 @@ export class ZeebeSendMessageDialog extends LitElement {
         this._key = key;
         this._editName = editName;
         this._duration = "PT0S"
-        this._parameters = null;
+        this._variables = null;
         this._opened = true;
     }
 
@@ -35,7 +35,7 @@ export class ZeebeSendMessageDialog extends LitElement {
         return html`
             <vaadin-dialog id="send-message-dialog" header-title="Send message" .opened=${this._opened}
                            @opened-changed=${(e) => {this._opened = e.detail.value;}}
-                           ${dialogRenderer(() => this._render(), [this._name, this._key, this._duration, this._parameters, this._editName])}
+                           ${dialogRenderer(() => this._render(), [this._name, this._key, this._duration, this._variables, this._editName])}
                            ${dialogFooterRenderer(this._footer, [])}
             >
             </vaadin-dialog>
@@ -53,18 +53,18 @@ export class ZeebeSendMessageDialog extends LitElement {
 
     _action() {
 
-        let parameters = {};
+        let variables = {};
 
-        if (this._parameters) {
+        if (this._variables) {
             try {
-                parameters = JSON.parse(this._parameters);
+                variables = JSON.parse(this._variables);
             } catch (e) {
                 notifier.showErrorMessage(e.message, null);
                 return;
             }
         }
 
-        this.jsonRpc.sendMessage({name: this._name, correlationKey: this._key, duration: this._duration, variables: parameters})
+        this.jsonRpc.sendMessage({name: this._name, correlationKey: this._key, duration: this._duration, variables: variables})
             .then(response => {
                 console.log(response);
                 this._close();
@@ -94,11 +94,11 @@ export class ZeebeSendMessageDialog extends LitElement {
                 </vaadin-text-field>
                 <vaadin-text-area
                         style="width:100%; min-width: 400px; min-height: 100px; max-height: 300px;"
-                        label="Parameters"
-                        helper-text="Parameters in JSON format"
-                        placeholder='{"parameter":"value"}'
-                        value="${this._parameters}"
-                        @value-changed=${(e) => {this._parameters = e.detail.value;}}                        
+                        label="Variables"
+                        helper-text="Variables in JSON format"
+                        placeholder='{"name":"value"}'
+                        value="${this._variables}"
+                        @value-changed=${(e) => {this._variables = e.detail.value;}}                        
                 ></vaadin-text-area>
             </vaadin-vertical-layout>            
         `;

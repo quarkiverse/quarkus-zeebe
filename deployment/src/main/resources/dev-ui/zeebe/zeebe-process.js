@@ -9,9 +9,8 @@ import '@vaadin/text-area';
 import '@vaadin/form-layout';
 import '@vaadin/text-field';
 import './components/zeebe-table.js';
-import './components/zeebe-dialog.js';
 import './components/zeebe-send-message-dialog.js';
-import { notifier } from 'notifier';
+import './components/zeebe-create-instance-dialog.js';
 
 export class ZeebeProcess extends LitElement {
 
@@ -19,19 +18,13 @@ export class ZeebeProcess extends LitElement {
         _item: {state: true},
         context: {},
         navigation: {},
-        _createInstanceOpened: { state: true},
-        _createInstanceVariables: { state: true },
-        _sendMessageOpened: { state: true },
     };
 
-    _createInstanceTextAreaRef = createRef();
     _sendMessageDialogRef = createRef();
+    _createInstanceDialogRef = createRef();
 
     connectedCallback() {
         super.connectedCallback();
-        this._createInstanceOpened = false;
-        this._sendMessageOpened = false;
-        this._createInstanceVariables = null;
         this.jsonRpc = new JsonRpc(this.context.extension);
         this._fetchData();
 
@@ -94,7 +87,7 @@ export class ZeebeProcess extends LitElement {
                 </div>
                 <div tab="process-instances">
                     <zeebe-table id="process-instances-table" .items=${this._item.instances}>
-                        <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._createInstanceOpened = true}>
+                        <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._createInstanceDialogRef.value.open(this._item.item.record.value.processDefinitionKey)}>
                             <vaadin-icon slot="prefix" icon="font-awesome-solid:play"></vaadin-icon>
                             Create instance
                         </vaadin-button>
@@ -106,12 +99,7 @@ export class ZeebeProcess extends LitElement {
                         <vaadin-grid-column header="Start time" path="data.start" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="End time" path="data.end" resizable></vaadin-grid-column>
                     </zeebe-table>
-                    <zeebe-dialog id="process-create-instance-dialog" title="Create new process instance" titleAction="Create" .opened=${this._createInstanceOpened}
-                            .renderDialog=${() => this._createInstanceRenderDialog()}
-                            .actionDialog=${() => this._createInstanceAction()}      
-                            .closeDialog=${() => this._createInstanceClose()}
-                        >
-                    </zeebe-dialog>
+                    <zeebe-create-instance-dialog ${ref(this._createInstanceDialogRef)} .context=${this.context}></zeebe-create-instance-dialog>
                 </div>
                 <div tab="process-messages">
                     <zeebe-table id="process-messages-table" .items=${this._item.messages}>
@@ -159,51 +147,6 @@ export class ZeebeProcess extends LitElement {
                          @click=${() => this._sendMessageDialogRef.value.open(item.record.value.messageName)}
             ></vaadin-icon>
         `;
-    }
-
-    _createInstanceRenderDialog() {
-        return html`
-            <vaadin-text-area
-                    ${ref(this._createInstanceTextAreaRef)}
-                    style="width:100%; min-width: 400px; min-height: 200px; max-height: 400px;"
-                    helper-text="Variables in JSON format"
-                    label="Variables"
-                    placeholder='{"variable":"value"}'
-                    value="${this._createInstanceVariables}"
-                    @value-changed=${(e) => {this._createInstanceVariables = e.detail.value;}}
-            >
-            </vaadin-text-area>
-        `;
-    }
-
-    _createInstanceClose() {
-        this._createInstanceTextAreaRef.value.value = '';
-        this._createInstanceOpened = false
-    }
-
-    _createInstanceAction() {
-        let variables = {};
-        if (this._createInstanceVariables) {
-            try {
-                variables = JSON.parse(this._createInstanceVariables);
-            } catch (e) {
-                this._error(e.message);
-                return
-            }
-        }
-        this.jsonRpc.createProcessInstance({processDefinitionKey: this._item.item.id, variables: variables})
-            .then(response => {
-                console.log(response);
-                this._createInstanceClose();
-            })
-            .catch(e => {
-                console.log(e);
-                this._error('Create process instance error: ' + e.error.code + ' message: ' + e.error.message)
-            });
-    }
-
-    _error(msg){
-        notifier.showErrorMessage(msg, null);
     }
 
     _fetchData() {
