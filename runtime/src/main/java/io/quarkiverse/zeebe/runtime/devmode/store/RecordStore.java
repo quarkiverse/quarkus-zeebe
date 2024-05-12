@@ -170,6 +170,7 @@ public class RecordStore {
     public static void importSignal(final Record<SignalRecordValue> record) {
         var signal = SIGNALS.putIfAbsent(record, Record::getKey);
         signal.data().put("time", localDateTime(record.getTimestamp()));
+        sendEvent(new SignalEvent(record.getValue().getSignalName(), SignalEventType.UPDATED));
     }
 
     public static void importMessage(final Record<MessageRecordValue> record) {
@@ -228,6 +229,10 @@ public class RecordStore {
         item.data().put("time", localDateTime(record.getTimestamp()));
     }
 
+    private static void sendEvent(SignalEvent data) {
+        sendEvent(new NotificationEvent(NotificationEventType.SIGNAL, data));
+    }
+
     private static void sendEvent(MessageEvent data) {
         sendEvent(new NotificationEvent(NotificationEventType.MESSAGE, data));
     }
@@ -266,6 +271,7 @@ public class RecordStore {
     }
 
     public enum NotificationEventType {
+        SIGNAL,
         MESSAGE,
         PROCESS,
         PROCESS_INSTANCE,
@@ -286,6 +292,13 @@ public class RecordStore {
     }
 
     public record MessageEvent(String name, String messageId, String correlationKey, MessageEventType type) {
+    }
+
+    public enum SignalEventType {
+        UPDATED,
+    }
+
+    public record SignalEvent(String name, SignalEventType type) {
     }
 
     private static String localDateTime(long timestamp) {

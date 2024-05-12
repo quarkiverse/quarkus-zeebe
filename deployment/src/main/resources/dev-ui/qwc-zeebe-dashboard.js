@@ -10,6 +10,7 @@ import './zeebe/zeebe-jobs.js';
 import './zeebe/zeebe-incidents.js';
 import './zeebe/zeebe-errors.js';
 import './zeebe/zeebe-messages.js';
+import './zeebe/zeebe-signals.js';
 
 export class ZeebeDashboard extends LitElement {
 
@@ -52,7 +53,8 @@ export class ZeebeDashboard extends LitElement {
                 ['jobs', () => html`<zeebe-jobs .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-jobs>`],
                 ['incidents', () => html`<zeebe-incidents .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-incidents>`],
                 ['errors', () => html`<zeebe-errors .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-errors>`],
-                ['messages', () => html`<zeebe-messages .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-messages>`],    
+                ['messages', () => html`<zeebe-messages .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-messages>`],
+                ['signals', () => html`<zeebe-signals .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-signals>`],    
             ],
             () => html`<p>Not defined ${this._nav}</p>`)}
         `;

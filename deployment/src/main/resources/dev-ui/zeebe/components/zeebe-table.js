@@ -44,8 +44,7 @@ export class ZeebeTable extends LitElement {
                 <slot name="toolbar"></slot>
             </vaadin-horizontal-layout>
             
-            <vaadin-grid .items="${this._filteredItems}" class="table" theme="no-border" all-rows-visible
-                         @cell-focus=${(e) => {console.log(e)}}>
+            <vaadin-grid .items="${this._filteredItems}" class="table" theme="no-border row-stripes">
                 <slot></slot>
             </vaadin-grid>
         `;
