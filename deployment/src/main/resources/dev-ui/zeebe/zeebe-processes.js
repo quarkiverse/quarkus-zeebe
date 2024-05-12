@@ -9,6 +9,7 @@ export class ZeebeProcesses extends LitElement {
 
     static properties = {
         _items: {state: true},
+        context: {},
         navigation: {},
         _deployDialogOpened: { state: true},
     };
@@ -60,7 +61,7 @@ export class ZeebeProcesses extends LitElement {
                 <vaadin-grid-column header="#Ended" path="data.ended"></vaadin-grid-column>
                 <vaadin-grid-column header="Deployment time" path="data.time" resizable></vaadin-grid-column>
             </zeebe-table>
-            <zeebe-process-deploy-dialog ${ref(this._processDeployDialogRef)}></zeebe-process-deploy-dialog>
+            <zeebe-process-deploy-dialog ${ref(this._processDeployDialogRef)} .context=${this.context}></zeebe-process-deploy-dialog>
         `;
     }
 

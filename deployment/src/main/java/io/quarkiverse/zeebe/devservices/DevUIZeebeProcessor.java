@@ -2,7 +2,6 @@ package io.quarkiverse.zeebe.devservices;
 
 import io.quarkiverse.zeebe.ZeebeDevServiceBuildTimeConfig;
 import io.quarkiverse.zeebe.runtime.devmode.ZeebeJsonRPCService;
-import io.quarkiverse.zeebe.runtime.devmode.ZeebeProcessHandler;
 import io.quarkiverse.zeebe.runtime.devmode.ZeebeRecordsHandler;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -38,16 +37,6 @@ public class DevUIZeebeProcessor {
         routes.produce(nonApplicationRootPathBuildItem.routeBuilder()
                 .nestedRoute(ROOT_PATH, SUB_PATH_RECORDS)
                 .handler(new ZeebeRecordsHandler())
-                .build());
-
-        routes.produce(nonApplicationRootPathBuildItem.routeBuilder()
-                .nestedRoute(ROOT_PATH, "ui/cmd/:cmd")
-                .handler(BodyHandler.create(buildTimeConfig.devMode.uploadFilesDir))
-                .build());
-
-        routes.produce(nonApplicationRootPathBuildItem.routeBuilder()
-                .nestedRoute(ROOT_PATH, "ui/cmd/:cmd")
-                .handler(new ZeebeProcessHandler())
                 .build());
 
         var dashboard = Page.webComponentPageBuilder()

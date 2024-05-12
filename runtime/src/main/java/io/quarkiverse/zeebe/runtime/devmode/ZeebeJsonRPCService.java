@@ -8,6 +8,7 @@ import java.util.Map;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1;
 import io.camunda.zeebe.client.api.response.BroadcastSignalResponse;
+import io.camunda.zeebe.client.api.response.DeploymentEvent;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.client.api.response.PublishMessageResponse;
 import io.camunda.zeebe.protocol.record.value.*;
@@ -25,6 +26,12 @@ public class ZeebeJsonRPCService {
         return getClient().newBroadcastSignalCommand()
                 .signalName(name)
                 .variables(variables)
+                .send().join();
+    }
+
+    public DeploymentEvent deployProcess(String name, String xml) {
+        return getClient().newDeployResourceCommand()
+                .addResourceStringUtf8(xml, name)
                 .send().join();
     }
 
