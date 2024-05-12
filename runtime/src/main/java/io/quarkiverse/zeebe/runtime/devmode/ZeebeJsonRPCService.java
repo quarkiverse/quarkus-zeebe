@@ -59,6 +59,11 @@ public class ZeebeJsonRPCService {
     }
 
     @NonBlocking
+    public Collection<RecordStoreItem<MessageRecordValue>> messages() {
+        return RecordStore.MESSAGES.values();
+    }
+
+    @NonBlocking
     public Collection<RecordStoreItem<ErrorRecordValue>> errors() {
         return RecordStore.ERRORS.values();
     }

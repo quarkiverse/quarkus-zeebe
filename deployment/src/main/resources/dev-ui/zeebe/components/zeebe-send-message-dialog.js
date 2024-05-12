@@ -1,6 +1,6 @@
 import { JsonRpc } from 'jsonrpc';
 import { notifier } from 'notifier';
-import { LitElement, html } from 'lit';
+import { LitElement, html, nothing  } from 'lit';
 import { dialogRenderer, dialogFooterRenderer } from '@vaadin/dialog/lit.js';
 
 
@@ -14,6 +14,7 @@ export class ZeebeSendMessageDialog extends LitElement {
         _duration: { state: true },
         _variables: { state: true },
         _editName: { state: true },
+        _editKey: { state: true },
     }
 
     connectedCallback() {
@@ -22,9 +23,10 @@ export class ZeebeSendMessageDialog extends LitElement {
         this.jsonRpc = new JsonRpc(this.context.extension);
     }
 
-    open(name, key = null, editName = false) {
+    open(name, editKey = false, editName = false) {
         this._name = name;
-        this._key = key;
+        this._key = null;
+        this._editKey = editKey;
         this._editName = editName;
         this._duration = "PT0S"
         this._variables = null;
@@ -44,7 +46,7 @@ export class ZeebeSendMessageDialog extends LitElement {
 
     _footer = () => html`
         <vaadin-button @click="${this._close}">Cancel</vaadin-button>
-        <vaadin-button theme="primary" @click=${this._action}>Send</vaadin-button>        
+        <vaadin-button theme="primary" @click=${this._action} ?disabled=${!this._name && !this._key}>Send</vaadin-button>        
     `;
 
     _close() {
@@ -80,12 +82,12 @@ export class ZeebeSendMessageDialog extends LitElement {
             <vaadin-vertical-layout style="align-items: stretch; width:100%; min-width: 400px; min-height: 200px; max-height: 600px;">
                 <vaadin-text-field label="Message name" 
                                    value="${this._name}" 
-                                   disabled="${!this._editName}" 
+                                   ?disabled=${!this._editName} 
                                    @value-changed=${(e) => {this._name = e.detail.value;}}>
                 </vaadin-text-field>
                 <vaadin-text-field label="Correlation key" 
                                    value="${this._key}" 
-                                   disabled="${this._key != null}" 
+                                   ?disabled=${!this._editKey} 
                                    @value-changed=${(e) => {this._key = e.detail.value;}}>
                 </vaadin-text-field>
                 <vaadin-text-field label="Time to live (duration)"

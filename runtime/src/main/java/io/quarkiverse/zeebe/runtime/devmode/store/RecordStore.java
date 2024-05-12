@@ -173,14 +173,21 @@ public class RecordStore {
     }
 
     public static void importMessage(final Record<MessageRecordValue> record) {
-        var msg = MESSAGES.get(record.getKey());
+        var msg = MESSAGES.put(record, Record::getKey);
         if (msg != null) {
+
             MessageIntent intent = (MessageIntent) record.getIntent();
             if (MessageIntent.PUBLISHED == intent) {
-                return;
+                msg.data().put("name", msg.record().getValue().getName());
+                msg.data().put("messageId", msg.record().getValue().getMessageId());
+                msg.data().put("correlationKey", msg.record().getValue().getCorrelationKey());
             }
+
+            msg.data().put("time", localDateTime(record.getTimestamp()));
+            var value = record.getValue();
+            sendEvent(new MessageEvent(value.getName(), value.getMessageId(), value.getCorrelationKey(),
+                    MessageEventType.UPDATED));
         }
-        MESSAGES.put(record, Record::getKey);
     }
 
     public static void importIncident(final Record<IncidentRecordValue> record) {
@@ -221,6 +228,10 @@ public class RecordStore {
         item.data().put("time", localDateTime(record.getTimestamp()));
     }
 
+    private static void sendEvent(MessageEvent data) {
+        sendEvent(new NotificationEvent(NotificationEventType.MESSAGE, data));
+    }
+
     private static void sendEvent(ProcessEvent data) {
         sendEvent(new NotificationEvent(NotificationEventType.PROCESS, data));
     }
@@ -255,6 +266,7 @@ public class RecordStore {
     }
 
     public enum NotificationEventType {
+        MESSAGE,
         PROCESS,
         PROCESS_INSTANCE,
         CLUSTER;
@@ -267,6 +279,13 @@ public class RecordStore {
         UPDATED,
         CREATED,
         ENDED;
+    }
+
+    public enum MessageEventType {
+        UPDATED,
+    }
+
+    public record MessageEvent(String name, String messageId, String correlationKey, MessageEventType type) {
     }
 
     private static String localDateTime(long timestamp) {

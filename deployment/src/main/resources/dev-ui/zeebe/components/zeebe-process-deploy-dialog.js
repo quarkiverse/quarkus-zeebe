@@ -52,10 +52,7 @@ export class ZeebeProcessDeployDialog extends LitElement {
     _footer() {
         return html`
             <vaadin-button @click="${this._close}">Cancel</vaadin-button>
-            ${when(this._b, 
-                () => html`<vaadin-button theme="primary" disabled>Deploy</vaadin-button>`,
-                () => html`<vaadin-button theme="primary" @click=${this._action}>Deploy</vaadin-button>`
-            )}
+            <vaadin-button theme="primary" ?disabled=${this._b} @click=${this._action}>Deploy</vaadin-button>
         `;
     }
 
