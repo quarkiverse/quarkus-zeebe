@@ -5,6 +5,7 @@ export class ZeebeTable extends LitElement {
 
     static styles = css`
         .table {
+            --vaadin-focus-ring-width: 0px;
         }
         .flex-auto {
             flex: 1 1 auto;
@@ -12,7 +13,7 @@ export class ZeebeTable extends LitElement {
         a {
             cursor: pointer;
             color: var(--quarkus-blue);
-        }   
+        }
     `;
 
     static properties = {
@@ -43,7 +44,8 @@ export class ZeebeTable extends LitElement {
                 <slot name="toolbar"></slot>
             </vaadin-horizontal-layout>
             
-            <vaadin-grid .items="${this._filteredItems}" class="table" theme="no-border" all-rows-visible>
+            <vaadin-grid .items="${this._filteredItems}" class="table" theme="no-border" all-rows-visible
+                         @cell-focus=${(e) => {console.log(e)}}>
                 <slot></slot>
             </vaadin-grid>
         `;
