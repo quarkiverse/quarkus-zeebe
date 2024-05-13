@@ -16,8 +16,8 @@ export class ZeebeMessages extends LitElement {
         this.jsonRpc = new JsonRpc(this.context.extension);
         this._fetchData();
         this._observer = this.jsonRpc.notifications().onNext(response => {
-            if (response.result.type === 'MESSAGE') {
-                if (response.result.data.type === 'UPDATED') {
+            if (response.result.event === 'MESSAGE') {
+                if (response.result.type === 'UPDATED') {
                     this._fetchData();
                 }
             }

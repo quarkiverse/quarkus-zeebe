@@ -31,10 +31,13 @@ export class ZeebeProcess extends LitElement {
         this._fetchData();
 
         this._observer = this.jsonRpc.notifications().onNext(response => {
-            if (response.result.type === 'PROCESS_INSTANCE') {
+            if (response.result.event === 'PROCESS_INSTANCE') {
                 if (this._item.item.id === response.result.data.processDefinitionKey) {
                     this._fetchData();
                 }
+            }
+            if (response.result.event === 'PROCESS') {
+                this._fetchData();
             }
         });
     }

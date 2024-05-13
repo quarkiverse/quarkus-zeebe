@@ -84,7 +84,7 @@ public class ZeebeJsonRPCService {
     }
 
     @NonBlocking
-    public Multi<RecordStore.NotificationEvent> notifications() {
+    public Multi<RecordStore.Notification> notifications() {
         return RecordStore.NOTIFICATIONS;
     }
 

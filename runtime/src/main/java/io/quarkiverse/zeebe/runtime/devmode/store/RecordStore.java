@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import io.camunda.zeebe.protocol.Protocol;
 import io.camunda.zeebe.protocol.record.ImmutableRecord;
 import io.camunda.zeebe.protocol.record.Record;
+import io.camunda.zeebe.protocol.record.ValueType;
 import io.camunda.zeebe.protocol.record.intent.IncidentIntent;
 import io.camunda.zeebe.protocol.record.intent.Intent;
 import io.camunda.zeebe.protocol.record.intent.MessageIntent;
@@ -21,7 +22,7 @@ import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 
 public class RecordStore {
 
-    public static final BroadcastProcessor<NotificationEvent> NOTIFICATIONS = BroadcastProcessor
+    public static final BroadcastProcessor<Notification> NOTIFICATIONS = BroadcastProcessor
             .create();
 
     public static final Store<ProcessInstanceRecordValue> ELEMENT_INSTANCES = Store
@@ -60,7 +61,7 @@ public class RecordStore {
     public static void importProcessInstance(final Record<ProcessInstanceRecordValue> record) {
 
         ELEMENT_INSTANCES.putIfAbsent(record, r -> r.getPartitionId() + "-" + r.getPosition());
-        RecordStore.ProcessInstanceEventType type = ProcessInstanceEventType.UPDATED;
+        NotificationType type = NotificationType.UPDATED;
         ProcessInstanceIntent intent = (ProcessInstanceIntent) record.getIntent();
 
         if (record.getValue().getProcessInstanceKey() == record.getKey()) {
@@ -71,7 +72,7 @@ public class RecordStore {
                     item.data().put("start", localDateTime(record.getTimestamp()));
                     item.data().put("end", "");
                     item.data().put("state", "ACTIVE");
-                    type = RecordStore.ProcessInstanceEventType.CREATED;
+                    type = NotificationType.CREATED;
 
                     // update process definitions
                     var pd = PROCESS_DEFINITIONS.get(record.getValue().getProcessDefinitionKey());
@@ -94,7 +95,7 @@ public class RecordStore {
                         pd.data().merge("active", 0, (v, n) -> ((int) v) - 1);
                         pd.data().merge("ended", 0, (v, n) -> ((int) v) + 1);
                     }
-                    type = ProcessInstanceEventType.ENDED;
+                    type = NotificationType.ENDED;
                 }
             }
         }
@@ -103,7 +104,9 @@ public class RecordStore {
                 || intent == ProcessInstanceIntent.ELEMENT_COMPLETED) {
 
             ProcessInstanceRecordValue value = record.getValue();
-            sendEvent(new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(), type));
+            sendEvent(ValueType.PROCESS_INSTANCE, type,
+                    Map.of("processInstanceKey", value.getProcessInstanceKey(), "processDefinitionKey",
+                            value.getProcessDefinitionKey()));
         }
     }
 
@@ -128,7 +131,7 @@ public class RecordStore {
 
         PROCESS_DEFINITIONS_XML.put(record, r -> r.getValue().getProcessDefinitionKey());
 
-        sendEvent(new ProcessEvent(ProcessEventType.DEPLOYED));
+        sendEvent(ValueType.PROCESS, NotificationType.DEPLOYED);
     }
 
     public static void importJob(final Record<JobRecordValue> record) {
@@ -140,6 +143,8 @@ public class RecordStore {
         }
         var job = JOBS.put(record, Record::getKey);
         job.data().put("time", localDateTime(record.getTimestamp()));
+        sendEvent(ValueType.JOB, NotificationType.UPDATED);
+
     }
 
     public static void importVariable(final Record<VariableRecordValue> record) {
@@ -148,9 +153,9 @@ public class RecordStore {
             variable.data().put("time", localDateTime(record.getTimestamp()));
 
             VariableRecordValue value = record.getValue();
-            sendEvent(
-                    new InstanceEvent(value.getProcessInstanceKey(), value.getProcessDefinitionKey(),
-                            ProcessInstanceEventType.UPDATED));
+            sendEvent(ValueType.PROCESS_INSTANCE, NotificationType.UPDATED,
+                    Map.of("processInstanceKey", value.getProcessInstanceKey(), "processDefinitionKey",
+                            value.getProcessDefinitionKey()));
         }
     }
 
@@ -159,6 +164,7 @@ public class RecordStore {
         if (error != null) {
             error.data().put("created", localDateTime(record.getTimestamp()));
         }
+        sendEvent(ValueType.ERROR, NotificationType.UPDATED);
     }
 
     public static void importTimer(final Record<TimerRecordValue> record) {
@@ -170,7 +176,7 @@ public class RecordStore {
     public static void importSignal(final Record<SignalRecordValue> record) {
         var signal = SIGNALS.putIfAbsent(record, Record::getKey);
         signal.data().put("time", localDateTime(record.getTimestamp()));
-        sendEvent(new SignalEvent(record.getValue().getSignalName(), SignalEventType.UPDATED));
+        sendEvent(ValueType.SIGNAL, NotificationType.UPDATED, Map.of("signalName", record.getValue().getSignalName()));
     }
 
     public static void importMessage(final Record<MessageRecordValue> record) {
@@ -186,21 +192,27 @@ public class RecordStore {
 
             msg.data().put("time", localDateTime(record.getTimestamp()));
             var value = record.getValue();
-            sendEvent(new MessageEvent(value.getName(), value.getMessageId(), value.getCorrelationKey(),
-                    MessageEventType.UPDATED));
+            sendEvent(ValueType.MESSAGE, NotificationType.UPDATED,
+                    Map.of("name", value.getName(), "messageId", value.getMessageId(), "correlationKey",
+                            value.getCorrelationKey()));
         }
     }
 
     public static void importIncident(final Record<IncidentRecordValue> record) {
         var incident = INCIDENTS.put(record, Record::getKey);
         IncidentIntent intent = (IncidentIntent) record.getIntent();
+        var type = NotificationType.UPDATED;
         if (intent == IncidentIntent.CREATED) {
             incident.data().put("created", localDateTime(record.getTimestamp()));
             incident.data().put("resolved", "");
+            type = NotificationType.CREATED;
         }
         if (intent == IncidentIntent.RESOLVED) {
             incident.data().put("resolved", localDateTime(record.getTimestamp()));
         }
+        sendEvent(ValueType.INCIDENT, type,
+                Map.of("processInstanceKey", record.getValue().getProcessInstanceKey(),
+                        "processDefinitionKey", record.getValue().getProcessDefinitionKey()));
     }
 
     public static void importSignalSubscription(final Record<SignalSubscriptionRecordValue> record) {
@@ -229,76 +241,23 @@ public class RecordStore {
         item.data().put("time", localDateTime(record.getTimestamp()));
     }
 
-    private static void sendEvent(SignalEvent data) {
-        sendEvent(new NotificationEvent(NotificationEventType.SIGNAL, data));
+    private static void sendEvent(ValueType event, NotificationType type) {
+        NOTIFICATIONS.onNext(new Notification(event, type, Map.of()));
     }
 
-    private static void sendEvent(MessageEvent data) {
-        sendEvent(new NotificationEvent(NotificationEventType.MESSAGE, data));
+    private static void sendEvent(ValueType event, NotificationType type, Map<String, Object> data) {
+        NOTIFICATIONS.onNext(new Notification(event, type, data));
     }
 
-    private static void sendEvent(ProcessEvent data) {
-        sendEvent(new NotificationEvent(NotificationEventType.PROCESS, data));
+    public record Notification(ValueType event, NotificationType type, Map<String, Object> data) {
     }
 
-    private static void sendEvent(InstanceEvent data) {
-        sendEvent(new NotificationEvent(NotificationEventType.PROCESS_INSTANCE, data));
-    }
-
-    private static void sendEvent(ClusterEvent data) {
-        sendEvent(new NotificationEvent(NotificationEventType.CLUSTER, data));
-    }
-
-    private static void sendEvent(NotificationEvent data) {
-        NOTIFICATIONS.onNext(data);
-    }
-
-    public record ProcessEvent(ProcessEventType type) {
-    }
-
-    public enum ProcessEventType {
-        DEPLOYED;
-    }
-
-    public record ClusterEvent(String message, ClusterEventType type) {
-    }
-
-    public enum ClusterEventType {
-        ERROR;
-    }
-
-    public record NotificationEvent(NotificationEventType type, Object data) {
-    }
-
-    public enum NotificationEventType {
-        SIGNAL,
-        MESSAGE,
-        PROCESS,
-        PROCESS_INSTANCE,
-        CLUSTER;
-    }
-
-    public record InstanceEvent(long processInstanceKey, long processDefinitionKey, ProcessInstanceEventType type) {
-    }
-
-    public enum ProcessInstanceEventType {
+    public enum NotificationType {
+        ERROR,
+        DEPLOYED,
         UPDATED,
         CREATED,
         ENDED;
-    }
-
-    public enum MessageEventType {
-        UPDATED,
-    }
-
-    public record MessageEvent(String name, String messageId, String correlationKey, MessageEventType type) {
-    }
-
-    public enum SignalEventType {
-        UPDATED,
-    }
-
-    public record SignalEvent(String name, SignalEventType type) {
     }
 
     private static String localDateTime(long timestamp) {

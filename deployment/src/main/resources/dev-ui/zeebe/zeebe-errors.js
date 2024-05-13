@@ -15,8 +15,12 @@ export class ZeebeErrors extends LitElement {
         this.jsonRpc = new JsonRpc(this.context.extension);
         this._fetchData();
 
-        this._observer = this.jsonRpc.notifications().onNext(eventResponse => {
-            this._fetchData();
+        this._observer = this.jsonRpc.notifications().onNext(response => {
+            if (response.result.event === 'ERROR') {
+                if (response.result.type === 'UPDATED') {
+                    this._fetchData();
+                }
+            }
         });
     }
 

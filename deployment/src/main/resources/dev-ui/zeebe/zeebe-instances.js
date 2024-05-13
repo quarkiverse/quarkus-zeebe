@@ -15,8 +15,11 @@ export class ZeebeInstances extends LitElement {
         this.jsonRpc = new JsonRpc(this.context.extension);
         this._fetchData();
 
-        this._observer = this.jsonRpc.notifications().onNext(eventResponse => {
+        this._observer = this.jsonRpc.notifications().onNext(response => {
             this._fetchData();
+            if (response.result.event === 'PROCESS_INSTANCE') {
+                this._fetchData();
+            }
         });
     }
 

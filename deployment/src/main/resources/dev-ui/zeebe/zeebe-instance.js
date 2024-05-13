@@ -25,6 +25,15 @@ export class ZeebeInstance extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         this.jsonRpc = new JsonRpc(this.context.extension);
+        this._observer = this.jsonRpc.notifications().onNext(response => {
+            this._fetchData();
+            if (response.result.event === 'PROCESS_INSTANCE') {
+                if (response.result.data.processInstanceKey === this._item.item.id) {
+                    this._fetchData();
+                }
+            }
+        });
+
         this.jsonRpc.instance({id: this.context.id})
             .then(itemResponse => {
                 this._item = itemResponse.result;

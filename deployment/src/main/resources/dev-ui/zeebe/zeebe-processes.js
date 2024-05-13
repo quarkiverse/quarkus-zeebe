@@ -23,8 +23,8 @@ export class ZeebeProcesses extends LitElement {
         this._fetchData();
 
         this._observer = this.jsonRpc.notifications().onNext(response => {
-            if (response.result.type === 'PROCESS') {
-                if (response.result.data.type === 'DEPLOYED') {
+            if (response.result.event === 'PROCESS') {
+                if (response.result.type === 'DEPLOYED') {
                     this._fetchData();
                 }
             }
