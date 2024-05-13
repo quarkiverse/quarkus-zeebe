@@ -4,7 +4,7 @@ import { LitElement, html } from 'lit';
 import { dialogRenderer, dialogFooterRenderer } from '@vaadin/dialog/lit.js';
 
 
-export class ZeebeCreateInstanceDialog extends LitElement {
+export class ZeebeInstanceCreateDialog extends LitElement {
 
     static properties = {
         _opened: { state: true },
@@ -37,7 +37,7 @@ export class ZeebeCreateInstanceDialog extends LitElement {
     }
 
     _footer = () => html`
-        <vaadin-button @click="${this._close}">Cancel</vaadin-button>
+        <vaadin-button theme="tertiary" @click="${this._close}">Cancel</vaadin-button>
         <vaadin-button theme="primary" @click=${this._action}>Create</vaadin-button>        
     `;
 
@@ -83,4 +83,4 @@ export class ZeebeCreateInstanceDialog extends LitElement {
 
 }
 
-customElements.define('zeebe-create-instance-dialog', ZeebeCreateInstanceDialog);
+customElements.define('zeebe-instance-create-dialog', ZeebeInstanceCreateDialog);

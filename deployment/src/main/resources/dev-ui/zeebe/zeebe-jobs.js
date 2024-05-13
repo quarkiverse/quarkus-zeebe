@@ -34,7 +34,7 @@ export class ZeebeJobs extends LitElement {
             .then(itemResponse => {
                 this._items = itemResponse.result.map((item) => ({
                     ...item,
-                    searchTerms: `${item.record.value.type} ${item.id} ${item.record.value.processInstanceKey} `
+                    searchTerms: `${item.record.value.type} ${item.id} ${item.record.value.processInstanceKey}`
                 }));
             });
     }

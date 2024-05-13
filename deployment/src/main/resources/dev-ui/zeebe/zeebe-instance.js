@@ -1,11 +1,13 @@
 import { JsonRpc } from 'jsonrpc';
 import { LitElement, html, css } from 'lit';
+import {ref, createRef} from 'lit/directives/ref.js';
 import './bpmnjs/zeebe-bpmn-diagram.js';
 import '@vaadin/tabs';
 import '@vaadin/grid';
 import '@vaadin/tabsheet';
 import '@vaadin/form-layout';
 import '@vaadin/text-field';
+import './components/zeebe-instance-cancel-dialog.js'
 
 export class ZeebeInstance extends LitElement {
 
@@ -13,8 +15,13 @@ export class ZeebeInstance extends LitElement {
         .link > input {
             cursor: pointer;
             color: var(--quarkus-blue);
-        }        
+        }
+        .flex-auto {
+            flex: 1 1 auto;
+        }
     `;
+
+    _instanceCancelDialogRef = createRef();
 
     static properties = {
         _item: {state: true},
@@ -25,6 +32,8 @@ export class ZeebeInstance extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         this.jsonRpc = new JsonRpc(this.context.extension);
+        this._fetchData();
+
         this._observer = this.jsonRpc.notifications().onNext(response => {
             this._fetchData();
             if (response.result.event === 'PROCESS_INSTANCE') {
@@ -33,12 +42,6 @@ export class ZeebeInstance extends LitElement {
                 }
             }
         });
-
-        this.jsonRpc.instance({id: this.context.id})
-            .then(itemResponse => {
-                this._item = itemResponse.result;
-            });
-
     }
 
     render() {
@@ -107,6 +110,15 @@ export class ZeebeInstance extends LitElement {
                 </vaadin-tabs>
 
                 <div tab="process-info">
+                    <vaadin-horizontal-layout theme="spacing padding"  style="align-items: stretch">
+                        <div class="flex-auto"></div>
+                        <vaadin-button theme="primary error" style="align-self: end" ?disabled=${this._item.item.data.end !== ""}
+                                       @click=${() => this._instanceCancelDialogRef.value.open(this._item.item.id)}>
+                            <vaadin-icon slot="prefix" icon="font-awesome-solid:ban"></vaadin-icon>
+                            Cancel
+                        </vaadin-button>
+                    </vaadin-horizontal-layout>
+                    
                     <vaadin-form-layout .responsiveSteps="${this.detailsColumn}">
                         <vaadin-text-field readonly label="Key" value="${this._item.item.id}"></vaadin-text-field>
                         <vaadin-text-field readonly class="link" label="Process definition key"
@@ -119,8 +131,18 @@ export class ZeebeInstance extends LitElement {
                         <vaadin-text-field readonly label="End time" value="${this._item.item.data.end}"></vaadin-text-field>
                         <vaadin-text-field readonly label="Version" value="${this._item.item.record.value.version}"></vaadin-text-field>
                     </vaadin-form-layout>
+                    <zeebe-instance-cancel-dialog ${ref(this._instanceCancelDialogRef)} id="process-instance-cancel-dialog" .context=${this.context}></zeebe-instance-cancel-dialog>
                 </div>
-                <div tab="process-variables">2 This is the Dashboard tab content</div>
+                <div tab="process-variables">
+                    <zeebe-table id="instance-variables-table" .items=${this._item.variables}>
+                        <vaadin-grid-column header="Scope Key" path="record.value.scopeKey" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Element Id" path="record.value.name" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Name" path="record.value.name" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Value" path="record.value.value" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Time" path="record.time" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Actions" resizable></vaadin-grid-column>
+                    </zeebe-table>
+                </div>
                 <div tab="process-audit">2 This is the Dashboard tab content</div>
                 <div tab="process-incidents">2 This is the Dashboard tab content</div>
                 <div tab="process-jobs">4 This is the Dashboard tab content</div>
@@ -134,6 +156,22 @@ export class ZeebeInstance extends LitElement {
 
             </vaadin-tabsheet>        
         `;
+    }
+
+    _fetchData() {
+        this.jsonRpc.instance({id: this.context.id})
+            .then(itemResponse => {
+                let tmp = itemResponse.result;
+                tmp.variables = tmp.variables.map((item) => ({
+                    ...item,
+                    searchTerms: `${record.value.name}`,
+                }));
+                tmp.jobs = tmp.jobs.map((item) => ({
+                    ...item,
+                    searchTerms: `${item.record.value.type} ${item.id} ${item.record.value.processInstanceKey}`,
+                }));
+                this._item = tmp;
+            });
     }
 }
 

@@ -138,7 +138,14 @@ public class RecordStore {
         JobRecordValue value = record.getValue();
         if (UserTaskHeaders.JOB_TYPE.equals(value.getType())) {
             var ut = USER_TASKS.put(record, Record::getKey);
+            Map<String, String> headers = value.getCustomHeaders();
+            ut.data().put("users", headers.get(UserTaskHeaders.CANDIDATE_USERS));
+            ut.data().put("groups", headers.get(UserTaskHeaders.CANDIDATE_GROUPS));
+            ut.data().put("assignee", headers.get(UserTaskHeaders.ASSIGNEE));
+            ut.data().put("dueDate", headers.get(UserTaskHeaders.DUE_DATE));
+            ut.data().put("followUpDate", headers.get(UserTaskHeaders.FOLLOW_UP_DATE));
             ut.data().put("time", localDateTime(record.getTimestamp()));
+            sendEvent(ValueType.USER_TASK, NotificationType.UPDATED);
             return;
         }
         var job = JOBS.put(record, Record::getKey);
@@ -153,8 +160,8 @@ public class RecordStore {
             variable.data().put("time", localDateTime(record.getTimestamp()));
 
             VariableRecordValue value = record.getValue();
-            sendEvent(ValueType.PROCESS_INSTANCE, NotificationType.UPDATED,
-                    Map.of("processInstanceKey", value.getProcessInstanceKey(), "processDefinitionKey",
+            sendEvent(ValueType.VARIABLE, NotificationType.UPDATED,
+                    Map.of("name", value.getName(), "processInstanceKey", value.getProcessInstanceKey(), "processDefinitionKey",
                             value.getProcessDefinitionKey()));
         }
     }

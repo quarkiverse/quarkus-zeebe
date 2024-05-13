@@ -11,7 +11,7 @@ import '@vaadin/text-field';
 import './components/zeebe-table.js';
 import './components/zeebe-send-message-dialog.js';
 import './components/zeebe-send-signal-dialog.js';
-import './components/zeebe-create-instance-dialog.js';
+import './components/zeebe-instance-create-dialog.js';
 
 export class ZeebeProcess extends LitElement {
 
@@ -104,7 +104,7 @@ export class ZeebeProcess extends LitElement {
                         <vaadin-grid-column header="Start time" path="data.start" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="End time" path="data.end" resizable></vaadin-grid-column>
                     </zeebe-table>
-                    <zeebe-create-instance-dialog ${ref(this._createInstanceDialogRef)} .context=${this.context}></zeebe-create-instance-dialog>
+                    <zeebe-instance-create-dialog ${ref(this._createInstanceDialogRef)} .context=${this.context}></zeebe-instance-create-dialog>
                 </div>
                 <div tab="process-messages">
                     <zeebe-table id="process-messages-table" .items=${this._item.messages}>

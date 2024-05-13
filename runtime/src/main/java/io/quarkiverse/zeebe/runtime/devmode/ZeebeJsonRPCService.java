@@ -7,10 +7,7 @@ import java.util.Map;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1;
-import io.camunda.zeebe.client.api.response.BroadcastSignalResponse;
-import io.camunda.zeebe.client.api.response.DeploymentEvent;
-import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
-import io.camunda.zeebe.client.api.response.PublishMessageResponse;
+import io.camunda.zeebe.client.api.response.*;
 import io.camunda.zeebe.protocol.record.value.*;
 import io.camunda.zeebe.protocol.record.value.deployment.Process;
 import io.quarkiverse.zeebe.runtime.ZeebeClientService;
@@ -21,6 +18,11 @@ import io.smallrye.common.annotation.NonBlocking;
 import io.smallrye.mutiny.Multi;
 
 public class ZeebeJsonRPCService {
+
+    public Object cancelProcessInstance(long processInstanceKey) {
+        getClient().newCancelInstanceCommand(processInstanceKey).send().join();
+        return Map.of("command", "cancelProcessInstance", "processInstanceKey", processInstanceKey);
+    }
 
     public BroadcastSignalResponse sendSignal(String name, Map<String, Object> variables) {
         return getClient().newBroadcastSignalCommand()
@@ -56,6 +58,11 @@ public class ZeebeJsonRPCService {
 
     private ZeebeClient getClient() {
         return Arc.container().instance(ZeebeClientService.class).get().client();
+    }
+
+    @NonBlocking
+    public Collection<RecordStoreItem<JobRecordValue>> userTasks() {
+        return RecordStore.USER_TASKS.values();
     }
 
     @NonBlocking
@@ -104,10 +111,12 @@ public class ZeebeJsonRPCService {
             if (tmp != null) {
                 xml = new String(tmp.record().getValue().getResource());
             }
-
         }
 
-        return new InstanceWrapper(item, xml, new Diagram(null));
+        var variables = RecordStore.VARIABLES.findBy(x -> x.getValue().getProcessInstanceKey() == id).toList();
+        var jobs = RecordStore.JOBS.findBy(x -> x.getValue().getProcessInstanceKey() == id).toList();
+
+        return new InstanceWrapper(item, xml, new Diagram(null), variables, jobs);
     }
 
     @NonBlocking
@@ -160,8 +169,9 @@ public class ZeebeJsonRPCService {
     }
 
     public record InstanceWrapper(RecordStoreItem<ProcessInstanceRecordValue> item,
-            String xml,
-            Diagram diagram) {
+            String xml, Diagram diagram,
+            List<RecordStoreItem<VariableRecordValue>> variables,
+            List<RecordStoreItem<JobRecordValue>> jobs) {
     }
 
     public record ProcessWrapper(RecordStoreItem<Process> item, String xml, Diagram diagram,

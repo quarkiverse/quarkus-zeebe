@@ -1,6 +1,6 @@
 import { JsonRpc } from 'jsonrpc';
 import { notifier } from 'notifier';
-import { LitElement, html, nothing  } from 'lit';
+import { LitElement, html  } from 'lit';
 import { dialogRenderer, dialogFooterRenderer } from '@vaadin/dialog/lit.js';
 
 
@@ -45,7 +45,7 @@ export class ZeebeSendMessageDialog extends LitElement {
     }
 
     _footer = () => html`
-        <vaadin-button @click="${this._close}">Cancel</vaadin-button>
+        <vaadin-button theme="tertiary" @click="${this._close}">Cancel</vaadin-button>
         <vaadin-button theme="primary" @click=${this._action} ?disabled=${!this._name && !this._key}>Send</vaadin-button>        
     `;
 

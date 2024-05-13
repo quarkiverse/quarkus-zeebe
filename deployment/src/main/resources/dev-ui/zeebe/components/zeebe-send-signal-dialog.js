@@ -39,7 +39,7 @@ export class ZeebeSendSignalDialog extends LitElement {
     }
 
     _footer = () => html`
-        <vaadin-button @click="${this._close}">Cancel</vaadin-button>
+        <vaadin-button theme="tertiary" @click="${this._close}">Cancel</vaadin-button>
         <vaadin-button theme="primary" @click=${this._action}>Send</vaadin-button>        
     `;
 
