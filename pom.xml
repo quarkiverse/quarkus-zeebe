@@ -110,9 +110,5 @@
             </modules>
         </profile>
     </profiles>
-
-  <scm>
-    <tag>0.10.0-SNAPSHOT</tag>
-  </scm>
 </project>
 
