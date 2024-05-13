@@ -149,7 +149,8 @@ export class ZeebeProcess extends LitElement {
 
     _signalSubscriptionActionRenderer(item) {
         return html`
-            <vaadin-icon slot="prefix" icon="font-awesome-regular:envelope" 
+            <vaadin-icon slot="prefix" icon="font-awesome-regular:envelope" style="color: var(--lumo-primary-text-color)"
+                         title="Broadcast signal"
                          @click=${() => this._sendSignalDialogRef.value.open(item.record.value.signalName)}
             ></vaadin-icon>
         `;
@@ -158,6 +159,7 @@ export class ZeebeProcess extends LitElement {
     _messageSubscriptionActionRenderer(item) {
         return html`
                 <vaadin-icon icon="font-awesome-regular:envelope" style="color: var(--lumo-primary-text-color)"
+                             title="Send message"
                              @click=${() => this._sendMessageDialogRef.value.open(item.record.value.messageName)}
                 ></vaadin-icon>
         `;

@@ -164,7 +164,7 @@ export class ZeebeInstance extends LitElement {
                 let tmp = itemResponse.result;
                 tmp.variables = tmp.variables.map((item) => ({
                     ...item,
-                    searchTerms: `${record.value.name}`,
+                    searchTerms: `${item.record.value.name}`,
                 }));
                 tmp.jobs = tmp.jobs.map((item) => ({
                     ...item,

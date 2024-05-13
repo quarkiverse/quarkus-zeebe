@@ -19,6 +19,11 @@ import io.smallrye.mutiny.Multi;
 
 public class ZeebeJsonRPCService {
 
+    public Object userTaskComplete(long key, Map<String, Object> variables) {
+        getClient().newUserTaskCompleteCommand(key).variables(variables).send().join();
+        return Map.of("command", "userTaskComplete", "userTaskKey", key);
+    }
+
     public Object cancelProcessInstance(long processInstanceKey) {
         getClient().newCancelInstanceCommand(processInstanceKey).send().join();
         return Map.of("command", "cancelProcessInstance", "processInstanceKey", processInstanceKey);

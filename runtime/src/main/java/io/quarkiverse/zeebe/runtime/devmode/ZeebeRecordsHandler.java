@@ -73,6 +73,8 @@ public class ZeebeRecordsHandler implements Handler<RoutingContext> {
                         case SIGNAL -> RecordStore.importSignal(value(record));
                         case SIGNAL_SUBSCRIPTION -> RecordStore.importSignalSubscription(value(record));
                         case ESCALATION -> RecordStore.importEscalation(value(record));
+                        case USER_TASK -> log.info("Add record {}}/{} ==> {}", record.getValueType(), record.getPosition(),
+                                record.getRecordType());
                     }
                 }
 

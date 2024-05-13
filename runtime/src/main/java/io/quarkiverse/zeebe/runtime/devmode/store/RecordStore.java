@@ -11,10 +11,7 @@ import io.camunda.zeebe.protocol.Protocol;
 import io.camunda.zeebe.protocol.record.ImmutableRecord;
 import io.camunda.zeebe.protocol.record.Record;
 import io.camunda.zeebe.protocol.record.ValueType;
-import io.camunda.zeebe.protocol.record.intent.IncidentIntent;
-import io.camunda.zeebe.protocol.record.intent.Intent;
-import io.camunda.zeebe.protocol.record.intent.MessageIntent;
-import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent;
+import io.camunda.zeebe.protocol.record.intent.*;
 import io.camunda.zeebe.protocol.record.value.*;
 import io.camunda.zeebe.protocol.record.value.deployment.ImmutableProcess;
 import io.camunda.zeebe.protocol.record.value.deployment.Process;
@@ -145,6 +142,10 @@ public class RecordStore {
             ut.data().put("dueDate", headers.get(UserTaskHeaders.DUE_DATE));
             ut.data().put("followUpDate", headers.get(UserTaskHeaders.FOLLOW_UP_DATE));
             ut.data().put("time", localDateTime(record.getTimestamp()));
+            JobIntent uti = (JobIntent) record.getIntent();
+            if (uti == JobIntent.CREATED) {
+                ut.data().put("created", localDateTime(record.getTimestamp()));
+            }
             sendEvent(ValueType.USER_TASK, NotificationType.UPDATED);
             return;
         }
