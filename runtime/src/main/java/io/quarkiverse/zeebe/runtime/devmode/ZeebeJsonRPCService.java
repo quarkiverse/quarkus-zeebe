@@ -22,6 +22,14 @@ import io.smallrye.mutiny.Multi;
 
 public class ZeebeJsonRPCService {
 
+    public Object resolveIncident(long key, long jobKey, int retries) {
+        if (jobKey > 0) {
+            getClient().newUpdateRetriesCommand(jobKey).retries(retries).send().join();
+        }
+        getClient().newResolveIncidentCommand(key).send().join();
+        return Map.of("command", "resolveIncident", "incidentKey", key);
+    }
+
     public SetVariablesResponse setVariables(long key, boolean local, Map<String, Object> variables) {
         return getClient().newSetVariablesCommand(key).variables(variables).local(local).send().join();
     }
