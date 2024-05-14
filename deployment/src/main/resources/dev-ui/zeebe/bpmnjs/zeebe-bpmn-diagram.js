@@ -219,7 +219,6 @@ export class ZeebeBpmnDiagram extends LitElement {
         }
 
         if (this._data.incidentActivities) {
-            console.log(this._data.incidentActivities);
             const overlays = this._viewer.get('overlays');
             let icon = `
                 <span title="incident">

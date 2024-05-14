@@ -2,6 +2,7 @@ package io.quarkiverse.zeebe.runtime.devmode;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1;
@@ -20,6 +21,10 @@ import io.smallrye.common.annotation.NonBlocking;
 import io.smallrye.mutiny.Multi;
 
 public class ZeebeJsonRPCService {
+
+    public SetVariablesResponse setVariables(long key, boolean local, Map<String, Object> variables) {
+        return getClient().newSetVariablesCommand(key).variables(variables).local(local).send().join();
+    }
 
     public Object userTaskComplete(long key, Map<String, Object> variables) {
         getClient().newUserTaskCompleteCommand(key).variables(variables).send().join();
@@ -267,7 +272,20 @@ public class ZeebeJsonRPCService {
                     .map(k -> new ActiveScope(k, elementIdsForKeys.get(k))).toList();
         }
 
-        var variables = RecordStore.VARIABLES.findBy(x -> x.getValue().getProcessInstanceKey() == id).toList();
+        var variablesRaw = RecordStore.VARIABLES.findBy(x -> x.getValue().getProcessInstanceKey() == id);
+        var variablesMap = variablesRaw.collect(Collectors
+                .groupingBy(e -> new VariableId(e.record().getValue().getScopeKey(), e.record().getValue().getName())));
+        var variables = variablesMap.entrySet().stream()
+                .map((e) -> {
+                    var x = e.getValue().get(0);
+                    return new Variable(elementIdsForKeys.get(e.getKey().scopeKey()),
+                            x.record().getValue().getName(),
+                            x.record().getValue().getScopeKey(),
+                            x.record().getValue().getValue(),
+                            x.data().get("time"), e.getValue());
+                })
+                .toList();
+
         var jobs = RecordStore.JOBS.findBy(x -> x.getValue().getProcessInstanceKey() == id).toList();
         var errors = RecordStore.ERRORS.findBy(x -> x.getValue().getProcessInstanceKey() == id).toList();
         var timers = RecordStore.TIMERS.findBy(x -> x.getValue().getProcessInstanceKey() == id).toList();
@@ -328,7 +346,7 @@ public class ZeebeJsonRPCService {
             List<RecordStoreItem<ProcessMessageSubscriptionRecordValue>> messageSubscriptions,
             List<RecordStoreItem<TimerRecordValue>> timers,
             List<RecordStoreItem<ErrorRecordValue>> errors,
-            List<RecordStoreItem<VariableRecordValue>> variables,
+            List<Variable> variables,
             Set<String> completedItems,
             List<RecordStoreItem<ProcessInstanceRecordValue>> terminateActiveActivities,
             List<ActivateElementItem> activateActivities,
@@ -368,6 +386,13 @@ public class ZeebeJsonRPCService {
     }
 
     public record ElementInstanceState(String elementId, long activeInstances, long endedInstances) {
+    }
+
+    public record VariableId(long scopeKey, String name) {
+    }
+
+    public record Variable(String elementId, String name, long scopeKey, String value, Object time,
+            List<RecordStoreItem<VariableRecordValue>> variables) {
     }
 
     static Long count(String key, Long value) {

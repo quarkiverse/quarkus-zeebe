@@ -142,17 +142,17 @@ export class ZeebeInstance extends LitElement {
                 </div>
                 <div tab="process-variables">
                     <zeebe-table id="instance-variables-table" .items=${this._item.variables}>
-                        <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._variableCreateDialogRef.value.open(this._item.item)}
+                        <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._variableCreateDialogRef.value.open(this._item.item.id, this._item.activeScopes)}
                                        ?disabled=${!this._item.active}>
                             <vaadin-icon slot="prefix" icon="font-awesome-solid:play"></vaadin-icon>
                             Create variable
                         </vaadin-button>
                         
-                        <vaadin-grid-column header="Scope Key" path="record.value.scopeKey" resizable></vaadin-grid-column>
-                        <vaadin-grid-column header="Element Id" path="record.value.name" resizable></vaadin-grid-column>
-                        <vaadin-grid-column header="Name" path="record.value.name" resizable></vaadin-grid-column>
-                        <vaadin-grid-column header="Value" path="record.value.value" resizable></vaadin-grid-column>
-                        <vaadin-grid-column header="Time" path="record.time" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Scope Key" path="scopeKey" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Element Id" path="elementId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Name" path="name" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Value" path="value" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Time" path="time" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Actions" resizable ${columnBodyRenderer(this._variablesActionRenderer, [])}></vaadin-grid-column>
                     </zeebe-table>
                     <zeebe-variable-create-dialog ${ref(this._variableCreateDialogRef)} id="instance-variable-create-dialog" .context=${this.context}></zeebe-variable-create-dialog>
@@ -183,7 +183,7 @@ export class ZeebeInstance extends LitElement {
             <vaadin-icon icon="font-awesome-regular:pen-to-square" style="color: var(--lumo-primary-text-color)"
                          title="Edit variable"
                          ?hidden=${!this._item.active}
-                         @click=${() => this._variableEditDialogRef.value.open(item)}
+                         @click=${() => this._variableEditDialogRef.value.open(item.name, item.elementId, item.value)}
             ></vaadin-icon>
         `;
     }
@@ -194,7 +194,7 @@ export class ZeebeInstance extends LitElement {
                 let tmp = itemResponse.result;
                 tmp.variables = tmp.variables.map((item) => ({
                     ...item,
-                    searchTerms: `${item.record.value.name}`,
+                    searchTerms: `${item.scopeKey} ${item.name} ${item.elementId}`,
                 }));
                 tmp.jobs = tmp.jobs.map((item) => ({
                     ...item,
