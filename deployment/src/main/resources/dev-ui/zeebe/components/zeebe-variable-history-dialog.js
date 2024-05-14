@@ -1,21 +1,25 @@
 import { LitElement, html } from 'lit';
 import { dialogRenderer, dialogFooterRenderer } from '@vaadin/dialog/lit.js';
+import './zeebe-table.js';
 
 export class ZeebeVariableHistoryDialog extends LitElement {
 
     static properties = {
         _opened: { state: true },
         context: {},
-        _item: { state: true },
+        _variables: { state: true },
+        _searchBar: {},
     }
 
     connectedCallback() {
         super.connectedCallback();
         this._opened = false;
+        this._variables = []
+        this._searchBar = false;
     }
 
-    open(item) {
-        this._item = item;
+    open(variables) {
+        this._variables = variables;
         this._opened = true;
     }
 
@@ -32,7 +36,12 @@ export class ZeebeVariableHistoryDialog extends LitElement {
 
     _render() {
         return html`
-
+            <vaadin-vertical-layout style="align-items: stretch; width:100%; min-width: 400px; min-height: 200px; max-height: 600px;">
+                <zeebe-table id="instance-variables-history-table" .withoutSearchBar=${this._variables}>
+                    <vaadin-grid-column header="Time" path="data.time" auto-width></vaadin-grid-column>
+                    <vaadin-grid-column header="Value" path="record.value.value"></vaadin-grid-column>
+                </zeebe-table>
+            </vaadin-vertical-layout>
         `;
     }
 

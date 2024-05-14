@@ -19,6 +19,7 @@ export class ZeebeTable extends LitElement {
     static properties = {
         _items: {state: true},
         _filteredItems: {state: true},
+        _searchBar: { state: true},
     };
 
     set items(val) {
@@ -26,17 +27,20 @@ export class ZeebeTable extends LitElement {
         this._filteredItems = this._items;
     }
 
-    connectedCallback() {
-        super.connectedCallback();
+    set withoutSearchBar(val) {
+        this._items = val;
+        this._filteredItems = this._items;
+        this._searchBar = false;
     }
 
-    disconnectedCallback() {
-        super.disconnectedCallback()
+    connectedCallback() {
+        super.connectedCallback();
+        this._searchBar = true;
     }
 
     render() {
         return html`
-            <vaadin-horizontal-layout theme="spacing padding"  style="align-items: stretch">
+            <vaadin-horizontal-layout theme="spacing padding"  style="align-items: stretch" ?hidden=${!this._searchBar}>
                 <vaadin-text-field style="align-self: start" placeholder="Search" @value-changed=${this._searchTable}>
                     <vaadin-icon slot="prefix" icon="font-awesome-solid:magnifying-glass"></vaadin-icon>
                 </vaadin-text-field>
@@ -51,6 +55,9 @@ export class ZeebeTable extends LitElement {
     }
 
     _searchTable(e) {
+        if (!this._searchBar) {
+            return;
+        }
         if (!this._items || this._items.length <= 0) {
             return;
         }

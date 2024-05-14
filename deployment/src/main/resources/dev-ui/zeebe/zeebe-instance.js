@@ -8,6 +8,7 @@ import '@vaadin/grid';
 import '@vaadin/tabsheet';
 import '@vaadin/form-layout';
 import '@vaadin/text-field';
+import './components/zeebe-table.js';
 import './components/zeebe-instance-cancel-dialog.js'
 import './components/zeebe-variable-create-dialog.js'
 import './components/zeebe-variable-edit-dialog.js'
@@ -178,7 +179,7 @@ export class ZeebeInstance extends LitElement {
         return html`
             <vaadin-icon icon="font-awesome-regular:file-lines" style="color: var(--lumo-primary-text-color)"
                          title="Show variable history log"
-                         @click=${() => this._variableHistoryDialogRef.value.open(item)}
+                         @click=${() => this._variableHistoryDialogRef.value.open(item.variables)}
             ></vaadin-icon>            
             <vaadin-icon icon="font-awesome-regular:pen-to-square" style="color: var(--lumo-primary-text-color)"
                          title="Edit variable"
