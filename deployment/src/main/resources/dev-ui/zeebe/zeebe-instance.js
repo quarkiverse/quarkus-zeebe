@@ -1,6 +1,7 @@
 import { JsonRpc } from 'jsonrpc';
 import { LitElement, html, css } from 'lit';
 import {ref, createRef} from 'lit/directives/ref.js';
+import { columnBodyRenderer } from '@vaadin/grid/lit.js';
 import './bpmnjs/zeebe-bpmn-diagram.js';
 import '@vaadin/tabs';
 import '@vaadin/grid';
@@ -8,6 +9,9 @@ import '@vaadin/tabsheet';
 import '@vaadin/form-layout';
 import '@vaadin/text-field';
 import './components/zeebe-instance-cancel-dialog.js'
+import './components/zeebe-variable-create-dialog.js'
+import './components/zeebe-variable-edit-dialog.js'
+import './components/zeebe-variable-history-dialog.js'
 
 export class ZeebeInstance extends LitElement {
 
@@ -22,6 +26,9 @@ export class ZeebeInstance extends LitElement {
     `;
 
     _instanceCancelDialogRef = createRef();
+    _variableCreateDialogRef = createRef();
+    _variableEditDialogRef = createRef();
+    _variableHistoryDialogRef = createRef();
 
     static properties = {
         _item: {state: true},
@@ -135,13 +142,22 @@ export class ZeebeInstance extends LitElement {
                 </div>
                 <div tab="process-variables">
                     <zeebe-table id="instance-variables-table" .items=${this._item.variables}>
+                        <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._variableCreateDialogRef.value.open(this._item.item)}
+                                       ?disabled=${this._item.item.data.end !== ""}>
+                            <vaadin-icon slot="prefix" icon="font-awesome-solid:play"></vaadin-icon>
+                            Create variable
+                        </vaadin-button>
+                        
                         <vaadin-grid-column header="Scope Key" path="record.value.scopeKey" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="record.value.name" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Name" path="record.value.name" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Value" path="record.value.value" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Time" path="record.time" resizable></vaadin-grid-column>
-                        <vaadin-grid-column header="Actions" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Actions" resizable ${columnBodyRenderer(this._variablesActionRenderer, [])}></vaadin-grid-column>
                     </zeebe-table>
+                    <zeebe-variable-create-dialog ${ref(this._variableCreateDialogRef)} id="instance-variable-create-dialog" .context=${this.context}></zeebe-variable-create-dialog>
+                    <zeebe-variable-edit-dialog ${ref(this._variableEditDialogRef)} id="instance-variable-edit-dialog" .context=${this.context}></zeebe-variable-edit-dialog>
+                    <zeebe-variable-history-dialog ${ref(this._variableHistoryDialogRef)} id="instance-variable-history-dialog" .context=${this.context}></zeebe-variable-history-dialog>
                 </div>
                 <div tab="process-audit">2 This is the Dashboard tab content</div>
                 <div tab="process-incidents">2 This is the Dashboard tab content</div>
@@ -155,6 +171,20 @@ export class ZeebeInstance extends LitElement {
                 <div tab="process-modify">5 This is the Dashboard tab content</div>
 
             </vaadin-tabsheet>        
+        `;
+    }
+
+    _variablesActionRenderer(item) {
+        return html`
+            <vaadin-icon icon="font-awesome-regular:file-lines" style="color: var(--lumo-primary-text-color)"
+                         title="Show variable history log"
+                         @click=${() => this._variableHistoryDialogRef.value.open(item)}
+            ></vaadin-icon>            
+            <vaadin-icon icon="font-awesome-regular:pen-to-square" style="color: var(--lumo-primary-text-color)"
+                         title="Edit variable"
+                         ?hidden=${this._item.item.data.end !== ""}
+                         @click=${() => this._variableEditDialogRef.value.open(item)}
+            ></vaadin-icon>
         `;
     }
 
