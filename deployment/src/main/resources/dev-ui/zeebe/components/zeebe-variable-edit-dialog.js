@@ -43,8 +43,8 @@ export class ZeebeVariableEditDialog extends LitElement {
     _render() {
         return html`
             <vaadin-vertical-layout style="align-items: stretch; width:100%; min-width: 400px; min-height: 200px; max-height: 600px;">
-                <vaadin-text-field label="Name" value="${this._name}" disabled></vaadin-text-field>
-                <vaadin-text-field label="Scope" value="${this._scope}" disabled></vaadin-text-field>
+                <vaadin-text-field label="Name" value="${this._name}" readonly></vaadin-text-field>
+                <vaadin-text-field label="Scope" value="${this._scope}" readonly></vaadin-text-field>
                 <vaadin-text-area
                         style="width:100%; min-width: 400px; min-height: 100px; max-height: 300px;"
                         label="Value"

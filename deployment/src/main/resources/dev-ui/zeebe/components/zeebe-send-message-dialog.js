@@ -82,12 +82,12 @@ export class ZeebeSendMessageDialog extends LitElement {
             <vaadin-vertical-layout style="align-items: stretch; width:100%; min-width: 400px; min-height: 200px; max-height: 600px;">
                 <vaadin-text-field label="Message name" 
                                    value="${this._name}" 
-                                   ?disabled=${!this._editName} 
+                                   ?readonly=${!this._editName} 
                                    @value-changed=${(e) => {this._name = e.detail.value;}}>
                 </vaadin-text-field>
                 <vaadin-text-field label="Correlation key" 
                                    value="${this._key}" 
-                                   ?disabled=${!this._editKey} 
+                                   ?readonly=${!this._editKey} 
                                    @value-changed=${(e) => {this._key = e.detail.value;}}>
                 </vaadin-text-field>
                 <vaadin-text-field label="Time to live (duration)"

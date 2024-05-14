@@ -15,6 +15,10 @@ import './components/zeebe-variable-edit-dialog.js'
 import './components/zeebe-variable-history-dialog.js'
 import './components/zeebe-incident-details-dialog.js'
 import './components/zeebe-incident-resolve-dialog.js'
+import './components/zeebe-job-complete-dialog.js'
+import './components/zeebe-job-fail-dialog.js'
+import './components/zeebe-job-throw-error-dialog.js'
+import './components/zeebe-job-retries-dialog.js'
 
 export class ZeebeInstance extends LitElement {
 
@@ -34,6 +38,10 @@ export class ZeebeInstance extends LitElement {
     _variableHistoryDialogRef = createRef();
     _incidentDetailsDialogRef = createRef();
     _incidentResolveDialogRef = createRef();
+    _jobCompleteDialogRef = createRef();
+    _jobFailDialogRef = createRef();
+    _jobThrowErrorDialogRef = createRef();
+    _jobRetriesDialogRef = createRef();
 
     static properties = {
         _item: {state: true},
@@ -185,8 +193,8 @@ export class ZeebeInstance extends LitElement {
                         <vaadin-grid-column header="Resolved" path="item.data.resolved" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Actions" ${columnBodyRenderer(this._incidentsActionRenderer, [])}></vaadin-grid-column>
                     </zeebe-table>
-                    <zeebe-incident-details-dialog ${ref(this._incidentDetailsDialogRef)} id="instance-instance-details-dialog" .context=${this.context}></zeebe-incident-details-dialog>
-                    <zeebe-incident-resolve-dialog ${ref(this._incidentResolveDialogRef)} id="instance-instance-resolve-dialog" .context=${this.context}></zeebe-incident-resolve-dialog>
+                    <zeebe-incident-details-dialog ${ref(this._incidentDetailsDialogRef)} id="instance-incident-details-dialog" .context=${this.context}></zeebe-incident-details-dialog>
+                    <zeebe-incident-resolve-dialog ${ref(this._incidentResolveDialogRef)} id="instance-incident-resolve-dialog" .context=${this.context}></zeebe-incident-resolve-dialog>
                 </div>
                 <div tab="process-instance-jobs">
                     <zeebe-table id="instance-incidents-table" .items=${this._item.jobs}>
@@ -200,6 +208,10 @@ export class ZeebeInstance extends LitElement {
                         <vaadin-grid-column header="Time" path="data.time" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Actions" ${columnBodyRenderer(this._jobsActionRenderer, [])} auto-width></vaadin-grid-column>
                     </zeebe-table>
+                    <zeebe-job-complete-dialog ${ref(this._jobCompleteDialogRef)} id="instance-job-complete-dialog" .context=${this.context}></zeebe-job-complete-dialog>
+                    <zeebe-job-fail-dialog ${ref(this._jobFailDialogRef)} id="instance-job-fail-dialog" .context=${this.context}></zeebe-job-fail-dialog>
+                    <zeebe-job-retries-dialog ${ref(this._jobRetriesDialogRef)} id="instance-job-retries-dialog" .context=${this.context}></zeebe-job-retries-dialog>
+                    <zeebe-job-throw-error-dialog ${ref(this._jobThrowErrorDialogRef)} id="instance-job-throw-error-dialog" .context=${this.context}></zeebe-job-throw-error-dialog>
                 </div>
                 <div tab="process-instance-user-tasks">5 This is the Dashboard tab content</div>
                 <div tab="process-instance-messages">3 This is the Dashboard tab content</div>
@@ -218,18 +230,22 @@ export class ZeebeInstance extends LitElement {
             <vaadin-icon icon="font-awesome-regular:circle-check" style="color: var(--lumo-primary-text-color)"
                          title="Complete job"
                          ?hidden=${!item.active || !this._item.active}
+                         @click=${() => this._jobCompleteDialogRef.value.open(item)}
             ></vaadin-icon>
             <vaadin-icon icon="font-awesome-regular:circle-xmark" style="color: var(--lumo-primary-text-color)"
                          title="Fail job"
                          ?hidden=${!item.active || !this._item.active}
+                         @click=${() => this._jobFailDialogRef.value.open(item)}
             ></vaadin-icon>
             <vaadin-icon icon="font-awesome-regular:circle-dot" style="color: var(--lumo-primary-text-color)"
-                         title="Throw error"
+                         title="Throw error for job"
                          ?hidden=${!item.active || !this._item.active}
+                         @click=${() => this._jobThrowErrorDialogRef.value.open(item)}
             ></vaadin-icon>
             <vaadin-icon icon="font-awesome-solid:rotate" style="color: var(--lumo-primary-text-color)"
                          title="Update retries"
                          ?hidden=${!this._item.active}
+                         @click=${() => this._jobRetriesDialogRef.value.open(item)}
             ></vaadin-icon>
         `;
     }
@@ -288,7 +304,6 @@ export class ZeebeInstance extends LitElement {
                                     || item.record.intent == 'TIMED_OUT' || item.record.intent == 'RETRIES_UPDATED'),
                     searchTerms: `${item.record.intent} ${item.record.value.jobType} ${item.record.value.jobKey}`
                 }));
-                console.log(tmp.jobs);
                 this._item = tmp;
             });
     }
