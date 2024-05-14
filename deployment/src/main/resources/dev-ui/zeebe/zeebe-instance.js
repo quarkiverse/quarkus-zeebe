@@ -119,7 +119,7 @@ export class ZeebeInstance extends LitElement {
                 <div tab="process-info">
                     <vaadin-horizontal-layout theme="spacing padding"  style="align-items: stretch">
                         <div class="flex-auto"></div>
-                        <vaadin-button theme="primary error" style="align-self: end" ?disabled=${this._item.item.data.end !== ""}
+                        <vaadin-button theme="primary error" style="align-self: end" ?disabled=${!this._item.active}
                                        @click=${() => this._instanceCancelDialogRef.value.open(this._item.item.id)}>
                             <vaadin-icon slot="prefix" icon="font-awesome-solid:ban"></vaadin-icon>
                             Cancel
@@ -143,7 +143,7 @@ export class ZeebeInstance extends LitElement {
                 <div tab="process-variables">
                     <zeebe-table id="instance-variables-table" .items=${this._item.variables}>
                         <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._variableCreateDialogRef.value.open(this._item.item)}
-                                       ?disabled=${this._item.item.data.end !== ""}>
+                                       ?disabled=${!this._item.active}>
                             <vaadin-icon slot="prefix" icon="font-awesome-solid:play"></vaadin-icon>
                             Create variable
                         </vaadin-button>
@@ -182,7 +182,7 @@ export class ZeebeInstance extends LitElement {
             ></vaadin-icon>            
             <vaadin-icon icon="font-awesome-regular:pen-to-square" style="color: var(--lumo-primary-text-color)"
                          title="Edit variable"
-                         ?hidden=${this._item.item.data.end !== ""}
+                         ?hidden=${!this._item.active}
                          @click=${() => this._variableEditDialogRef.value.open(item)}
             ></vaadin-icon>
         `;
