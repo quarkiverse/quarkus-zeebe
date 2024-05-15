@@ -44,7 +44,7 @@ export class ZeebeMessages extends LitElement {
     render() {
         return html`
             <zeebe-table id="messages-table" .items=${this._items}>
-                <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._sendMessageDialogRef.value.open(null, true, true)}>
+                <vaadin-button slot="toolbar" theme="primary" style="align-self: end" @click=${() => this._sendMessageDialogRef.value.open()}>
                     <vaadin-icon slot="prefix" icon="font-awesome-solid:envelope"></vaadin-icon>
                     Send message
                 </vaadin-button>

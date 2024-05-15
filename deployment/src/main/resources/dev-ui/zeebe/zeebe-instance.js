@@ -19,6 +19,10 @@ import './components/zeebe-job-complete-dialog.js'
 import './components/zeebe-job-fail-dialog.js'
 import './components/zeebe-job-throw-error-dialog.js'
 import './components/zeebe-job-retries-dialog.js'
+import './components/zeebe-user-task-info-dialog.js';
+import './components/zeebe-user-task-complete-dialog.js';
+import './components/zeebe-send-message-dialog.js';
+import './components/zeebe-send-signal-dialog.js';
 
 export class ZeebeInstance extends LitElement {
 
@@ -42,6 +46,9 @@ export class ZeebeInstance extends LitElement {
     _jobFailDialogRef = createRef();
     _jobThrowErrorDialogRef = createRef();
     _jobRetriesDialogRef = createRef();
+    _userTaskCompleteDialogRef = createRef();
+    _userTaskInfoDialogRef = createRef();
+    _sendMessageDialogRef = createRef();
 
     static properties = {
         _item: {state: true},
@@ -213,8 +220,30 @@ export class ZeebeInstance extends LitElement {
                     <zeebe-job-retries-dialog ${ref(this._jobRetriesDialogRef)} id="instance-job-retries-dialog" .context=${this.context}></zeebe-job-retries-dialog>
                     <zeebe-job-throw-error-dialog ${ref(this._jobThrowErrorDialogRef)} id="instance-job-throw-error-dialog" .context=${this.context}></zeebe-job-throw-error-dialog>
                 </div>
-                <div tab="process-instance-user-tasks">5 This is the Dashboard tab content</div>
-                <div tab="process-instance-messages">3 This is the Dashboard tab content</div>
+                <div tab="process-instance-user-tasks">
+                    <zeebe-table id="instance-user-tasks-table" .items=${this._item.userTasks}>
+                        <vaadin-grid-column header="Element Id" path="record.value.elementId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Assignee" path="data.assignee" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Due Date" path="data.dueDate" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Follow Up Date" path="data.followUpDate" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Status" path="record.intent" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Time" path="data.created" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Actions" ${columnBodyRenderer(this._userTasksActionsRenderer, [])}></vaadin-grid-column>
+                    </zeebe-table>
+                    <zeebe-user-task-complete-dialog ${ref(this._userTaskCompleteDialogRef)} .context=${this.context}></zeebe-user-task-complete-dialog>
+                    <zeebe-user-task-info-dialog ${ref(this._userTaskInfoDialogRef)} .context=${this.context}></zeebe-user-task-info-dialog>                    
+                </div>
+                <div tab="process-instance-messages">
+                    <zeebe-table id="process-instance-messages-table" .items=${this._item.messageSubscriptions}>
+                        <vaadin-grid-column header="Element Id" path="record.value.elementId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Message name" path="record.value.messageName" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Correlation Key" path="record.value.correlationKey" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="State" path="record.intent" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Time" path="data.time" resizable></vaadin-grid-column>                        
+                        <vaadin-grid-column header="Actions" ${columnBodyRenderer(this._messageSubscriptionActionsRenderer, [])}></vaadin-grid-column>
+                    </zeebe-table>
+                    <zeebe-send-message-dialog ${ref(this._sendMessageDialogRef)} id="process-instance-send-message-dialog" .context=${this.context}></zeebe-send-message-dialog>
+                </div>
                 <div tab="process-instance-escalation">5 This is the Dashboard tab content</div>
                 <div tab="process-instance-timers">5 This is the Dashboard tab content</div>
                 <div tab="process-instance-called-instances">5 This is the Dashboard tab content</div>
@@ -222,6 +251,27 @@ export class ZeebeInstance extends LitElement {
                 <div tab="process-instance-modify">5 This is the Dashboard tab content</div>
 
             </vaadin-tabsheet>        
+        `;
+    }
+
+    _messageSubscriptionActionsRenderer(item) {
+        return html`
+            <vaadin-icon icon="font-awesome-regular:envelope" style="color: var(--lumo-primary-text-color)"
+                         title="Send message"
+                         @click=${() => this._sendMessageDialogRef.value.open(item.record.value.messageName, item.record.value.correlationKey)}
+            ></vaadin-icon>
+        `;
+    }
+
+    _userTasksActionsRenderer(item) {
+        return html`
+            <vaadin-icon slot="prefix" icon="font-awesome-regular:circle-check"  title="Complete user task" style="color: var(--lumo-primary-text-color)"
+                         ?hidden=${!item.active}
+                         @click=${() => this._userTaskCompleteDialogRef.value.open(item)}
+            ></vaadin-icon>
+            <vaadin-icon slot="prefix" icon="font-awesome-regular:file-lines" title="Details" style="color: var(--lumo-primary-text-color)"
+                         @click=${() => this._userTaskInfoDialogRef.value.open(item)}
+            ></vaadin-icon>            
         `;
     }
 
@@ -303,6 +353,16 @@ export class ZeebeInstance extends LitElement {
                     active: item.record.value.retries > 0 && (item.record.intent == 'CREATED' || item.record.intent == 'FAILED'
                                     || item.record.intent == 'TIMED_OUT' || item.record.intent == 'RETRIES_UPDATED'),
                     searchTerms: `${item.record.intent} ${item.record.value.jobType} ${item.record.value.jobKey}`
+                }));
+                tmp.userTasks = tmp.userTasks.map((item) => ({
+                    ...item,
+                    active: item.record.intent === 'CREATED' || item.record.intent === 'FAILED'
+                        || item.record.intent === 'TIMED_OUT' || item.record.intent == 'RETRIES_UPDATED',
+                    searchTerms: `${item.record.value.name} ${item.record.value.correlationKey} ${item.record.value.messageId}`
+                }));
+                tmp.messageSubscriptions = tmp.messageSubscriptions.map((item) => ({
+                    ...item,
+                    searchTerms: `${item.record.value.messageName}`
                 }));
                 this._item = tmp;
             });

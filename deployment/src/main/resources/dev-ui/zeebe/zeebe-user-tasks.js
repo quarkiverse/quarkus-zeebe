@@ -40,8 +40,8 @@ export class ZeebeUserTasks extends LitElement {
             .then(itemResponse => {
                 this._items = itemResponse.result.map((item) => ({
                     ...item,
-                    isAction: `${item.record.intent === 'CREATED' || item.record.intent === 'FAILED'
-                                || item.record.intent === 'TIMED_OUT' || item.record.intent == 'RETRIES_UPDATED'}`,
+                    active: item.record.intent === 'CREATED' || item.record.intent === 'FAILED'
+                                || item.record.intent === 'TIMED_OUT' || item.record.intent == 'RETRIES_UPDATED',
                     searchTerms: `${item.record.value.name} ${item.record.value.correlationKey} ${item.record.value.messageId}`
                 }));
 
@@ -56,10 +56,10 @@ export class ZeebeUserTasks extends LitElement {
                 <vaadin-grid-column header="Process Instance Key" ${columnBodyRenderer(this._instanceKeyRenderer, [])} resizable></vaadin-grid-column>
                 <vaadin-grid-column header="Element Id" path="record.value.elementId" resizable></vaadin-grid-column>
                 <vaadin-grid-column header="Assignee" path="data.assignee" resizable></vaadin-grid-column>
-                <vaadin-grid-column header="Due Date" path="record.dueDate"></vaadin-grid-column>
-                <vaadin-grid-column header="Follow Up" path="data.followUpDate"></vaadin-grid-column>
-                <vaadin-grid-column header="Status" path="record.intent"></vaadin-grid-column>
-                <vaadin-grid-column header="Created" path="data.created"></vaadin-grid-column>
+                <vaadin-grid-column header="Due Date" path="data.dueDate" resizable></vaadin-grid-column>
+                <vaadin-grid-column header="Follow Up Date" path="data.followUpDate" resizable></vaadin-grid-column>
+                <vaadin-grid-column header="Status" path="record.intent" resizable></vaadin-grid-column>
+                <vaadin-grid-column header="Time" path="data.created" resizable></vaadin-grid-column>
                 <vaadin-grid-column header="Actions" ${columnBodyRenderer(this._actionsRenderer, [])}></vaadin-grid-column>
             </zeebe-table>
             <zeebe-user-task-complete-dialog ${ref(this._userTaskCompleteDialogRef)} .context=${this.context}></zeebe-user-task-complete-dialog>
@@ -76,7 +76,7 @@ export class ZeebeUserTasks extends LitElement {
     _actionsRenderer(item) {
         return html`
             <vaadin-icon slot="prefix" icon="font-awesome-regular:circle-check"  title="Complete user task" style="color: var(--lumo-primary-text-color)"
-                         ?hidden=${item.isAction !== 'true'}
+                         ?hidden=${!item.active}
                          @click=${() => this._userTaskCompleteDialogRef.value.open(item)}
             ></vaadin-icon>
             <vaadin-icon slot="prefix" icon="font-awesome-regular:file-lines" title="Details" style="color: var(--lumo-primary-text-color)"

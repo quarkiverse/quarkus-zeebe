@@ -21,13 +21,19 @@ export class ZeebeSendMessageDialog extends LitElement {
         super.connectedCallback();
         this._opened = false;
         this.jsonRpc = new JsonRpc(this.context.extension);
+        this._name = null;
+        this._key = null;
+        this._editKey = false;
+        this._editName = false;
+        this._duration = "PT0S"
+        this._variables = null;
     }
 
-    open(name, editKey = false, editName = false) {
+    open(name = null, key = null) {
         this._name = name;
-        this._key = null;
-        this._editKey = editKey;
-        this._editName = editName;
+        this._key = key;
+        this._editKey = key === null;
+        this._editName = name === null;
         this._duration = "PT0S"
         this._variables = null;
         this._opened = true;
