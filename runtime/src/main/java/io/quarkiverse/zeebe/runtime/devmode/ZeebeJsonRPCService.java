@@ -58,7 +58,6 @@ public class ZeebeJsonRPCService {
 
     public Object userTaskComplete(long key, Map<String, Object> variables) {
         getClient().newCompleteCommand(key).variables(variables).send().join();
-        //        getClient().newUserTaskCompleteCommand(key).variables(variables).send().join();
         return Map.of("command", "userTaskComplete", "userTaskKey", key);
     }
 

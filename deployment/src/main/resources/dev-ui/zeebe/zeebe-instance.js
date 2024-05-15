@@ -244,8 +244,23 @@ export class ZeebeInstance extends LitElement {
                     </zeebe-table>
                     <zeebe-send-message-dialog ${ref(this._sendMessageDialogRef)} id="process-instance-send-message-dialog" .context=${this.context}></zeebe-send-message-dialog>
                 </div>
-                <div tab="process-instance-escalation">5 This is the Dashboard tab content</div>
-                <div tab="process-instance-timers">5 This is the Dashboard tab content</div>
+                <div tab="process-instance-escalation">
+                    <zeebe-table id="process-instance-escalations-table" .items=${this._item.escalations}>
+                        <vaadin-grid-column header="Throw Element Id" path="record.value.throwElementId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Catch Element Id" path="record.value.catchElementId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Code" path="record.value.escalationCode" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Time" path="data.time" resizable></vaadin-grid-column>
+                    </zeebe-table>                    
+                </div>
+                <div tab="process-instance-timers">
+                    <zeebe-table id="process-instance-timers-table" .items=${this._item.timers}>
+                        <vaadin-grid-column header="Element Id" path="record.value.targetElementId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Due Date" path="data.dueDate" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Repetitions" path="record.value.repetitions" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="State" path="record.intent" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Time" path="data.time" resizable></vaadin-grid-column>
+                    </zeebe-table>
+                </div>
                 <div tab="process-instance-called-instances">5 This is the Dashboard tab content</div>
                 <div tab="process-instance-errors">5 This is the Dashboard tab content</div>
                 <div tab="process-instance-modify">5 This is the Dashboard tab content</div>
@@ -363,6 +378,14 @@ export class ZeebeInstance extends LitElement {
                 tmp.messageSubscriptions = tmp.messageSubscriptions.map((item) => ({
                     ...item,
                     searchTerms: `${item.record.value.messageName}`
+                }));
+                tmp.escalations = tmp.escalations.map((item) => ({
+                    ...item,
+                    searchTerms: `${item.record.value.escalationCode} ${item.record.value.throwElementId} ${item.record.value.catchElementId}`
+                }));
+                tmp.timers = tmp.timers.map((item) => ({
+                    ...item,
+                    searchTerms: `${item.record.value.targetElementId} ${item.record.intent}`
                 }));
                 this._item = tmp;
             });
