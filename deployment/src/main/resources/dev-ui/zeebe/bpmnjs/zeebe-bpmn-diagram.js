@@ -45,11 +45,11 @@ export class ZeebeBpmnDiagram extends LitElement {
         }
 
         .bpmn-element-selected .djs-visual > :nth-child(1) {
-            stroke: rgb(59 130 246) !important;
+            stroke: var(--quarkus-blue) !important;
             stroke-dasharray: 5;
             stroke-width: 2px !important;
         }
-
+        
         .bpmn-info {
             background-color: rgba(0, 123, 255, 255);
             color: White;
@@ -278,6 +278,14 @@ export class ZeebeBpmnDiagram extends LitElement {
 
     _resetView() {
         this._viewer.get('canvas').zoom('fit-viewport')
+    }
+
+    addMarker(elementId) {
+        this._viewer.get('canvas').addMarker(elementId, 'bpmn-element-selected');
+    }
+
+    removeMarker(elementId) {
+        this._viewer.get('canvas').removeMarker(elementId, 'bpmn-element-selected');
     }
 }
 

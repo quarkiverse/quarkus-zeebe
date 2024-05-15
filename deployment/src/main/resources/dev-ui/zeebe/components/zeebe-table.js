@@ -40,7 +40,7 @@ export class ZeebeTable extends LitElement {
 
     render() {
         return html`
-            <vaadin-horizontal-layout theme="spacing padding"  style="align-items: stretch" ?hidden=${!this._searchBar}>
+            <vaadin-horizontal-layout theme="spacing"  style="align-items: stretch; padding-left: 10px; padding-right: 10px" ?hidden=${!this._searchBar}>
                 <vaadin-text-field style="align-self: start" placeholder="Search" @value-changed=${this._searchTable}>
                     <vaadin-icon slot="prefix" icon="font-awesome-solid:magnifying-glass"></vaadin-icon>
                 </vaadin-text-field>

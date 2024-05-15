@@ -2,6 +2,7 @@ import { JsonRpc } from 'jsonrpc';
 import { LitElement, html} from 'lit';
 import { columnBodyRenderer } from '@vaadin/grid/lit.js';
 import {ref, createRef} from 'lit/directives/ref.js';
+import { diagramId } from './components/zeebe-utils.js';
 import './bpmnjs/zeebe-bpmn-diagram.js';
 import '@vaadin/tabs';
 import '@vaadin/tabsheet';
@@ -21,6 +22,7 @@ export class ZeebeProcess extends LitElement {
         navigation: {},
     };
 
+    _diagram = createRef();
     _sendMessageDialogRef = createRef();
     _sendSignalDialogRef = createRef();
     _createInstanceDialogRef = createRef();
@@ -57,7 +59,7 @@ export class ZeebeProcess extends LitElement {
 
     _body() {
         return html`
-            <zeebe-bpmn-diagram id="diagram" .xml="${this._item.xml}" .data=${this._item.diagram}></zeebe-bpmn-diagram>
+            <zeebe-bpmn-diagram id="process-diagram" ${ref(this._diagram)} .xml="${this._item.xml}" .data=${this._item.diagram}></zeebe-bpmn-diagram>
             <vaadin-tabsheet>
                 <vaadin-tabs slot="tabs">
                     <vaadin-tab id="process-info" theme="icon">
@@ -108,16 +110,18 @@ export class ZeebeProcess extends LitElement {
                 </div>
                 <div tab="process-messages">
                     <zeebe-table id="process-messages-table" .items=${this._item.messages}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._diagramMessageIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="record.value.startEventId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Message name" path="record.value.messageName" resizable></vaadin-grid-column>
-                        <vaadin-grid-column header="State" path="record.intent"></vaadin-grid-column>
-                        <vaadin-grid-column header="Time" path="data.time"></vaadin-grid-column>
+                        <vaadin-grid-column header="State" path="record.intent" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Time" path="data.time" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Actions" ${columnBodyRenderer(this._messageSubscriptionActionRenderer, [])}></vaadin-grid-column>
                     </zeebe-table>
                     <zeebe-send-message-dialog ${ref(this._sendMessageDialogRef)} id="process-send-message-dialog" .context=${this.context}></zeebe-send-message-dialog>
                 </div>
                 <div tab="process-signals">
                     <zeebe-table id="process-messages-signals" .items=${this._item.signals}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._diagramSignalIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Catch Event Id" path="record.value.catchEventId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Catch Event Instance Key" path="record.value.catchEventInstanceKey" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Signal Name" path="record.value.signalName"></vaadin-grid-column>
@@ -129,6 +133,7 @@ export class ZeebeProcess extends LitElement {
                 </div>
                 <div tab="process-timers">
                     <zeebe-table id="process-timers-table" .items=${this._item.timers}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._diagramTimerIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="record.value.targetElementId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Due Date" path="data.dueDate" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Repetitions" path="record.value.repetitions"></vaadin-grid-column>
@@ -139,6 +144,18 @@ export class ZeebeProcess extends LitElement {
 
             </vaadin-tabsheet>            
         `;
+    }
+
+    _diagramSignalIdRenderer(item) {
+        return diagramId(this._diagram, item.record.value.catchEventId);
+    }
+
+    _diagramTimerIdRenderer(item) {
+        return diagramId(this._diagram, item.record.value.targetElementId);
+    }
+
+    _diagramMessageIdRenderer(item) {
+        return diagramId(this._diagram, item.record.value.startEventId);
     }
 
     _instanceKeyRenderer(item) {

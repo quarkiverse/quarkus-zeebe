@@ -2,7 +2,7 @@ import { JsonRpc } from 'jsonrpc';
 import { LitElement, html, css } from 'lit';
 import {ref, createRef} from 'lit/directives/ref.js';
 import { columnBodyRenderer } from '@vaadin/grid/lit.js';
-import {when} from 'lit/directives/when.js';
+import { diagramId } from './components/zeebe-utils.js';
 import './bpmnjs/zeebe-bpmn-diagram.js';
 import '@vaadin/tabs';
 import '@vaadin/grid';
@@ -37,6 +37,7 @@ export class ZeebeInstance extends LitElement {
         }
     `;
 
+    _diagram = createRef();
     _instanceCancelDialogRef = createRef();
     _variableCreateDialogRef = createRef();
     _variableEditDialogRef = createRef();
@@ -84,7 +85,7 @@ export class ZeebeInstance extends LitElement {
 
     _body() {
         return html`
-            <zeebe-bpmn-diagram id="diagram" .xml="${this._item.xml}" .data=${this._item.diagram}></zeebe-bpmn-diagram>
+            <zeebe-bpmn-diagram id="instance-diagram" ${ref(this._diagram)} .xml="${this._item.xml}" .data=${this._item.diagram}></zeebe-bpmn-diagram>
             <vaadin-tabsheet>
                 <vaadin-tabs slot="tabs">
                     <vaadin-tab id="process-instance-info" theme="icon">
@@ -138,7 +139,7 @@ export class ZeebeInstance extends LitElement {
                 </vaadin-tabs>
 
                 <div tab="process-instance-info">
-                    <vaadin-horizontal-layout theme="spacing padding"  style="align-items: stretch">
+                    <vaadin-horizontal-layout theme="spacing"  style="align-items: stretch">
                         <div class="flex-auto"></div>
                         <vaadin-button theme="primary error" style="align-self: end" ?disabled=${!this._item.active}
                                        @click=${() => this._instanceCancelDialogRef.value.open(this._item.item.id)}>
@@ -176,9 +177,9 @@ export class ZeebeInstance extends LitElement {
                             <vaadin-icon slot="prefix" icon="font-awesome-solid:play"></vaadin-icon>
                             Create variable
                         </vaadin-button>
-                        
-                        <vaadin-grid-column header="Scope Key" path="scopeKey" resizable></vaadin-grid-column>
+                        <vaadin-grid-column ${columnBodyRenderer(this._rootElementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="elementId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Scope Key" path="scopeKey" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Name" path="name" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Value" path="value" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Time" path="time" resizable></vaadin-grid-column>
@@ -189,7 +190,8 @@ export class ZeebeInstance extends LitElement {
                     <zeebe-variable-history-dialog ${ref(this._variableHistoryDialogRef)} id="instance-variable-history-dialog" .context=${this.context}></zeebe-variable-history-dialog>
                 </div>
                 <div tab="process-instance-audit">
-                    <zeebe-table id="instance-variables-table" .items=${this._item.auditLogEntries}>
+                    <zeebe-table id="instance-audit-table" .items=${this._item.auditLogEntries}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._itemElementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="item.record.value.elementId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Element Key" path="item.record.key" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Flow Scope Key" path="item.record.value.flowScopeKey" resizable></vaadin-grid-column>
@@ -200,6 +202,7 @@ export class ZeebeInstance extends LitElement {
                 </div>
                 <div tab="process-instance-incidents">
                     <zeebe-table id="instance-incidents-table" .items=${this._item.incidents}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._itemElementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="item.record.value.elementId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Incident Key" path="item.record.key" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Type" path="item.record.value.errorType" resizable></vaadin-grid-column>
@@ -214,6 +217,7 @@ export class ZeebeInstance extends LitElement {
                 </div>
                 <div tab="process-instance-jobs">
                     <zeebe-table id="instance-incidents-table" .items=${this._item.jobs}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._elementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="record.value.elementId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Job Key" path="record.key" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Job Type" path="record.value.type" resizable></vaadin-grid-column>
@@ -231,6 +235,7 @@ export class ZeebeInstance extends LitElement {
                 </div>
                 <div tab="process-instance-user-tasks">
                     <zeebe-table id="instance-user-tasks-table" .items=${this._item.userTasks}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._elementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="record.value.elementId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Assignee" path="data.assignee" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Due Date" path="data.dueDate" resizable></vaadin-grid-column>
@@ -244,6 +249,7 @@ export class ZeebeInstance extends LitElement {
                 </div>
                 <div tab="process-instance-messages">
                     <zeebe-table id="process-instance-messages-table" .items=${this._item.messageSubscriptions}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._elementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="record.value.elementId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Message name" path="record.value.messageName" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Correlation Key" path="record.value.correlationKey" resizable></vaadin-grid-column>
@@ -255,7 +261,9 @@ export class ZeebeInstance extends LitElement {
                 </div>
                 <div tab="process-instance-escalation">
                     <zeebe-table id="process-instance-escalations-table" .items=${this._item.escalations}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._throwElementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Throw Element Id" path="record.value.throwElementId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column ${columnBodyRenderer(this._catchElementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Catch Element Id" path="record.value.catchElementId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Code" path="record.value.escalationCode" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Time" path="data.time" resizable></vaadin-grid-column>
@@ -263,6 +271,7 @@ export class ZeebeInstance extends LitElement {
                 </div>
                 <div tab="process-instance-timers">
                     <zeebe-table id="process-instance-timers-table" .items=${this._item.timers}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._targetElementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="record.value.targetElementId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Due Date" path="data.dueDate" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Repetitions" path="record.value.repetitions" resizable></vaadin-grid-column>
@@ -272,6 +281,7 @@ export class ZeebeInstance extends LitElement {
                 </div>
                 <div tab="process-instance-called-instances">
                     <zeebe-table id="process-instance-called-instances-table" .items=${this._item.callProcessInstances}>
+                        <vaadin-grid-column ${columnBodyRenderer(this._rootElementIdRenderer, [])} width="40px" flex-grow="0"></vaadin-grid-column>
                         <vaadin-grid-column header="Element Id" path="elementId" resizable></vaadin-grid-column>
                         <vaadin-grid-column header="Instance Key" resizable ${columnBodyRenderer(this._instanceKeyRenderer, [])}></vaadin-grid-column>
                         <vaadin-grid-column header="Process Id" path="item.record.value.bpmnProcessId" resizable></vaadin-grid-column>
@@ -294,6 +304,29 @@ export class ZeebeInstance extends LitElement {
 
             </vaadin-tabsheet>        
         `;
+    }
+
+    _itemElementIdRenderer(item) {
+        return diagramId(this._diagram, item.item.record.value.elementId);
+    }
+
+    _catchElementIdRenderer(item) {
+        return diagramId(this._diagram, item.record.value.catchElementId);
+    }
+
+    _throwElementIdRenderer(item) {
+        return diagramId(this._diagram, item.record.value.throwElementId);
+    }
+
+    _targetElementIdRenderer(item) {
+        return diagramId(this._diagram, item.record.value.targetElementId);
+    }
+    _rootElementIdRenderer(item) {
+        return diagramId(this._diagram, item.elementId);
+    }
+
+    _elementIdRenderer(item) {
+        return diagramId(this._diagram, item.record.value.elementId);
     }
 
     _processKeyRenderer(item) {
