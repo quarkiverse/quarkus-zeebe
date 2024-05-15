@@ -1,5 +1,7 @@
 package io.quarkiverse.zeebe.devservices;
 
+import org.jboss.logging.Logger;
+
 import io.quarkiverse.zeebe.ZeebeDevServiceBuildTimeConfig;
 import io.quarkiverse.zeebe.runtime.devmode.ZeebeJsonRPCService;
 import io.quarkiverse.zeebe.runtime.devmode.ZeebeRecordsHandler;
@@ -18,6 +20,7 @@ import io.vertx.ext.web.handler.BodyHandler;
 
 public class DevUIZeebeProcessor {
 
+    private static final Logger log = Logger.getLogger(DevUIZeebeProcessor.class);
     private static final String ROOT_PATH = "zeebe";
     private static final String SUB_PATH_RECORDS = "records";
 
@@ -27,7 +30,13 @@ public class DevUIZeebeProcessor {
             BuildProducer<RouteBuildItem> routes,
             BuildProducer<CardPageBuildItem> cardsProducer,
             NonApplicationRootPathBuildItem nonApplicationRootPathBuildItem,
-            BuildProducer<MenuPageBuildItem> menuProducer) {
+            BuildProducer<MenuPageBuildItem> menuProducer,
+            BuildProducer<JsonRPCProvidersBuildItem> rpcProvidersBuildItemBuildProducer) {
+
+        if (!buildTimeConfig.devMode.devUIEnabled) {
+            log.debug("Not starting dev-ui for Zeebe as it has been disabled in the config");
+            return;
+        }
 
         routes.produce(nonApplicationRootPathBuildItem.routeBuilder()
                 .nestedRoute(ROOT_PATH, SUB_PATH_RECORDS)
@@ -51,10 +60,8 @@ public class DevUIZeebeProcessor {
         MenuPageBuildItem menuPageBuildItem = new MenuPageBuildItem();
         menuPageBuildItem.addPage(dashboard);
         menuProducer.produce(menuPageBuildItem);
+
+        rpcProvidersBuildItemBuildProducer.produce(new JsonRPCProvidersBuildItem(ZeebeJsonRPCService.class));
     }
 
-    @BuildStep(onlyIf = IsDevelopment.class)
-    JsonRPCProvidersBuildItem createJsonRPCService() {
-        return new JsonRPCProvidersBuildItem(ZeebeJsonRPCService.class);
-    }
 }

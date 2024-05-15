@@ -25,11 +25,10 @@ public class ZeebeDevServiceBuildTimeConfig {
     public static class DevMode {
 
         /**
-         * Upload files directory.
+         * Disable or enabled zeebe dashboard dev-ui.
          */
-        @ConfigItem(name = "upload-files-dir", defaultValue = "target")
-        public String uploadFilesDir;
-
+        @ConfigItem(name = "dev-ui.enabled", defaultValue = "true")
+        public boolean devUIEnabled;
         /**
          * Observe changes in the bpmn files.
          */

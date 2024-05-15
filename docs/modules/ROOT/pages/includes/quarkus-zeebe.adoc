@@ -158,7 +158,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-debug-exporter-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-debug-exporter-enabled[quarkus.zeebe.devservices.debug-exporter.enabled]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-dev-exporter-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-dev-exporter-enabled[quarkus.zeebe.devservices.dev-exporter.enabled]`
 
 
 [.description]
@@ -166,47 +166,30 @@ a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices
 Enable or disable debug exporter.
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_DEBUG_EXPORTER_ENABLED+++[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_DEV_EXPORTER_ENABLED+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_DEBUG_EXPORTER_ENABLED+++`
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_DEV_EXPORTER_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --|boolean 
-|`false`
+|`true`
 
 
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-debug-exporter-receiver-port]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-debug-exporter-receiver-port[quarkus.zeebe.devservices.debug-exporter.receiver-port]`
-
-
-[.description]
---
-Fixed debug export receiver port the localhost service will listen to.
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_DEBUG_EXPORTER_RECEIVER_PORT+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_DEBUG_EXPORTER_RECEIVER_PORT+++`
-endif::add-copy-button-to-env-var[]
---|int 
-|`8080`
-
-
-a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-upload-files-dir]]`link:#quarkus-zeebe_quarkus-zeebe-dev-mode-upload-files-dir[quarkus.zeebe.dev-mode.upload-files-dir]`
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-dev-ui-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-dev-mode-dev-ui-enabled[quarkus.zeebe.dev-mode.dev-ui.enabled]`
 
 
 [.description]
 --
-Upload files directory.
+Disable or enabled zeebe dashboard dev-ui.
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEV_MODE_UPLOAD_FILES_DIR+++[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEV_MODE_DEV_UI_ENABLED+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_UPLOAD_FILES_DIR+++`
+Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_DEV_UI_ENABLED+++`
 endif::add-copy-button-to-env-var[]
---|string 
-|`target`
+--|boolean 
+|`true`
 
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-files]]`link:#quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-files[quarkus.zeebe.dev-mode.watch-bpmn-files]`
