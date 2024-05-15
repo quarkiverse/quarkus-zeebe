@@ -324,7 +324,7 @@ public class ZeebeJsonRPCService {
         var escalations = RecordStore.ESCALATIONS.findBy(x -> x.getValue().getProcessInstanceKey() == id).toList();
         var userTasks = RecordStore.USER_TASKS.findBy(x -> x.getValue().getProcessInstanceKey() == id).toList();
         var callProcessInstances = RecordStore.INSTANCES.findBy(x -> x.getValue().getParentProcessInstanceKey() == id)
-                .map(x -> new CalledProcessInstance(elementIdsForKeys.get(x.record().getValue().getParentProcessInstanceKey()),
+                .map(x -> new CalledProcessInstance(elementIdsForKeys.get(x.record().getValue().getParentElementInstanceKey()),
                         x))
                 .toList();
 

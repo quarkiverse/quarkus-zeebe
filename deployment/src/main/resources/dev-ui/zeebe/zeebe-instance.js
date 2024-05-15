@@ -2,6 +2,7 @@ import { JsonRpc } from 'jsonrpc';
 import { LitElement, html, css } from 'lit';
 import {ref, createRef} from 'lit/directives/ref.js';
 import { columnBodyRenderer } from '@vaadin/grid/lit.js';
+import {when} from 'lit/directives/when.js';
 import './bpmnjs/zeebe-bpmn-diagram.js';
 import '@vaadin/tabs';
 import '@vaadin/grid';
@@ -157,7 +158,15 @@ export class ZeebeInstance extends LitElement {
                         <vaadin-text-field readonly label="Start time" value="${this._item.item.data.start}"></vaadin-text-field>
                         <vaadin-text-field readonly label="End time" value="${this._item.item.data.end}"></vaadin-text-field>
                         <vaadin-text-field readonly label="Version" value="${this._item.item.record.value.version}"></vaadin-text-field>
-                    </vaadin-form-layout>
+                         <vaadin-text-field readonly class="link" label="Parent process instance key" 
+                                       value="${this._item.parent == null ? '' : this._item.parent.record.value.processInstanceKey}"
+                                       @click=${() => this.navigation({ nav: "instance", id: this._item.parent.record.value.processInstanceKey})}>
+                        </vaadin-text-field>
+                        <vaadin-text-field readonly class="link" label="Parent process definition key" 
+                                           value="${this._item.parent == null ? '' : this._item.parent.record.value.processDefinitionKey}"
+                                           @click=${() => this.navigation({ nav: "process", id: this._item.parent.record.value.processDefinitionKey})}>
+                        </vaadin-text-field>
+                    </vaadin-form-layout>                    
                     <zeebe-instance-cancel-dialog ${ref(this._instanceCancelDialogRef)} id="process-instance-cancel-dialog" .context=${this.context}></zeebe-instance-cancel-dialog>
                 </div>
                 <div tab="process-instance-variables">
@@ -261,11 +270,31 @@ export class ZeebeInstance extends LitElement {
                         <vaadin-grid-column header="Time" path="data.time" resizable></vaadin-grid-column>
                     </zeebe-table>
                 </div>
-                <div tab="process-instance-called-instances">5 This is the Dashboard tab content</div>
+                <div tab="process-instance-called-instances">
+                    <zeebe-table id="process-instance-called-instances-table" .items=${this._item.callProcessInstances}>
+                        <vaadin-grid-column header="Element Id" path="elementId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Instance Key" resizable ${columnBodyRenderer(this._instanceKeyRenderer, [])}></vaadin-grid-column>
+                        <vaadin-grid-column header="Process Id" path="item.record.value.bpmnProcessId" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Process Definition Key" resizable ${columnBodyRenderer(this._processKeyRenderer, [])}></vaadin-grid-column>
+                        <vaadin-grid-column header="State" path="item.data.state" resizable></vaadin-grid-column>
+                    </zeebe-table>
+                </div>
                 <div tab="process-instance-errors">5 This is the Dashboard tab content</div>
                 <div tab="process-instance-modify">5 This is the Dashboard tab content</div>
 
             </vaadin-tabsheet>        
+        `;
+    }
+
+    _processKeyRenderer(item) {
+        return html`
+            <a @click=${() => this.navigation({ nav: "process", id: item.item.record.value.processDefinitionKey })}>${item.item.record.value.processDefinitionKey}</a>
+        `;
+    }
+
+    _instanceKeyRenderer(item) {
+        return html`
+            <a @click=${() => this.navigation({ nav: "instance", id: item.item.record.value.processInstanceKey })}>${item.item.record.value.processInstanceKey}</a>
         `;
     }
 
@@ -386,6 +415,10 @@ export class ZeebeInstance extends LitElement {
                 tmp.timers = tmp.timers.map((item) => ({
                     ...item,
                     searchTerms: `${item.record.value.targetElementId} ${item.record.intent}`
+                }));
+                tmp.callProcessInstances = tmp.callProcessInstances.map((item) => ({
+                    ...item,
+                    searchTerms: `${item.item.record.value.bpmnProcessId} ${item.item.record.intent}`
                 }));
                 this._item = tmp;
             });

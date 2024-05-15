@@ -28,7 +28,7 @@ export class ZeebeDashboard extends LitElement {
         super();
         this._tabs = new Map([
             ["processes", 0], ["process", 0],
-            ["instances", 1], ["instance", 1],
+            ["instances", 1], ["instance", 1], ["instance-child", 1],
             ["incidents", 2], ["jobs", 3], ["messages", 4], ["signals", 5], ["errors", 6], ["user-tasks", 7]
         ]);
         this._navbar("processes");
@@ -52,6 +52,7 @@ export class ZeebeDashboard extends LitElement {
                 ['process', () => html`<zeebe-process .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-process>`],
                 ['instances', () => html`<zeebe-instances .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-instances>`], 
                 ['instance', () => html`<zeebe-instance .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-instance>`],
+                ['instance-child', () => html`<zeebe-instance .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-instance>`],                    
                 ['jobs', () => html`<zeebe-jobs .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-jobs>`],
                 ['incidents', () => html`<zeebe-incidents .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-incidents>`],
                 ['errors', () => html`<zeebe-errors .context=${this._context} .navigation=${(request) => this.navigation(request)}></zeebe-errors>`],
@@ -70,6 +71,14 @@ export class ZeebeDashboard extends LitElement {
     navigation(request) {
         this._context = { nav: request.nav, id: request.id, extension: this.jsonRpc.getExtensionName() };
         this._tab = this._tabs.get(request.nav);
+        let c = this._nav === request.nav;
+        if (c) {
+            if (request.nav === 'instance') {
+                request.nav = 'instance-child';
+            } else if (request.nav === 'instance-child') {
+                request.nav = 'instance';
+            }
+        }
         this._nav = request.nav;
     }
 }
