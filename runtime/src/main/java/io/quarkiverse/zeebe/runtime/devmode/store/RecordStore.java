@@ -171,8 +171,8 @@ public class RecordStore {
         var error = ERRORS.putIfAbsent(record, Record::getPosition);
         if (error != null) {
             error.data().put("created", localDateTime(record.getTimestamp()));
+            sendEvent(ValueType.ERROR, NotificationType.UPDATED);
         }
-        sendEvent(ValueType.ERROR, NotificationType.UPDATED);
     }
 
     public static void importTimer(final Record<TimerRecordValue> record) {

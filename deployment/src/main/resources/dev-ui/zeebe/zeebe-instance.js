@@ -92,23 +92,23 @@ export class ZeebeInstance extends LitElement {
                         <span>Details</span>
                     </vaadin-tab>
                     <vaadin-tab id="process-instance-variables" theme="icon">
-                        <vaadin-icon icon="font-awesome-regular:object-group"></vaadin-icon>
+                        <vaadin-icon icon="font-awesome-solid:database"></vaadin-icon>
                         <span>Variables</span>
                     </vaadin-tab>
                     <vaadin-tab id="process-instance-audit" theme="icon">
-                        <vaadin-icon icon="font-awesome-regular:object-group"></vaadin-icon>
+                        <vaadin-icon icon="font-awesome-solid:wave-square"></vaadin-icon>
                         <span>Audit log</span>
                     </vaadin-tab>
                     <vaadin-tab id="process-instance-incidents" theme="icon">
-                        <vaadin-icon icon="font-awesome-regular:object-group"></vaadin-icon>
+                        <vaadin-icon icon="font-awesome-solid:triangle-exclamation"></vaadin-icon>
                         <span>Incidents</span>
                     </vaadin-tab>
                     <vaadin-tab id="process-instance-jobs" theme="icon">
-                        <vaadin-icon icon="font-awesome-regular:object-group"></vaadin-icon>
+                        <vaadin-icon icon="font-awesome-solid:person-digging"></vaadin-icon>
                         <span>Jobs</span>
                     </vaadin-tab>
                     <vaadin-tab id="process-instance-user-tasks" theme="icon">
-                        <vaadin-icon icon="font-awesome-regular:object-group"></vaadin-icon>
+                        <vaadin-icon icon="font-awesome-solid:user"></vaadin-icon>
                         <span>User tasks</span>
                     </vaadin-tab>                    
                     <vaadin-tab id="process-instance-messages" theme="icon">
@@ -116,7 +116,7 @@ export class ZeebeInstance extends LitElement {
                         <span>Messages</span>
                     </vaadin-tab>
                     <vaadin-tab id="process-instance-escalation" theme="icon">
-                        <vaadin-icon icon="font-awesome-regular:envelope"></vaadin-icon>
+                        <vaadin-icon icon="font-awesome-solid:chart-line"></vaadin-icon>
                         <span>Escalation</span>
                     </vaadin-tab>
                     <vaadin-tab id="process-instance-timers" theme="icon">
@@ -124,17 +124,17 @@ export class ZeebeInstance extends LitElement {
                         <span>Timers</span>
                     </vaadin-tab>
                     <vaadin-tab id="process-instance-called-instances" theme="icon">
-                        <vaadin-icon icon="font-awesome-regular:clock"></vaadin-icon>
+                        <vaadin-icon icon="font-awesome-solid:arrow-right-from-bracket"></vaadin-icon>
                         <span>Called instances</span>
                     </vaadin-tab>
                     <vaadin-tab id="process-instance-errors" theme="icon">
-                        <vaadin-icon icon="font-awesome-regular:clock"></vaadin-icon>
+                        <vaadin-icon icon="font-awesome-solid:bug"></vaadin-icon>
                         <span>Errors</span>
                     </vaadin-tab>
-                    <vaadin-tab id="process-instance-modify" theme="icon">
-                        <vaadin-icon icon="font-awesome-regular:clock"></vaadin-icon>
-                        <span>Modify</span>
-                    </vaadin-tab>                    
+<!--                    <vaadin-tab id="process-instance-modify" theme="icon">-->
+<!--                        <vaadin-icon icon="font-awesome-regular:clock"></vaadin-icon>-->
+<!--                        <span>Modify</span>-->
+<!--                    </vaadin-tab>                    -->
                 </vaadin-tabs>
 
                 <div tab="process-instance-info">
@@ -279,8 +279,18 @@ export class ZeebeInstance extends LitElement {
                         <vaadin-grid-column header="State" path="item.data.state" resizable></vaadin-grid-column>
                     </zeebe-table>
                 </div>
-                <div tab="process-instance-errors">5 This is the Dashboard tab content</div>
-                <div tab="process-instance-modify">5 This is the Dashboard tab content</div>
+                <div tab="process-instance-errors">
+                    <zeebe-table id="process-instance-errors-table" .items=${this._item.errors}>
+                        <vaadin-grid-column header="Position" path="record.position"></vaadin-grid-column>
+                        <vaadin-grid-column header="Error Event Position" 
+                                            path="record.value.errorEventPosition"></vaadin-grid-column>
+                        <vaadin-grid-column header="Exception Message"
+                                            paht="record.value.exceptionMessage" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Stacktrace" path="record.value.stacktrace" resizable></vaadin-grid-column>
+                        <vaadin-grid-column header="Created" path="data.created" resizable></vaadin-grid-column>
+                    </zeebe-table>                    
+                </div>
+<!--                <div tab="process-instance-modify">5 This is the Dashboard tab content</div>-->
 
             </vaadin-tabsheet>        
         `;
@@ -419,6 +429,10 @@ export class ZeebeInstance extends LitElement {
                 tmp.callProcessInstances = tmp.callProcessInstances.map((item) => ({
                     ...item,
                     searchTerms: `${item.item.record.value.bpmnProcessId} ${item.item.record.intent}`
+                }));
+                tmp.errors = tmp.errors.map((item) => ({
+                    ...item,
+                    searchTerms: `${item.item.record.value.exceptionMessage}`
                 }));
                 this._item = tmp;
             });
