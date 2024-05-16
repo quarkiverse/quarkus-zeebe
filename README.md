@@ -8,17 +8,11 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-## Compatibility
+Quarkus [Zeebe](https://docs.camunda.io/docs/components/zeebe/zeebe-overview/) extension. Zeebe’s cloud-native design provides the performance, resilience, and security enterprises need to future-proof their process orchestration efforts.
 
-Quarkus Zeebe provides two different version streams, one compatible with Quarkus 2.x and the other compatible with Quarkus 3.x.
+## Documentation
 
-| Quarkus | Quarkus Zeebe | Documentation                                                                                  |
-|---------|-----------------|------------------------------------------------------------------------------------------------|
-| 2.x     | 0.x             | [Documentation](https://quarkiverse.github.io/quarkiverse-docs/quarkus-zeebe/0.x/index.html)   |
-| 3.x     | 1.x             | [Documentation](https://quarkiverse.github.io/quarkiverse-docs/quarkus-zeebe/dev/index.html) |
-
-Use the latest version of the corresponding stream, [the list of versions is available on Maven Central](https://central.sonatype.com/artifact/io.quarkiverse.zeebe/quarkus-zeebe-parent).
-
+Refer to the comprehensive [documentation](https://quarkiverse.github.io/quarkiverse-docs/quarkus-zeebe/dev/index.html) for detailed information and usage guidelines.
 
 ## Contributors ✨
 
