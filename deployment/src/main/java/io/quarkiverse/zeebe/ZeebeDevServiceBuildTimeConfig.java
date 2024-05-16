@@ -23,6 +23,12 @@ public class ZeebeDevServiceBuildTimeConfig {
 
     @ConfigGroup
     public static class DevMode {
+
+        /**
+         * Disable or enabled zeebe dashboard dev-ui.
+         */
+        @ConfigItem(name = "dev-ui.enabled", defaultValue = "true")
+        public boolean devUIEnabled;
         /**
          * Observe changes in the bpmn files.
          */

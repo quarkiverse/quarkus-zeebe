@@ -10,6 +10,8 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.Supplier;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.logging.Logger;
 import org.testcontainers.containers.Network;
 import org.testcontainers.utility.DockerImageName;
@@ -31,6 +33,7 @@ import io.quarkus.devservices.common.ContainerAddress;
 import io.quarkus.devservices.common.ContainerLocator;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.zeebe.containers.*;
+import io.zeebe.containers.util.HostPortForwarder;
 
 public class ZeebeDevServiceProcessor {
 
@@ -111,9 +114,6 @@ public class ZeebeDevServiceProcessor {
             String tmp = devService.getConfig().get(PROP_ZEEBE_GATEWAY_ADDRESS);
             log.infof("The zeebe broker is ready to accept connections on %s (http://%s)",
                     tmp, tmp);
-            if (configuration.monitor) {
-                startResultProducer.produce(new ZeebeDevServicesProviderBuildItem(devService.zeebeInternalUrl));
-            }
         }
 
         return devService.toBuildItem();
@@ -121,12 +121,9 @@ public class ZeebeDevServiceProcessor {
 
     public static class ZeebeRunningDevService extends RunningDevService {
 
-        private String zeebeInternalUrl;
-
         public ZeebeRunningDevService(String name, String containerId, Closeable closeable, Map<String, String> config,
                 String zeebeInternalUrl) {
             super(name, containerId, closeable, config);
-            this.zeebeInternalUrl = zeebeInternalUrl;
         }
     }
 
@@ -182,8 +179,7 @@ public class ZeebeDevServiceProcessor {
                     useSharedNetwork,
                     launchMode.isTest(),
                     testDebugExportPort,
-                    config.monitor,
-                    config.debugExporter,
+                    config.devDebugExporter,
                     config.debugReceiverPort);
             timeout.ifPresent(container::withStartupTimeout);
 
@@ -251,12 +247,10 @@ public class ZeebeDevServiceProcessor {
         private final boolean shared;
         private final String serviceName;
 
-        private final boolean monitor;
-
         private final boolean testExporter;
         private final int testDebugExportPort;
 
-        private final boolean debugExporter;
+        private final boolean devDebugExporter;
 
         private final int debugReceiverPort;
 
@@ -268,11 +262,10 @@ public class ZeebeDevServiceProcessor {
             this.fixedExposedPort = config.port.orElse(0);
             this.shared = config.shared;
             this.serviceName = config.serviceName;
-            this.monitor = config.monitor.enabled;
             this.testExporter = config.test.exporter;
             this.testDebugExportPort = config.test.receiverPort.orElse(0);
-            this.debugExporter = config.debugExporter.enabled;
-            this.debugReceiverPort = config.debugExporter.receiverPort;
+            this.devDebugExporter = config.devExporter.enabled;
+            this.debugReceiverPort = getPort();
             this.reuse = config.reuse;
         }
 
@@ -303,7 +296,7 @@ public class ZeebeDevServiceProcessor {
         private String hostName = null;
 
         public QuarkusZeebeContainer(DockerImageName image, int fixedExposedPort, String serviceName,
-                boolean useSharedNetwork, boolean test, int testDebugExportPort, boolean monitor, boolean debugExporter,
+                boolean useSharedNetwork, boolean test, int testDebugExportPort, boolean devDebugExporter,
                 int debugExporterPort) {
             super(image);
             log.debugf("Zeebe broker docker image %s", image);
@@ -316,20 +309,23 @@ public class ZeebeDevServiceProcessor {
                 // create random port
                 withDebugExporter(testDebugExportPort);
             } else {
-                if (monitor) {
-                    withMonitorDebugExporter();
-                } else if (debugExporter) {
-                    withDebugExporter(debugExporterPort);
+                if (devDebugExporter) {
+                    debugExporter(debugExporterPort);
                 }
             }
         }
 
-        public void withMonitorDebugExporter() {
+        public void debugExporter(final int port) {
+            final int containerPort = HostPortForwarder.forwardHostPort(port, 5);
+            var receiver = "http://host.testcontainers.internal:" + containerPort + "/q/zeebe/records";
             //noinspection resource
-            withCopyToContainer(MountableFile.forClasspathResource("debug-exporter.jar"), "/tmp/debug-exporter.jar")
+            withCopyToContainer(
+                    MountableFile.forClasspathResource("debug-exporter.jar"), "/tmp/debug-exporter.jar")
                     .withEnv("ZEEBE_BROKER_EXPORTERS_DEBUG_JARPATH", "/tmp/debug-exporter.jar")
-                    .withEnv("ZEEBE_BROKER_EXPORTERS_DEBUG_CLASSNAME", "io.zeebe.containers.exporter.DebugExporter")
-                    .withEnv("ZEEBE_BROKER_EXPORTERS_DEBUG_ARGS_URL", "http://zeebe-dev-monitor:8080/records");
+                    .withEnv(
+                            "ZEEBE_BROKER_EXPORTERS_DEBUG_CLASSNAME", "io.zeebe.containers.exporter.DebugExporter")
+                    .withEnv(
+                            "ZEEBE_BROKER_EXPORTERS_DEBUG_ARGS_URL", receiver);
         }
 
         @Override
@@ -366,4 +362,10 @@ public class ZeebeDevServiceProcessor {
         }
     }
 
+    private static int getPort() {
+        Config config = ConfigProvider.getConfig();
+        return config
+                .getOptionalValue("quarkus.http.port", Integer.class)
+                .orElse(8080);
+    }
 }

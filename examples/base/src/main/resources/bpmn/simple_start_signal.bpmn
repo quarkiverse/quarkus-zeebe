@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1sdwxv5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.2.0">
+  <bpmn:process id="SimpleStartSignal" name="SimpleStartSignal" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0jinn1p</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="SignalEventDefinition_1i0192s" signalRef="Signal_2otimho" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0w7hk54">
+      <bpmn:incoming>Flow_0jinn1p</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0jinn1p" sourceRef="StartEvent_1" targetRef="Event_0w7hk54" />
+  </bpmn:process>
+  <bpmn:signal id="Signal_2otimho" name="SignalStart" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SimpleStartSignal">
+      <bpmndi:BPMNShape id="Event_1xoaw2x_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0w7hk54_di" bpmnElement="Event_0w7hk54">
+        <dc:Bounds x="382" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0jinn1p_di" bpmnElement="Flow_0jinn1p">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="382" y="97" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

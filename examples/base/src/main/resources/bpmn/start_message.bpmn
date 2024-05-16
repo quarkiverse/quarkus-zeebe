@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_19fn32f" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.1.0">
+  <bpmn:process id="Start_Message" name="Start_Message" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="StartEvent_1">
+      <bpmn:outgoing>Flow_1eafvay</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0kqveuz" messageRef="Message_3rgr8va" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0ki9gn2">
+      <bpmn:incoming>Flow_1eafvay</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1eafvay" sourceRef="StartEvent_1" targetRef="Event_0ki9gn2" />
+  </bpmn:process>
+  <bpmn:message id="Message_3rgr8va" name="Message1" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Start_Message">
+      <bpmndi:BPMNShape id="Event_1ji4iy1_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="166" y="122" width="63" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ki9gn2_di" bpmnElement="Event_0ki9gn2">
+        <dc:Bounds x="522" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1eafvay_di" bpmnElement="Flow_1eafvay">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="522" y="97" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
