@@ -466,10 +466,13 @@ public class ZeebeProcessor {
                 res = tryBlock.invokeStaticMethod(
                         MethodDescriptor.ofMethod(implClazz.name().toString(), method.name(), returnTypeStr));
             } else {
+
+                var parameters = createParameters(method, invoke, tryBlock, workerMethod);
+
                 res = tryBlock.invokeStaticMethod(
                         MethodDescriptor.ofMethod(implClazz.name().toString(), method.name(), returnTypeStr,
-                                method.parameterTypes()),
-                        tryBlock.getMethodParam(0));
+                                parameters.params),
+                        parameters.args);
             }
         } else {
             // InjectableBean<Foo> bean = Arc.container().bean("foo1");
@@ -492,129 +495,11 @@ public class ZeebeProcessor {
                         MethodDescriptor.ofMethod(implClazz.name().toString(), method.name(), returnTypeStr),
                         beanInstanceHandle);
             } else {
-
-                int size = method.parameterTypes().size();
-                String[] params = new String[size];
-                ResultHandle[] args = new ResultHandle[size];
-
-                Set<String> fetchVariableNames = new HashSet<>();
-                boolean fetchVariableAsType = false;
-
-                for (int i = 0; i < size; i++) {
-                    MethodParameterInfo param = method.parameters().get(i);
-                    org.jboss.jandex.Type parameterType = method.parameterType(i);
-                    DotName typeName = parameterType.name();
-                    params[i] = typeName.toString();
-                    if (JOB_CLIENT.equals(typeName)) {
-                        args[i] = invoke.getMethodParam(0);
-                    } else if (ACTIVATED_JOB.equals(typeName)) {
-                        args[i] = invoke.getMethodParam(1);
-                    } else {
-
-                        // variable
-                        AnnotationInstance variable = param.annotation(VARIABLE);
-                        if (variable != null) {
-
-                            String paramName = getAnnotationStringValue(variable.value(), param.name());
-                            fetchVariableNames.add(paramName);
-                            String paramClass = parameterType.name().toString();
-                            args[i] = tryBlock
-                                    .invokeSpecialMethod(
-                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getVariable",
-                                                    Object.class,
-                                                    ActivatedJob.class, String.class, Class.class),
-                                            tryBlock.getThis(), invoke.getMethodParam(1), tryBlock.load(paramName),
-                                            tryBlock.loadClass(paramClass));
-
-                            continue;
-                        }
-
-                        // variable as type
-                        AnnotationInstance variableAsType = param.annotation(VARIABLE_AS_TYPE);
-                        if (variableAsType != null) {
-                            fetchVariableAsType = true;
-                            String paramClass = parameterType.name().toString();
-                            args[i] = tryBlock
-                                    .invokeSpecialMethod(
-                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getVariablesAsType",
-                                                    Object.class,
-                                                    ActivatedJob.class, Class.class),
-                                            tryBlock.getThis(), invoke.getMethodParam(1),
-                                            tryBlock.loadClass(paramClass));
-                            continue;
-                        }
-
-                        // custom header
-                        AnnotationInstance customHeader = param.annotation(CUSTOM_HEADER);
-                        if (customHeader != null) {
-                            if (!STRING.equals(typeName)) {
-                                throw new RuntimeException(
-                                        "Custom header parameter '" + param.name() + "' muss be type of String. CLass '"
-                                                + method.declaringClass().name() + "' method '" + method + "'");
-                            }
-
-                            String headerName = getAnnotationStringValue(customHeader.value(), param.name());
-
-                            args[i] = tryBlock
-                                    .invokeSpecialMethod(
-                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getCustomHeader",
-                                                    String.class,
-                                                    ActivatedJob.class, String.class),
-                                            tryBlock.getThis(), invoke.getMethodParam(1), tryBlock.load(headerName));
-                            continue;
-                        }
-
-                        // custom headers
-                        AnnotationInstance customHeaders = param.annotation(CUSTOM_HEADERS);
-                        if (customHeaders != null) {
-
-                            // Map<String, String>
-                            if (!MAP.equals(typeName) || parameterType.kind() != Type.Kind.PARAMETERIZED_TYPE) {
-                                throw new RuntimeException(
-                                        "Custom headers parameter '" + param.name()
-                                                + "' muss be type of Map<String, String>. CLass '"
-                                                + method.declaringClass().name() + "' method '" + method + "'");
-                            }
-                            List<Type> mp = parameterType.asParameterizedType().arguments();
-                            if (mp.size() != 2 || !STRING.equals(mp.get(0).name()) || !STRING.equals(mp.get(1).name())) {
-                                throw new RuntimeException(
-                                        "Custom headers parameter '" + param.name()
-                                                + "' muss be type of Map<String, String>. CLass '"
-                                                + method.declaringClass().name() + "' method '" + method + "'");
-                            }
-
-                            args[i] = tryBlock
-                                    .invokeSpecialMethod(
-                                            MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getCustomHeaders",
-                                                    Map.class,
-                                                    ActivatedJob.class),
-                                            tryBlock.getThis(), invoke.getMethodParam(1));
-                            continue;
-                        }
-
-                        args[i] = tryBlock.loadNull();
-                    }
-                }
-
-                // fetch all variables when we are using the @VariablesAsType annotation
-                if (fetchVariableAsType) {
-                    workerMethod.getWorker().fetchAllVariables = true;
-                }
-
-                // configure job fetch variables base on the parameter and annotation
-                if (!workerMethod.getWorker().fetchAllVariables) {
-                    // merge parameters and annotation variables
-                    if (!fetchVariableNames.isEmpty()) {
-                        if (workerMethod.getWorker().fetchVariables.length > 0) {
-                            fetchVariableNames.addAll(List.of(workerMethod.getWorker().fetchVariables));
-                        }
-                        workerMethod.getWorker().fetchVariables = fetchVariableNames.toArray(new String[0]);
-                    }
-                }
+                var parameters = createParameters(method, invoke, tryBlock, workerMethod);
 
                 res = tryBlock.invokeVirtualMethod(
-                        MethodDescriptor.ofMethod(implClazz.name().toString(), method.name(), returnTypeStr, params),
-                        beanInstanceHandle, args);
+                        MethodDescriptor.ofMethod(implClazz.name().toString(), method.name(), returnTypeStr, parameters.params),
+                        beanInstanceHandle, parameters.args);
             }
 
             // handle.destroy() - destroy dependent instance afterwards
@@ -662,5 +547,134 @@ public class ZeebeProcessor {
             }
         }
         return defaultValue;
+    }
+
+    private Parameters createParameters(MethodInfo method, MethodCreator invoke, TryBlock tryBlock,
+            JobWorkerMethodItem workerMethod) {
+        int size = method.parameterTypes().size();
+
+        String[] params = new String[size];
+        ResultHandle[] args = new ResultHandle[size];
+
+        Set<String> fetchVariableNames = new HashSet<>();
+        boolean fetchVariableAsType = false;
+
+        for (int i = 0; i < size; i++) {
+            MethodParameterInfo param = method.parameters().get(i);
+            org.jboss.jandex.Type parameterType = method.parameterType(i);
+            DotName typeName = parameterType.name();
+            params[i] = typeName.toString();
+            if (JOB_CLIENT.equals(typeName)) {
+                args[i] = invoke.getMethodParam(0);
+            } else if (ACTIVATED_JOB.equals(typeName)) {
+                args[i] = invoke.getMethodParam(1);
+            } else {
+
+                // variable
+                AnnotationInstance variable = param.annotation(VARIABLE);
+                if (variable != null) {
+
+                    String paramName = getAnnotationStringValue(variable.value(), param.name());
+                    fetchVariableNames.add(paramName);
+                    String paramClass = parameterType.name().toString();
+                    args[i] = tryBlock
+                            .invokeSpecialMethod(
+                                    MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getVariable",
+                                            Object.class,
+                                            ActivatedJob.class, String.class, Class.class),
+                                    tryBlock.getThis(), invoke.getMethodParam(1), tryBlock.load(paramName),
+                                    tryBlock.loadClass(paramClass));
+
+                    continue;
+                }
+
+                // variable as type
+                AnnotationInstance variableAsType = param.annotation(VARIABLE_AS_TYPE);
+                if (variableAsType != null) {
+                    fetchVariableAsType = true;
+                    String paramClass = parameterType.name().toString();
+                    args[i] = tryBlock
+                            .invokeSpecialMethod(
+                                    MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getVariablesAsType",
+                                            Object.class,
+                                            ActivatedJob.class, Class.class),
+                                    tryBlock.getThis(), invoke.getMethodParam(1),
+                                    tryBlock.loadClass(paramClass));
+                    continue;
+                }
+
+                // custom header
+                AnnotationInstance customHeader = param.annotation(CUSTOM_HEADER);
+                if (customHeader != null) {
+                    if (!STRING.equals(typeName)) {
+                        throw new RuntimeException(
+                                "Custom header parameter '" + param.name() + "' muss be type of String. CLass '"
+                                        + method.declaringClass().name() + "' method '" + method + "'");
+                    }
+
+                    String headerName = getAnnotationStringValue(customHeader.value(), param.name());
+
+                    args[i] = tryBlock
+                            .invokeSpecialMethod(
+                                    MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getCustomHeader",
+                                            String.class,
+                                            ActivatedJob.class, String.class),
+                                    tryBlock.getThis(), invoke.getMethodParam(1), tryBlock.load(headerName));
+                    continue;
+                }
+
+                // custom headers
+                AnnotationInstance customHeaders = param.annotation(CUSTOM_HEADERS);
+                if (customHeaders != null) {
+
+                    // Map<String, String>
+                    if (!MAP.equals(typeName) || parameterType.kind() != Type.Kind.PARAMETERIZED_TYPE) {
+                        throw new RuntimeException(
+                                "Custom headers parameter '" + param.name()
+                                        + "' muss be type of Map<String, String>. CLass '"
+                                        + method.declaringClass().name() + "' method '" + method + "'");
+                    }
+                    List<Type> mp = parameterType.asParameterizedType().arguments();
+                    if (mp.size() != 2 || !STRING.equals(mp.get(0).name()) || !STRING.equals(mp.get(1).name())) {
+                        throw new RuntimeException(
+                                "Custom headers parameter '" + param.name()
+                                        + "' muss be type of Map<String, String>. CLass '"
+                                        + method.declaringClass().name() + "' method '" + method + "'");
+                    }
+
+                    args[i] = tryBlock
+                            .invokeSpecialMethod(
+                                    MethodDescriptor.ofMethod(JobWorkerInvoker.class, "getCustomHeaders",
+                                            Map.class,
+                                            ActivatedJob.class),
+                                    tryBlock.getThis(), invoke.getMethodParam(1));
+                    continue;
+                }
+
+                args[i] = tryBlock.loadNull();
+            }
+        }
+
+        // fetch all variables when we are using the @VariablesAsType annotation
+        if (fetchVariableAsType) {
+            workerMethod.getWorker().fetchAllVariables = true;
+        }
+
+        // configure job fetch variables base on the parameter and annotation
+        if (!workerMethod.getWorker().fetchAllVariables) {
+            // merge parameters and annotation variables
+            if (!fetchVariableNames.isEmpty()) {
+                if (workerMethod.getWorker().fetchVariables.length > 0) {
+                    fetchVariableNames.addAll(List.of(workerMethod.getWorker().fetchVariables));
+                }
+                workerMethod.getWorker().fetchVariables = fetchVariableNames.toArray(new String[0]);
+            }
+        }
+
+        return new Parameters(params, args);
+    }
+
+    private record Parameters(String[] params, ResultHandle[] args) {
+
     }
 }
