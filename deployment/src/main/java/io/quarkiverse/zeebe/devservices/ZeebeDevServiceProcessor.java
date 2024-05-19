@@ -350,6 +350,7 @@ public class ZeebeDevServiceProcessor {
 
             if (useSharedNetwork) {
                 hostName = ConfigureUtil.configureSharedNetwork(this, "zeebe");
+                addExposedPort(DEFAULT_ZEEBE_REST_PORT);
                 withEnv("ZEEBE_BROKER_NETWORK_ADVERTISEDHOST", hostName);
                 return;
             } else {
