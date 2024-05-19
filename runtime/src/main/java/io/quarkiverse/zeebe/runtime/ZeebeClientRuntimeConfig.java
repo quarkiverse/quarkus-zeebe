@@ -102,7 +102,8 @@ public class ZeebeClientRuntimeConfig {
          * The tenant identifiers which are used for job-activation commands when no tenant identifiers are set.
          */
         @ConfigItem(name = "default-job-worker-tenant-ids", defaultValue = CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER)
-        public List<String> defaultJobWorkerTenantIds = Collections.singletonList(CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER);
+        public List<String> defaultJobWorkerTenantIds = Collections
+                .singletonList(CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER);
     }
 
     /**
