@@ -11,6 +11,9 @@ public class ZeebeClientBuilderFactory {
         ZeebeClientBuilderImpl builder = new ZeebeClientBuilderImpl();
 
         builder.gatewayAddress(createGatewayAddress(config))
+                .restAddress(config.broker.restAddress)
+                .defaultTenantId(config.tenant.defaultTenantId)
+                .defaultJobWorkerTenantIds(config.tenant.defaultJobWorkerTenantIds)
                 .keepAlive(config.broker.keepAlive)
                 .defaultJobPollInterval(config.job.pollInterval)
                 .defaultJobTimeout(config.job.timeout)

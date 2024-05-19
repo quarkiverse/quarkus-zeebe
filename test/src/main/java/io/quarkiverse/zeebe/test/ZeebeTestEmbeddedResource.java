@@ -28,7 +28,7 @@ public class ZeebeTestEmbeddedResource implements QuarkusTestResourceLifecycleMa
     @Override
     public Map<String, String> start() {
         int randomPort = findFreeRandomPort();
-        log.info("Create Zeebe in-memory engine for test run on random port: " + randomPort + "...");
+        log.info("Create Zeebe in-memory engine for test run on random port: {}...", randomPort);
         ZEEBE_ENGINE = EngineFactory.create(randomPort);
         ZEEBE_ENGINE.start();
         String gatewayAddress = ZEEBE_ENGINE.getGatewayAddress();
@@ -46,6 +46,8 @@ public class ZeebeTestEmbeddedResource implements QuarkusTestResourceLifecycleMa
     public void inject(TestInjector testInjector) {
         testInjector.injectIntoFields(CLIENT,
                 new TestInjector.AnnotatedAndMatchesType(InjectZeebeClient.class, ZeebeClient.class));
+        testInjector.injectIntoFields(ZEEBE_ENGINE,
+                new TestInjector.AnnotatedAndMatchesType(InjectZeebeTestEngine.class, ZeebeTestEngine.class));
     }
 
     private static int findFreeRandomPort() {

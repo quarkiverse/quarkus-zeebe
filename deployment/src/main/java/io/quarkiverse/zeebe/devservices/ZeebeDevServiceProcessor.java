@@ -46,8 +46,10 @@ public class ZeebeDevServiceProcessor {
 
     private static final Logger log = Logger.getLogger(ZeebeDevServiceProcessor.class);
     static final String PROP_ZEEBE_GATEWAY_ADDRESS = "quarkus.zeebe.client.broker.gateway-address";
+    static final String PROP_ZEEBE_REST_ADDRESS = "quarkus.zeebe.client.broker.rest-address";
     private static final String DEV_SERVICE_LABEL = "quarkus-dev-service-zeebe";
     public static final int DEFAULT_ZEEBE_PORT = ZeebePort.GATEWAY.getPort();
+    public static final int DEFAULT_ZEEBE_REST_PORT = 8080;
     private static final ContainerLocator zeebeContainerLocator = new ContainerLocator(DEV_SERVICE_LABEL, DEFAULT_ZEEBE_PORT);
     static volatile ZeebeRunningDevService devService;
     static volatile ZeebeDevServiceCfg cfg;
@@ -180,7 +182,8 @@ public class ZeebeDevServiceProcessor {
                     launchMode.isTest(),
                     testDebugExportPort,
                     config.devDebugExporter,
-                    config.debugReceiverPort);
+                    config.debugReceiverPort,
+                    config.fixedExposedRestPort);
             timeout.ifPresent(container::withStartupTimeout);
 
             // enable test-container reuse
@@ -190,34 +193,42 @@ public class ZeebeDevServiceProcessor {
 
             container.start();
 
-            String gateway = String.format("%s:%d", container.getGatewayHost(), container.getPort());
+            String gateway = String.format("%s:%d", container.getZeebeHost(), container.getGrpcPort());
+            String baseUrl = String.format("http://%s:%d", container.getZeebeHost(), container.getRestPort());
             String zeebeInternalUrl = container.getInternalAddress(DEFAULT_ZEEBE_PORT);
             String testClient = container.getExternalAddress(DEFAULT_ZEEBE_PORT);
+            String testClientRest = container.getExternalAddress(DEFAULT_ZEEBE_REST_PORT);
 
             return new ZeebeRunningDevService(FEATURE_NAME,
                     container.getContainerId(),
                     new ContainerShutdownCloseable(container, FEATURE_NAME),
-                    configMap(gateway, launchMode.isTest(), testClient, testDebugExportPort, config.testExporter),
+                    configMap(gateway, baseUrl, launchMode.isTest(), testClient, testClientRest, testDebugExportPort,
+                            config.testExporter),
                     zeebeInternalUrl);
         };
 
         return maybeContainerAddress
                 .map(containerAddress -> new ZeebeRunningDevService(FEATURE_NAME,
                         containerAddress.getId(),
-                        null, configMap(containerAddress.getUrl(), false, null, null, false), null))
+                        null, configMap(containerAddress.getUrl(), containerAddress.getUrl(), false, null, null, null, false),
+                        null))
                 .orElseGet(defaultZeebeBrokerSupplier);
     }
 
-    private static Map<String, String> configMap(String gateway, boolean test, String testClient, Integer testDebugExportPort,
+    private static Map<String, String> configMap(String gateway, String baseUrl, boolean test, String testClient,
+            String testClientRest,
+            Integer testDebugExportPort,
             boolean testExporter) {
         Map<String, String> config = new HashMap<>();
         config.put(PROP_ZEEBE_GATEWAY_ADDRESS, gateway);
+        config.put(PROP_ZEEBE_REST_ADDRESS, baseUrl);
         if (test && testExporter) {
             if (testDebugExportPort != null) {
                 config.put("quarkiverse.zeebe.devservices.test.receiver-port", "" + testDebugExportPort);
             }
             if (testClient != null) {
                 config.put("quarkiverse.zeebe.devservices.test.gateway-address", testClient);
+                config.put("quarkiverse.zeebe.devservices.test.rest-address", testClientRest);
             }
         }
         return config;
@@ -244,6 +255,7 @@ public class ZeebeDevServiceProcessor {
         private final boolean devServicesEnabled;
         private final String imageName;
         private final Integer fixedExposedPort;
+        private final Integer fixedExposedRestPort;
         private final boolean shared;
         private final String serviceName;
 
@@ -260,6 +272,7 @@ public class ZeebeDevServiceProcessor {
             this.devServicesEnabled = config.enabled;
             this.imageName = config.imageName.orElse(null);
             this.fixedExposedPort = config.port.orElse(0);
+            this.fixedExposedRestPort = config.restPort.orElse(0);
             this.shared = config.shared;
             this.serviceName = config.serviceName;
             this.testExporter = config.test.exporter;
@@ -291,17 +304,20 @@ public class ZeebeDevServiceProcessor {
     private static class QuarkusZeebeContainer extends ZeebeContainer {
 
         private final int fixedExposedPort;
+        private final int fixedExposedRestPort;
         private final boolean useSharedNetwork;
 
         private String hostName = null;
 
         public QuarkusZeebeContainer(DockerImageName image, int fixedExposedPort, String serviceName,
                 boolean useSharedNetwork, boolean test, int testDebugExportPort, boolean devDebugExporter,
-                int debugExporterPort) {
+                int debugExporterPort, int fixedExposedRestPort) {
             super(image);
             log.debugf("Zeebe broker docker image %s", image);
             this.fixedExposedPort = fixedExposedPort;
+            this.fixedExposedRestPort = fixedExposedRestPort;
             this.useSharedNetwork = useSharedNetwork;
+
             if (serviceName != null) {
                 withLabel(DEV_SERVICE_LABEL, serviceName);
             }
@@ -345,9 +361,14 @@ public class ZeebeDevServiceProcessor {
             } else {
                 addExposedPort(DEFAULT_ZEEBE_PORT);
             }
+            if (fixedExposedRestPort > 0) {
+                addFixedExposedPort(fixedExposedRestPort, DEFAULT_ZEEBE_REST_PORT);
+            } else {
+                addExposedPort(DEFAULT_ZEEBE_REST_PORT);
+            }
         }
 
-        public int getPort() {
+        public int getGrpcPort() {
             if (useSharedNetwork) {
                 return DEFAULT_ZEEBE_PORT;
             }
@@ -357,7 +378,17 @@ public class ZeebeDevServiceProcessor {
             return super.getFirstMappedPort();
         }
 
-        public String getGatewayHost() {
+        public int getRestPort() {
+            if (useSharedNetwork) {
+                return DEFAULT_ZEEBE_REST_PORT;
+            }
+            if (fixedExposedPort > 0) {
+                return fixedExposedRestPort;
+            }
+            return super.getFirstMappedPort();
+        }
+
+        public String getZeebeHost() {
             return useSharedNetwork ? hostName : super.getHost();
         }
     }

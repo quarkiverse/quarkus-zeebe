@@ -28,6 +28,14 @@ public class ZeebeDevServicesConfig {
     public OptionalInt port;
 
     /**
+     * Optional fixed port the dev service rest service will listen to.
+     * <p>
+     * If not defined, the port will be chosen randomly.
+     */
+    @ConfigItem(name = "rest-port")
+    public OptionalInt restPort;
+
+    /**
      * Indicates if the Zeebe server managed by Quarkus Dev Services is shared.
      * When shared, Quarkus looks for running containers using label-based service discovery.
      * If a matching container is found, it is used, and so a second one is not started.

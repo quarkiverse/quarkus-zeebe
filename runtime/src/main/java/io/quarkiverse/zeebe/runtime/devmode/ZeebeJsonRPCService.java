@@ -58,7 +58,56 @@ public class ZeebeJsonRPCService {
 
     public Object userTaskComplete(long key, Map<String, Object> variables) {
         getClient().newCompleteCommand(key).variables(variables).send().join();
+        //getClient().newUserTaskCompleteCommand(key).variables(variables).send().join();
         return Map.of("command", "userTaskComplete", "userTaskKey", key);
+    }
+
+    public Object userTaskAssign(long key, String assignee, String action, boolean allowOverride) {
+        getClient().newUserTaskAssignCommand(key)
+                .action(action)
+                .allowOverride(allowOverride)
+                .assignee(assignee).send().join();
+        return Map.of("command", "userTaskAssign", "userTaskKey", key);
+    }
+
+    public Object userTaskUnassign(long key) {
+        getClient().newUserTaskUnassignCommand(key).send().join();
+        return Map.of("command", "userTaskUnassign", "userTaskKey", key);
+    }
+
+    public Object userTaskUpdate(long key, String action, List<String> candidateUsers, List<String> candidateGroups,
+            String dueDate, String followUpDate) {
+        var tmp = getClient().newUserTaskUpdateCommand(key);
+        if (action != null) {
+            tmp = tmp.action(action);
+        }
+
+        if (candidateUsers == null || candidateUsers.isEmpty()) {
+            tmp.clearCandidateUsers();
+        } else {
+            tmp.candidateUsers(candidateUsers);
+        }
+
+        if (candidateGroups == null || candidateGroups.isEmpty()) {
+            tmp.clearCandidateGroups();
+        } else {
+            tmp.candidateGroups(candidateGroups);
+        }
+
+        if (dueDate == null) {
+            tmp.clearDueDate();
+        } else {
+            tmp.dueDate(dueDate);
+        }
+
+        if (followUpDate == null) {
+            tmp.clearFollowUpDate();
+        } else {
+            tmp.followUpDate(followUpDate);
+        }
+
+        tmp.send().join();
+        return Map.of("command", "userTaskUpdate", "userTaskKey", key);
     }
 
     public Object cancelProcessInstance(long processInstanceKey) {

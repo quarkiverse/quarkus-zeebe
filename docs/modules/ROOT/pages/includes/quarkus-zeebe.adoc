@@ -48,6 +48,25 @@ endif::add-copy-button-to-env-var[]
 |
 
 
+a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-rest-port]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-rest-port[quarkus.zeebe.devservices.rest-port]`
+
+
+[.description]
+--
+Optional fixed port the dev service rest service will listen to.
+
+If not defined, the port will be chosen randomly.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_DEVSERVICES_REST_PORT+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_REST_PORT+++`
+endif::add-copy-button-to-env-var[]
+--|int 
+|
+
+
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-shared]]`link:#quarkus-zeebe_quarkus-zeebe-devservices-shared[quarkus.zeebe.devservices.shared]`
 
 
@@ -343,6 +362,24 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_BROKER_GATEWAY_ADDRESS+++`
 endif::add-copy-button-to-env-var[]
 --|string 
 |`localhost:26500`
+
+
+a| [[quarkus-zeebe_quarkus-zeebe-client-broker-rest-address]]`link:#quarkus-zeebe_quarkus-zeebe-client-broker-rest-address[quarkus.zeebe.client.broker.rest-address]`
+
+
+[.description]
+--
+Zeebe gateway rest address. Default: localhost:8080
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_BROKER_REST_ADDRESS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_BROKER_REST_ADDRESS+++`
+endif::add-copy-button-to-env-var[]
+--|link:https://docs.oracle.com/javase/8/docs/api/java/net/URI.html[URI]
+ 
+|`http://0.0.0.0:8080`
 
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-broker-keep-alive]]`link:#quarkus-zeebe_quarkus-zeebe-client-broker-keep-alive[quarkus.zeebe.client.broker.keep-alive]`
@@ -996,6 +1033,40 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_TRACING_ATTRIBUTES+++`
 endif::add-copy-button-to-env-var[]
 --|list of string 
 |
+
+
+a| [[quarkus-zeebe_quarkus-zeebe-client-tenant-default-tenant-id]]`link:#quarkus-zeebe_quarkus-zeebe-client-tenant-default-tenant-id[quarkus.zeebe.client.tenant.default-tenant-id]`
+
+
+[.description]
+--
+Zeebe client tenant ID. The tenant identifier which is used for tenant-aware commands when no tenant identifier is set.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_TENANT_DEFAULT_TENANT_ID+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_TENANT_DEFAULT_TENANT_ID+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`<default>`
+
+
+a| [[quarkus-zeebe_quarkus-zeebe-client-tenant-default-job-worker-tenant-ids]]`link:#quarkus-zeebe_quarkus-zeebe-client-tenant-default-job-worker-tenant-ids[quarkus.zeebe.client.tenant.default-job-worker-tenant-ids]`
+
+
+[.description]
+--
+Zeebe client default job worker tenant ID's. The tenant identifiers which are used for job-activation commands when no tenant identifiers are set.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_TENANT_DEFAULT_JOB_WORKER_TENANT_IDS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_TENANT_DEFAULT_JOB_WORKER_TENANT_IDS+++`
+endif::add-copy-button-to-env-var[]
+--|list of string 
+|`<default>`
 
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-workers-workers-enabled]]`link:#quarkus-zeebe_quarkus-zeebe-client-workers-workers-enabled[quarkus.zeebe.client.workers."workers".enabled]`
