@@ -1,5 +1,6 @@
 package io.quarkiverse.zeebe.test;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -50,9 +51,11 @@ public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager, D
     @Override
     public void setIntegrationTestContext(DevServicesContext context) {
         String gateway = context.devServicesProperties().get("quarkiverse.zeebe.devservices.test.gateway-address");
-        if (gateway != null) {
+        String restAddress = context.devServicesProperties().get("quarkiverse.zeebe.devservices.test.rest-address");
+        if (gateway != null || restAddress != null) {
             ZeebeClientRuntimeConfig config = new ZeebeClientRuntimeConfig();
             config.broker.gatewayAddress = gateway;
+            config.broker.restAddress = URI.create(restAddress);
             ZeebeClientBuilder builder = ZeebeClientBuilderFactory.createBuilder(config);
             CLIENT = builder.build();
         }
