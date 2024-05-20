@@ -101,16 +101,17 @@ public class ZeebeRecorder {
             }
 
             for (JobWorkerMetadata meta : workers) {
+                String jobType = getJobType(config.client, meta);
                 try {
                     JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = buildJobWorker(client, config.client, handler,
-                            meta, metricsRecorder, tracingRecorder, tracingVariables);
+                            meta, metricsRecorder, tracingRecorder, tracingVariables, jobType);
                     if (builder != null) {
                         clientService.openWorker(builder);
                         log.infof("Starting worker %s.%s for job type %s", meta.declaringClassName, meta.methodName,
-                                meta.workerValue.type);
+                                jobType);
                     }
                 } catch (Exception e) {
-                    log.errorf(e, "Error opening worker for type %s with class %s.%s", meta.workerValue.type,
+                    log.errorf(e, "Error opening worker for type %s with class %s.%s", jobType,
                             meta.declaringClassName,
                             meta.methodName);
                 }
@@ -118,18 +119,21 @@ public class ZeebeRecorder {
         }
     }
 
+    private static String getJobType(ZeebeClientRuntimeConfig config, JobWorkerMetadata meta) {
+        // check the worker type
+        String type = meta.workerValue.type;
+        if (type == null || type.isEmpty()) {
+            // if configuration default-type is null use method name
+            return config.job.defaultType.orElse(meta.methodName);
+        }
+        return type;
+    }
+
     private static JobWorkerBuilderStep1.JobWorkerBuilderStep3 buildJobWorker(ZeebeClient client,
             ZeebeClientRuntimeConfig config,
             JobWorkerExceptionHandler exceptionHandler, JobWorkerMetadata meta, MetricsRecorder metricsRecorder,
-            TracingRecorder tracingRecorder, Set<String> tracingVariables) {
+            TracingRecorder tracingRecorder, Set<String> tracingVariables, String type) {
         JobWorkerValue value = meta.workerValue;
-
-        // check the worker type
-        String type = value.type;
-        if (type == null || type.isEmpty()) {
-            // if configuration default-type is null use method name
-            type = config.job.defaultType.orElse(meta.methodName);
-        }
 
         // overwrite the annotation with properties
         ZeebeClientRuntimeConfig.JobHandlerConfig jonHandlerConfig = config.workers.get(type);
