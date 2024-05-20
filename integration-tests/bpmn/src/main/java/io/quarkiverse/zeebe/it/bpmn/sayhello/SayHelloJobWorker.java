@@ -16,8 +16,8 @@ public class SayHelloJobWorker {
     @Inject
     SayHelloBusinessService service;
 
-    @JobWorker(type = "hello_task")
-    public SayHelloParameter sayHello(ActivatedJob job, @VariablesAsType SayHelloParameter p) {
+    @JobWorker
+    public SayHelloParameter hello_task(ActivatedJob job, @VariablesAsType SayHelloParameter p) {
         log.info("Job: {}, Parameter: {}", job, p);
         p.message = service.hello(p.name);
         return p;
