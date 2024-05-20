@@ -1,13 +1,13 @@
 package io.quarkiverse.zeebe.runtime;
 
 import io.camunda.zeebe.client.CredentialsProvider;
-import io.camunda.zeebe.client.ZeebeClientBuilder;
+import io.camunda.zeebe.client.api.JsonMapper;
 import io.camunda.zeebe.client.impl.ZeebeClientBuilderImpl;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 
 public class ZeebeClientBuilderFactory {
 
-    public static ZeebeClientBuilder createBuilder(ZeebeClientRuntimeConfig config) {
+    public static ZeebeClientBuilderImpl createBuilder(ZeebeClientRuntimeConfig config, JsonMapper jsonMapper) {
         ZeebeClientBuilderImpl builder = new ZeebeClientBuilderImpl();
 
         builder.gatewayAddress(createGatewayAddress(config))
@@ -28,6 +28,9 @@ public class ZeebeClientBuilderFactory {
         config.security.certPath.ifPresent(builder::caCertificatePath);
         if (config.security.plaintext) {
             builder.usePlaintext();
+        }
+        if (jsonMapper != null) {
+            builder.withJsonMapper(jsonMapper);
         }
         return builder;
     }

@@ -15,6 +15,7 @@ import io.camunda.zeebe.client.api.command.DeployResourceCommandStep1;
 import io.camunda.zeebe.client.api.response.DeploymentEvent;
 import io.camunda.zeebe.client.api.worker.BackoffSupplier;
 import io.camunda.zeebe.client.api.worker.ExponentialBackoffBuilder;
+import io.camunda.zeebe.client.api.worker.JobWorker;
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1;
 import io.quarkiverse.zeebe.JobWorkerExceptionHandler;
 import io.quarkiverse.zeebe.runtime.metrics.MetricsRecorder;
@@ -29,24 +30,11 @@ public class ZeebeRecorder {
     private static final Logger log = Logger.getLogger(ZeebeRecorder.class);
 
     /**
-     * List of paths to the bpmn files in classpath
-     */
-    private static Collection<String> resources;
-
-    /**
-     * Job handler map with job type as key and class name as value
-     */
-    private static List<JobWorkerMetadata> workers;
-
-    /**
      * Initialize the producer with the configuration
-     *
-     * @param config zeebe runtime configuration
      */
-    public void init(ZeebeRuntimeConfig config) {
+    public void init(ZeebeRuntimeConfig config, Collection<String> resources, List<JobWorkerMetadata> workers) {
         // client configuration
-        ZeebeClientService clientService = Arc.container().instance(ZeebeClientService.class).get();
-        ZeebeClient client = clientService.client();
+        ZeebeClient client = Arc.container().instance(ZeebeClient.class).get();
 
         // tracing configuration
         if (config.client.tracing.attributes.isPresent()) {
@@ -103,10 +91,9 @@ public class ZeebeRecorder {
             for (JobWorkerMetadata meta : workers) {
                 String jobType = getJobType(config.client, meta);
                 try {
-                    JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = buildJobWorker(client, config.client, handler,
+                    var jobWorker = buildJobWorker(client, config.client, handler,
                             meta, metricsRecorder, tracingRecorder, tracingVariables, jobType);
-                    if (builder != null) {
-                        clientService.openWorker(builder);
+                    if (jobWorker != null) {
                         log.infof("Starting worker %s.%s for job type %s", meta.declaringClassName, meta.methodName,
                                 jobType);
                     }
@@ -129,7 +116,7 @@ public class ZeebeRecorder {
         return type;
     }
 
-    private static JobWorkerBuilderStep1.JobWorkerBuilderStep3 buildJobWorker(ZeebeClient client,
+    private static JobWorker buildJobWorker(ZeebeClient client,
             ZeebeClientRuntimeConfig config,
             JobWorkerExceptionHandler exceptionHandler, JobWorkerMetadata meta, MetricsRecorder metricsRecorder,
             TracingRecorder tracingRecorder, Set<String> tracingVariables, String type) {
@@ -202,7 +189,7 @@ public class ZeebeRecorder {
         exp.minDelay(config.job.expMinDelay);
         builder.backoffSupplier(exp.build());
 
-        return builder;
+        return builder.open();
     }
 
     private static JobWorkerInvoker createJobWorkerInvoker(String name) {
@@ -213,11 +200,6 @@ public class ZeebeRecorder {
                 | InvocationTargetException e) {
             throw new IllegalStateException("Unable to create invoker factory: " + name, e);
         }
-    }
-
-    public void setResources(Collection<String> resources, List<JobWorkerMetadata> workers) {
-        ZeebeRecorder.resources = resources;
-        ZeebeRecorder.workers = new ArrayList<>(workers);
     }
 
 }

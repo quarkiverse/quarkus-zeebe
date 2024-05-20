@@ -12,7 +12,6 @@ import io.camunda.zeebe.protocol.record.intent.IncidentIntent;
 import io.camunda.zeebe.protocol.record.intent.ProcessInstanceIntent;
 import io.camunda.zeebe.protocol.record.value.*;
 import io.camunda.zeebe.protocol.record.value.deployment.Process;
-import io.quarkiverse.zeebe.runtime.ZeebeClientService;
 import io.quarkiverse.zeebe.runtime.devmode.store.BpmnModel;
 import io.quarkiverse.zeebe.runtime.devmode.store.RecordStore;
 import io.quarkiverse.zeebe.runtime.devmode.store.RecordStoreItem;
@@ -148,7 +147,7 @@ public class ZeebeJsonRPCService {
     };
 
     private ZeebeClient getClient() {
-        return Arc.container().instance(ZeebeClientService.class).get().client();
+        return Arc.container().instance(ZeebeClient.class).get();
     }
 
     @NonBlocking

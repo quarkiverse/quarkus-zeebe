@@ -13,4 +13,10 @@ public class ZeebeRuntimeConfig {
     @ConfigItem(name = "client")
     public ZeebeClientRuntimeConfig client = new ZeebeClientRuntimeConfig();
 
+    /**
+     * Zeebe client is active
+     */
+    @ConfigItem(name = "active", defaultValue = "true")
+    public boolean active = true;
+
 }

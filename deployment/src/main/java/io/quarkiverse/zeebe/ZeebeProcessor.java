@@ -2,7 +2,6 @@ package io.quarkiverse.zeebe;
 
 import static io.quarkiverse.zeebe.ZeebeDotNames.*;
 import static io.quarkus.deployment.annotations.ExecutionTime.RUNTIME_INIT;
-import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 import static org.jboss.jandex.AnnotationTarget.Kind.METHOD;
 
 import java.io.IOException;
@@ -311,17 +310,11 @@ public class ZeebeProcessor {
     }
 
     @BuildStep
-    @Record(STATIC_INIT)
-    void staticInitConfiguration(ZeebeRecorder recorder, ZeebeWorkersBuildItem workers,
-            ZeebeResourcesBuildItem resources) {
-        recorder.setResources(resources.getResources(), workers.getWorkers());
-    }
-
-    @BuildStep
     @Record(RUNTIME_INIT)
     @Consume(SyntheticBeansRuntimeInitBuildItem.class)
-    void runtimeInitConfiguration(ZeebeRecorder recorder, ZeebeRuntimeConfig runtimeConfig) {
-        recorder.init(runtimeConfig);
+    void runtimeInitConfiguration(ZeebeRuntimeConfig runtimeConfig, ZeebeRecorder recorder, ZeebeWorkersBuildItem workers,
+            ZeebeResourcesBuildItem resources) {
+        recorder.init(runtimeConfig, resources.getResources(), workers.getWorkers());
     }
 
     /**
