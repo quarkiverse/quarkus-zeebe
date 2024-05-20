@@ -56,7 +56,7 @@ public class ZeebeTestResource implements QuarkusTestResourceLifecycleManager, D
             ZeebeClientRuntimeConfig config = new ZeebeClientRuntimeConfig();
             config.broker.gatewayAddress = gateway;
             config.broker.restAddress = URI.create(restAddress);
-            ZeebeClientBuilder builder = ZeebeClientBuilderFactory.createBuilder(config);
+            ZeebeClientBuilder builder = ZeebeClientBuilderFactory.createBuilder(config, null);
             CLIENT = builder.build();
         }
         String receiverPort = context.devServicesProperties().get("quarkiverse.zeebe.devservices.test.receiver-port");
