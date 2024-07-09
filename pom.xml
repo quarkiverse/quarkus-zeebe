@@ -24,7 +24,7 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <quarkus.version>3.11.1</quarkus.version>
+    <quarkus.version>3.12.1</quarkus.version>
     <zeebe.version>8.5.3</zeebe.version>
     <zeebe.testcontainers.version>3.6.3</zeebe.testcontainers.version>
     <maven.compiler.source>17</maven.compiler.source>
