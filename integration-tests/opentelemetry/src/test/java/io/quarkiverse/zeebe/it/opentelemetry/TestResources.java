@@ -18,7 +18,7 @@ public class TestResources implements QuarkusTestResourceLifecycleManager {
     public static String JAEGER_HOST;
     public static Integer JAEGER_PORT;
 
-    GenericContainer<?> jaeger = new GenericContainer<>("jaegertracing/all-in-one:latest")
+    GenericContainer<?> jaeger = new GenericContainer<>("jaegertracing/all-in-one:1.58")
             .waitingFor(new BoundPortHttpWaitStrategy(16686))
             .withEnv("COLLECTOR_OTLP_ENABLED", "true")
             .withExposedPorts(16686, 4317);
