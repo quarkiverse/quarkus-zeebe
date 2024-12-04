@@ -9,10 +9,6 @@ public final class ZeebeWorkersBuildItem extends SimpleBuildItem {
 
     final List<JobWorkerMetadata> workers;
 
-    public ZeebeWorkersBuildItem() {
-        this.workers = null;
-    }
-
     public ZeebeWorkersBuildItem(List<JobWorkerMetadata> workers) {
         this.workers = workers;
     }

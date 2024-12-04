@@ -1,48 +1,56 @@
 package io.quarkiverse.zeebe;
 
 import io.quarkiverse.zeebe.devservices.ZeebeDevServicesConfig;
-import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "zeebe", phase = ConfigPhase.BUILD_TIME)
-public class ZeebeDevServiceBuildTimeConfig {
+@ConfigRoot(phase = ConfigPhase.BUILD_TIME)
+@ConfigMapping(prefix = "quarkus.zeebe")
+public interface ZeebeDevServiceBuildTimeConfig {
 
     /**
      * Default Dev services configuration.
      */
-    @ConfigItem(name = "devservices")
-    public ZeebeDevServicesConfig devService;
+    @WithName("devservices")
+    ZeebeDevServicesConfig devService();
 
     /**
      * Dev mode configuration.
      */
-    @ConfigItem(name = "dev-mode")
-    public DevMode devMode;
+    @WithName("dev-mode")
+    DevMode devMode();
 
-    @ConfigGroup
-    public static class DevMode {
+    interface DevMode {
 
         /**
          * Disable or enabled zeebe dashboard dev-ui.
          */
-        @ConfigItem(name = "dev-ui.enabled", defaultValue = "true")
-        public boolean devUIEnabled;
+        @WithName("dev-ui.enabled")
+        @WithDefault("true")
+        boolean devUIEnabled();
+
         /**
          * Observe changes in the bpmn files.
          */
-        @ConfigItem(name = "watch-bpmn-files", defaultValue = "true")
-        public boolean watchBpmnFiles = true;
+        @WithName("watch-bpmn-files")
+        @WithDefault("true")
+        boolean watchBpmnFiles();
+
         /**
          * Observe changes in the bpmn directory and subdirectories.
          */
-        @ConfigItem(name = "watch-bpmn-dir", defaultValue = "true")
-        public boolean watchBpmnDir = true;
+        @WithName("watch-bpmn-dir")
+        @WithDefault("true")
+        boolean watchBpmnDir();
+
         /**
          * Observe changes in the job worker.
          */
-        @ConfigItem(name = "watch-job-worker", defaultValue = "true")
-        public boolean watchJobWorker = true;
+        @WithName("watch-job-worker")
+        @WithDefault("true")
+        boolean watchJobWorker();
     }
 }

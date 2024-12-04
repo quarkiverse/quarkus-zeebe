@@ -64,10 +64,10 @@ public class JobWorkerHandler implements JobHandler {
 
         if (jobWorkerMetadata.workerValue.autoComplete) {
             this.backoffSupplier = new ExponentialBackoffBuilderImpl()
-                    .maxDelay(autoCompleteConfig.expMaxDelay)
-                    .minDelay(autoCompleteConfig.expMinDelay)
-                    .backoffFactor(autoCompleteConfig.expBackoffFactor)
-                    .jitterFactor(autoCompleteConfig.expJitterFactor)
+                    .maxDelay(autoCompleteConfig.expMaxDelay())
+                    .minDelay(autoCompleteConfig.expMinDelay())
+                    .backoffFactor(autoCompleteConfig.expBackoffFactor())
+                    .jitterFactor(autoCompleteConfig.expJitterFactor())
                     .build();
         }
     }
@@ -104,7 +104,7 @@ public class JobWorkerHandler implements JobHandler {
                         if (jobWorkerMetadata.workerValue.autoComplete) {
                             JobWorkerCommand.createJobWorkerCommand(client, job, result)
                                     .request(tracingContext, metricsRecorder, backoffSupplier, exceptionHandler,
-                                            autoCompleteConfig.maxRetries, autoCompleteConfig.retryDelay)
+                                            autoCompleteConfig.maxRetries(), autoCompleteConfig.retryDelay())
                                     .send();
                         }
                         return result;
@@ -129,7 +129,7 @@ public class JobWorkerHandler implements JobHandler {
                                 log.info("Caught JobWorker BPMN error on {}", job);
                                 JobWorkerCommand.createThrowErrorCommand(client, job, (ZeebeBpmnError) ex)
                                         .request(tracingContext, metricsRecorder, backoffSupplier, exceptionHandler,
-                                                autoCompleteConfig.maxRetries, autoCompleteConfig.retryDelay)
+                                                autoCompleteConfig.maxRetries(), autoCompleteConfig.retryDelay())
                                         .send();
                                 return null;
                             }

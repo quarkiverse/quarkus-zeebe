@@ -37,8 +37,8 @@ public class ZeebeRecorder {
         ZeebeClient client = Arc.container().instance(ZeebeClient.class).get();
 
         // tracing configuration
-        if (config.client.tracing.attributes.isPresent()) {
-            List<String> attrs = config.client.tracing.attributes.get();
+        if (config.client().tracing().attributes().isPresent()) {
+            List<String> attrs = config.client().tracing().attributes().get();
             if (!attrs.isEmpty()) {
                 ZeebeTracing.setAttributes(attrs);
             }
@@ -89,9 +89,9 @@ public class ZeebeRecorder {
             }
 
             for (JobWorkerMetadata meta : workers) {
-                String jobType = getJobType(config.client, meta);
+                String jobType = getJobType(config.client(), meta);
                 try {
-                    var jobWorker = buildJobWorker(client, config.client, handler,
+                    var jobWorker = buildJobWorker(client, config.client(), handler,
                             meta, metricsRecorder, tracingRecorder, tracingVariables, jobType);
                     if (jobWorker != null) {
                         log.infof("Starting worker %s.%s for job type %s", meta.declaringClassName, meta.methodName,
@@ -111,7 +111,7 @@ public class ZeebeRecorder {
         String type = meta.workerValue.type;
         if (type == null || type.isEmpty()) {
             // if configuration default-type is null use method name
-            return config.job.defaultType.orElse(meta.methodName);
+            return config.job().defaultType().orElse(meta.methodName);
         }
         return type;
     }
@@ -123,14 +123,14 @@ public class ZeebeRecorder {
         JobWorkerValue value = meta.workerValue;
 
         // overwrite the annotation with properties
-        ZeebeClientRuntimeConfig.JobHandlerConfig jonHandlerConfig = config.workers.get(type);
+        ZeebeClientRuntimeConfig.JobHandlerConfig jonHandlerConfig = config.workers().get(type);
         if (jonHandlerConfig != null) {
-            jonHandlerConfig.name.ifPresent(n -> value.name = n);
-            jonHandlerConfig.enabled.ifPresent(n -> value.enabled = n);
-            jonHandlerConfig.maxJobsActive.ifPresent(n -> value.maxJobsActive = n);
-            jonHandlerConfig.timeout.ifPresent(n -> value.timeout = n);
-            jonHandlerConfig.pollInterval.ifPresent(n -> value.pollInterval = n);
-            jonHandlerConfig.requestTimeout.ifPresent(n -> value.requestTimeout = n);
+            jonHandlerConfig.name().ifPresent(n -> value.name = n);
+            jonHandlerConfig.enabled().ifPresent(n -> value.enabled = n);
+            jonHandlerConfig.maxJobsActive().ifPresent(n -> value.maxJobsActive = n);
+            jonHandlerConfig.timeout().ifPresent(n -> value.timeout = n);
+            jonHandlerConfig.pollInterval().ifPresent(n -> value.pollInterval = n);
+            jonHandlerConfig.requestTimeout().ifPresent(n -> value.requestTimeout = n);
         }
 
         // skip disabled workers
@@ -142,7 +142,7 @@ public class ZeebeRecorder {
 
         JobWorkerInvoker invoker = createJobWorkerInvoker(meta.invokerClass);
         JobWorkerHandler jobHandler = new JobWorkerHandler(meta, invoker, metricsRecorder, exceptionHandler,
-                config.autoComplete, tracingRecorder);
+                config.autoComplete(), tracingRecorder);
 
         final JobWorkerBuilderStep1.JobWorkerBuilderStep3 builder = client
                 .newWorker()
@@ -183,10 +183,10 @@ public class ZeebeRecorder {
 
         // setup exponential backoff pull configuration
         ExponentialBackoffBuilder exp = BackoffSupplier.newBackoffBuilder();
-        exp.backoffFactor(config.job.expBackoffFactor);
-        exp.jitterFactor(config.job.expJitterFactor);
-        exp.maxDelay(config.job.expMaxDelay);
-        exp.minDelay(config.job.expMinDelay);
+        exp.backoffFactor(config.job().expBackoffFactor());
+        exp.jitterFactor(config.job().expJitterFactor());
+        exp.maxDelay(config.job().expMaxDelay());
+        exp.minDelay(config.job().expMinDelay());
         builder.backoffSupplier(exp.build());
 
         return builder.open();

@@ -8,10 +8,6 @@ public final class ZeebeResourcesBuildItem extends SimpleBuildItem {
 
     final Collection<String> resources;
 
-    public ZeebeResourcesBuildItem() {
-        this.resources = null;
-    }
-
     public ZeebeResourcesBuildItem(Collection<String> resources) {
         this.resources = resources;
     }

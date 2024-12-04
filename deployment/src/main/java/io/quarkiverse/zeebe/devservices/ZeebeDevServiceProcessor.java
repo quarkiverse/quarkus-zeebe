@@ -41,7 +41,7 @@ public class ZeebeDevServiceProcessor {
 
     private static final String DEFAULT_ZEEBE_VERSION = ZeebeClient.class.getPackage().getImplementationVersion();
 
-    private static DockerImageName ZEEBE_IMAGE_NAME = DockerImageName.parse(DEFAULT_ZEEBE_CONTAINER_IMAGE)
+    private static final DockerImageName ZEEBE_IMAGE_NAME = DockerImageName.parse(DEFAULT_ZEEBE_CONTAINER_IMAGE)
             .withTag(DEFAULT_ZEEBE_VERSION);
 
     private static final Logger log = Logger.getLogger(ZeebeDevServiceProcessor.class);
@@ -144,7 +144,7 @@ public class ZeebeDevServiceProcessor {
             return null;
         }
 
-        if (!dockerStatusBuildItem.isDockerAvailable()) {
+        if (!dockerStatusBuildItem.isContainerRuntimeAvailable()) {
             log.warn(
                     "Docker isn't working, please configure the zeebe broker servers gateway property ("
                             + PROP_ZEEBE_GATEWAY_ADDRESS + ").");
@@ -247,7 +247,7 @@ public class ZeebeDevServiceProcessor {
     }
 
     private ZeebeDevServiceCfg getConfiguration(ZeebeDevServiceBuildTimeConfig cfg) {
-        ZeebeDevServicesConfig devServicesConfig = cfg.devService;
+        ZeebeDevServicesConfig devServicesConfig = cfg.devService();
         return new ZeebeDevServiceCfg(devServicesConfig);
     }
 
@@ -269,17 +269,17 @@ public class ZeebeDevServiceProcessor {
         private final boolean reuse;
 
         public ZeebeDevServiceCfg(ZeebeDevServicesConfig config) {
-            this.devServicesEnabled = config.enabled;
-            this.imageName = config.imageName.orElse(null);
-            this.fixedExposedPort = config.port.orElse(0);
-            this.fixedExposedRestPort = config.restPort.orElse(0);
-            this.shared = config.shared;
-            this.serviceName = config.serviceName;
-            this.testExporter = config.test.exporter;
-            this.testDebugExportPort = config.test.receiverPort.orElse(0);
-            this.devDebugExporter = config.devExporter.enabled;
+            this.devServicesEnabled = config.enabled();
+            this.imageName = config.imageName().orElse(null);
+            this.fixedExposedPort = config.port().orElse(0);
+            this.fixedExposedRestPort = config.restPort().orElse(0);
+            this.shared = config.shared();
+            this.serviceName = config.serviceName();
+            this.testExporter = config.test().exporter();
+            this.testDebugExportPort = config.test().receiverPort().orElse(0);
+            this.devDebugExporter = config.devExporter().enabled();
             this.debugReceiverPort = getPort();
-            this.reuse = config.reuse;
+            this.reuse = config.reuse();
         }
 
         @Override

@@ -79,7 +79,7 @@ public class ZeebeProcessor {
 
         @Override
         public boolean getAsBoolean() {
-            return config.tracing.enabled;
+            return config.tracing().enabled();
         }
     }
 
@@ -99,7 +99,7 @@ public class ZeebeProcessor {
 
         @Override
         public boolean getAsBoolean() {
-            return config.metrics.enabled;
+            return config.metrics().enabled();
         }
     }
 
@@ -294,7 +294,7 @@ public class ZeebeProcessor {
                 .fields(true)
                 .build());
 
-        Collection<String> resources = discoverResources(config.resources);
+        Collection<String> resources = discoverResources(config.resources());
         if (!resources.isEmpty()) {
             resource.produce(new NativeImageResourceBuildItem(resources.toArray(new String[0])));
         }
@@ -305,8 +305,8 @@ public class ZeebeProcessor {
 
     @BuildStep
     void addHealthCheck(ZeebeBuildTimeConfig config, BuildProducer<HealthBuildItem> healthChecks) {
-        healthChecks.produce(new HealthBuildItem(ZeebeHealthCheck.class.getName(), config.health.enabled));
-        healthChecks.produce(new HealthBuildItem(ZeebeTopologyHealthCheck.class.getName(), config.health.enabled));
+        healthChecks.produce(new HealthBuildItem(ZeebeHealthCheck.class.getName(), config.health().enabled()));
+        healthChecks.produce(new HealthBuildItem(ZeebeTopologyHealthCheck.class.getName(), config.health().enabled()));
     }
 
     @BuildStep
@@ -353,10 +353,10 @@ public class ZeebeProcessor {
 
     private Collection<String> discoverResources(ZeebeBuildTimeConfig.ResourcesConfig resourcesConfig)
             throws IOException, URISyntaxException {
-        if (!resourcesConfig.enabled) {
+        if (!resourcesConfig.enabled()) {
             return Collections.emptySet();
         }
-        String location = resourcesConfig.location;
+        String location = resourcesConfig.location();
         LinkedHashSet<String> result = new LinkedHashSet<>();
 
         location = normalizeLocation(location);
