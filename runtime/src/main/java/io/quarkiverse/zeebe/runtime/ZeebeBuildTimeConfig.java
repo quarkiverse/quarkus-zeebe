@@ -1,89 +1,93 @@
 package io.quarkiverse.zeebe.runtime;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "zeebe", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
-public class ZeebeBuildTimeConfig {
+@ConfigRoot(phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+@ConfigMapping(prefix = "quarkus.zeebe")
+public interface ZeebeBuildTimeConfig {
 
     /**
      * Zeebe client resources configuration.
      */
-    @ConfigItem(name = "resources")
-    public ResourcesConfig resources = new ResourcesConfig();
+    @WithName("resources")
+    ResourcesConfig resources();
 
     /**
      * Metrics configuration.
      */
-    @ConfigItem(name = "metrics")
-    public MetricsConfig metrics = new MetricsConfig();
+    @WithName("metrics")
+    MetricsConfig metrics();
 
     /**
      * Health check configuration.
      */
-    @ConfigItem(name = "health")
-    public HealthCheckConfig health = new HealthCheckConfig();
+    @WithName("health")
+    HealthCheckConfig health();
 
     /**
      * Tracing configuration.
      */
-    @ConfigItem(name = "tracing")
-    public TracingConfig tracing = new TracingConfig();
+    @WithName("tracing")
+    TracingConfig tracing();
 
     /**
      * Metrics configuration.
      */
-    @ConfigGroup
-    public static class MetricsConfig {
+    interface MetricsConfig {
         /**
          * Whether a metrics is enabled in case the micrometer or micro-profile metrics extension is present.
          */
-        @ConfigItem(name = "enabled", defaultValue = "true")
-        public boolean enabled;
+        @WithName("enabled")
+        @WithDefault("true")
+        boolean enabled();
     }
 
     /**
      * Health check configuration.
      */
-    @ConfigGroup
-    public static class HealthCheckConfig {
+    interface HealthCheckConfig {
         /**
          * Whether a health check is published in case the smallrye-health extension is present.
          */
-        @ConfigItem(name = "enabled", defaultValue = "true")
-        public boolean enabled;
+        @WithName("enabled")
+        @WithDefault("true")
+        boolean enabled();
     }
 
     /**
      * Zeebe client resources configuration.
      */
-    @ConfigGroup
-    public static class ResourcesConfig {
+    interface ResourcesConfig {
         /**
          * Whether an auto scan BPMN process folder. Default true
          */
-        @ConfigItem(name = "enabled", defaultValue = "true")
-        public Boolean enabled;
+        @WithName("enabled")
+        @WithDefault("true")
+        Boolean enabled();
+
         /**
          * BPMN process root folder. Default bpmn
          */
-        @ConfigItem(name = "location", defaultValue = "bpmn")
-        public String location;
+        @WithName("location")
+        @WithDefault("bpmn")
+        String location();
 
     }
 
     /**
      * Tracing configuration.
      */
-    @ConfigGroup
-    public static class TracingConfig {
+    interface TracingConfig {
         /**
          * Whether an opentracing is published in case the smallrye-opentracing extension is present.
          */
-        @ConfigItem(name = "enabled", defaultValue = "true")
-        public boolean enabled = true;
+        @WithName("enabled")
+        @WithDefault("true")
+        boolean enabled();
     }
 
 }

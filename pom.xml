@@ -23,8 +23,8 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <quarkus.version>3.13.2</quarkus.version>
-    <zeebe.version>8.5.5</zeebe.version>
+    <quarkus.version>3.15.2</quarkus.version>
+    <zeebe.version>8.5.10</zeebe.version>
     <zeebe.testcontainers.version>3.6.5</zeebe.testcontainers.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
@@ -33,8 +33,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
-    <surefire-plugin.version>3.5.1</surefire-plugin.version>
-    <quarkus-mockserver.version>1.11.0</quarkus-mockserver.version>
+    <surefire-plugin.version>3.5.2</surefire-plugin.version>
+    <quarkus-mockserver.version>1.13.0</quarkus-mockserver.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -93,6 +93,11 @@
         <plugin>
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-maven-plugin</artifactId>
+          <version>${quarkus.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-config-doc-maven-plugin</artifactId>
           <version>${quarkus.version}</version>
         </plugin>
         <plugin>

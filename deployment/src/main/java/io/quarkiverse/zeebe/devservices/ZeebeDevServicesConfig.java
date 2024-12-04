@@ -4,10 +4,10 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
-@ConfigGroup
-public class ZeebeDevServicesConfig {
+public interface ZeebeDevServicesConfig {
 
     /**
      * If DevServices has been explicitly enabled or disabled. DevServices is generally enabled
@@ -16,24 +16,25 @@ public class ZeebeDevServicesConfig {
      * When DevServices is enabled Quarkus will attempt to automatically configure and start
      * a database when running in Dev or Test mode and when Docker is running.
      */
-    @ConfigItem(name = "enabled", defaultValue = "true")
-    public boolean enabled;
+    @WithName("enabled")
+    @WithDefault("true")
+    boolean enabled();
 
     /**
      * Optional fixed port the dev service will listen to.
      * <p>
      * If not defined, the port will be chosen randomly.
      */
-    @ConfigItem(name = "port")
-    public OptionalInt port;
+    @WithName("port")
+    OptionalInt port();
 
     /**
      * Optional fixed port the dev service rest service will listen to.
      * <p>
      * If not defined, the port will be chosen randomly.
      */
-    @ConfigItem(name = "rest-port")
-    public OptionalInt restPort;
+    @WithName("rest-port")
+    OptionalInt restPort();
 
     /**
      * Indicates if the Zeebe server managed by Quarkus Dev Services is shared.
@@ -46,8 +47,9 @@ public class ZeebeDevServicesConfig {
      * <p>
      * Container sharing is only used in dev mode.
      */
-    @ConfigItem(name = "shared", defaultValue = "true")
-    public boolean shared;
+    @WithName("shared")
+    @WithDefault("true")
+    boolean shared();
 
     /**
      * The value of the {@code quarkus-dev-service-zeebe} label attached to the started container.
@@ -59,14 +61,15 @@ public class ZeebeDevServicesConfig {
      * <p>
      * This property is used when you need multiple shared Zeebe servers.
      */
-    @ConfigItem(name = "service-name", defaultValue = "zeebe")
-    public String serviceName;
+    @WithName("service-name")
+    @WithDefault("zeebe")
+    String serviceName();
 
     /**
      * The container image name to use, for container based DevServices providers.
      */
-    @ConfigItem(name = "image-name")
-    public Optional<String> imageName;
+    @WithName("image-name")
+    Optional<String> imageName();
 
     /**
      * Helper to define the stop strategy for containers created by DevServices.
@@ -78,53 +81,55 @@ public class ZeebeDevServicesConfig {
      *
      * @see <a href="https://www.testcontainers.org/features/configuration/">Testcontainers Configuration</a>.
      */
-    @ConfigItem(name = "reuse", defaultValue = "false")
-    public boolean reuse;
+    @WithName("reuse")
+    @WithDefault("false")
+    boolean reuse();
 
     /**
      * Optional fixed debug export receiver port the dev service will listen to.
      * <p>
      * If not defined, the port will be chosen randomly.
      */
-    @ConfigItem(name = "test")
-    public TestConfig test;
+    @WithName("test")
+    TestConfig test();
 
     /**
      * Debug dev mode exporter optional configuration.
      */
-    @ConfigItem(name = "dev-exporter")
-    public DevExporterConfig devExporter;
+    @WithName("dev-exporter")
+    DevExporterConfig devExporter();
 
     /**
      * Zeebe test configuration.
      */
     @ConfigGroup
-    public static class TestConfig {
+    interface TestConfig {
         /**
          * Optional fixed debug export receiver port the dev service will listen to.
          * <p>
          * If not defined, the port will be chosen randomly.
          */
-        @ConfigItem(name = "receiver-port")
-        public OptionalInt receiverPort;
+        @WithName("receiver-port")
+        OptionalInt receiverPort();
 
         /**
          * Disable or enable debug exporter for the test.
          */
-        @ConfigItem(name = "exporter", defaultValue = "true")
-        public boolean exporter;
+        @WithName("exporter")
+        @WithDefault("true")
+        boolean exporter();
     }
 
     /**
      * Zeebe dev mode debug exporter configuration.
      */
-    @ConfigGroup
-    public static class DevExporterConfig {
+    interface DevExporterConfig {
         /**
          * Enable or disable debug exporter.
          */
-        @ConfigItem(name = "enabled", defaultValue = "true")
-        public boolean enabled;
+        @WithName("enabled")
+        @WithDefault("true")
+        boolean enabled();
 
     }
 

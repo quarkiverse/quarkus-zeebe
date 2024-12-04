@@ -11,22 +11,22 @@ public class ZeebeClientBuilderFactory {
         ZeebeClientBuilderImpl builder = new ZeebeClientBuilderImpl();
 
         builder.gatewayAddress(createGatewayAddress(config))
-                .restAddress(config.broker.restAddress)
-                .defaultTenantId(config.tenant.defaultTenantId)
-                .defaultJobWorkerTenantIds(config.tenant.defaultJobWorkerTenantIds)
-                .keepAlive(config.broker.keepAlive)
-                .defaultJobPollInterval(config.job.pollInterval)
-                .defaultJobTimeout(config.job.timeout)
-                .defaultJobWorkerMaxJobsActive(config.job.workerMaxJobsActive)
-                .defaultJobWorkerName(config.job.workerName)
-                .defaultMessageTimeToLive(config.message.timeToLive)
-                .numJobWorkerExecutionThreads(config.job.workerExecutionThreads)
-                .defaultRequestTimeout(config.job.requestTimeout)
+                .restAddress(config.broker().restAddress())
+                .defaultTenantId(config.tenant().defaultTenantId())
+                .defaultJobWorkerTenantIds(config.tenant().defaultJobWorkerTenantIds())
+                .keepAlive(config.broker().keepAlive())
+                .defaultJobPollInterval(config.job().pollInterval())
+                .defaultJobTimeout(config.job().timeout())
+                .defaultJobWorkerMaxJobsActive(config.job().workerMaxJobsActive())
+                .defaultJobWorkerName(config.job().workerName())
+                .defaultMessageTimeToLive(config.message().timeToLive())
+                .numJobWorkerExecutionThreads(config.job().workerExecutionThreads())
+                .defaultRequestTimeout(config.job().requestTimeout())
                 .credentialsProvider(getCredentialsProvider(config));
 
-        config.security.overrideAuthority.ifPresent(builder::overrideAuthority);
-        config.security.certPath.ifPresent(builder::caCertificatePath);
-        if (config.security.plaintext) {
+        config.security().overrideAuthority().ifPresent(builder::overrideAuthority);
+        config.security().certPath().ifPresent(builder::caCertificatePath);
+        if (config.security().plaintext()) {
             builder.usePlaintext();
         }
         if (jsonMapper != null) {
@@ -36,49 +36,49 @@ public class ZeebeClientBuilderFactory {
     }
 
     private static String createGatewayAddress(ZeebeClientRuntimeConfig config) {
-        if (config.cloud.clusterId.isPresent()) {
+        if (config.cloud().clusterId().isPresent()) {
             return String.format("%s.%s.%s:%d",
-                    config.cloud.clusterId.get(),
-                    config.cloud.region,
-                    config.cloud.baseUrl,
-                    config.cloud.port);
+                    config.cloud().clusterId().get(),
+                    config.cloud().region(),
+                    config.cloud().baseUrl(),
+                    config.cloud().port());
         }
-        return config.broker.gatewayAddress;
+        return config.broker().gatewayAddress();
     }
 
     private static CredentialsProvider getCredentialsProvider(ZeebeClientRuntimeConfig config) {
-        ZeebeClientRuntimeConfig.CloudConfig cloud = config.cloud;
-        if (cloud.clientId.isPresent() && cloud.clientSecret.isPresent() && cloud.clusterId.isPresent()) {
+        ZeebeClientRuntimeConfig.CloudConfig cloud = config.cloud();
+        if (cloud.clientId().isPresent() && cloud.clientSecret().isPresent() && cloud.clusterId().isPresent()) {
             OAuthCredentialsProviderBuilder builder = CredentialsProvider.newCredentialsProviderBuilder();
-            builder.authorizationServerUrl(cloud.authUrl);
-            cloud.clientId.ifPresent(builder::clientId);
-            cloud.clientSecret.ifPresent(builder::clientSecret);
-            cloud.credentialsCachePath.ifPresent(builder::credentialsCachePath);
-            builder.audience(String.format("%s.%s.%s", cloud.clusterId.get(), cloud.region, cloud.baseUrl));
+            builder.authorizationServerUrl(cloud.authUrl());
+            cloud.clientId().ifPresent(builder::clientId);
+            cloud.clientSecret().ifPresent(builder::clientSecret);
+            cloud.credentialsCachePath().ifPresent(builder::credentialsCachePath);
+            builder.audience(String.format("%s.%s.%s", cloud.clusterId().get(), cloud.region(), cloud.baseUrl()));
             return builder.build();
         }
 
-        ZeebeClientRuntimeConfig.OAuthConfig oauth = config.oauth;
-        if (oauth.clientId.isPresent() && oauth.clientSecret.isPresent()) {
+        ZeebeClientRuntimeConfig.OAuthConfig oauth = config.oauth();
+        if (oauth.clientId().isPresent() && oauth.clientSecret().isPresent()) {
             OAuthCredentialsProviderBuilder builder = CredentialsProvider.newCredentialsProviderBuilder();
-            builder.authorizationServerUrl(oauth.authUrl);
-            oauth.clientId.ifPresent(builder::clientId);
-            oauth.clientSecret.ifPresent(builder::clientSecret);
-            oauth.credentialsCachePath.ifPresent(builder::credentialsCachePath);
+            builder.authorizationServerUrl(oauth.authUrl());
+            oauth.clientId().ifPresent(builder::clientId);
+            oauth.clientSecret().ifPresent(builder::clientSecret);
+            oauth.credentialsCachePath().ifPresent(builder::credentialsCachePath);
 
             builder.audience(createOauthAudience(config));
 
             // setup connection timeout
-            builder.connectTimeout(oauth.connectTimeout);
-            builder.readTimeout(oauth.readTimeout);
+            builder.connectTimeout(oauth.connectTimeout());
+            builder.readTimeout(oauth.readTimeout());
             return builder.build();
         }
         return null;
     }
 
     private static String createOauthAudience(ZeebeClientRuntimeConfig config) {
-        return config.oauth.tokenAudience.orElseGet(
-                () -> removePortFromAddress(config.broker.gatewayAddress));
+        return config.oauth().tokenAudience().orElseGet(
+                () -> removePortFromAddress(config.broker().gatewayAddress()));
     }
 
     private static String removePortFromAddress(String address) {

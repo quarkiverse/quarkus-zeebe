@@ -3,292 +3,296 @@ package io.quarkiverse.zeebe.runtime;
 import java.net.URI;
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import io.camunda.zeebe.client.api.command.CommandWithTenantStep;
-import io.camunda.zeebe.client.impl.ZeebeClientBuilderImpl;
-import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithDefault;
+import io.smallrye.config.WithName;
 
 /**
  * Zeebe client configuration
  */
-@ConfigGroup
-public class ZeebeClientRuntimeConfig {
+public interface ZeebeClientRuntimeConfig {
 
     /**
      * Default client configuration
      */
-    static final ZeebeClientBuilderImpl DEFAULT = (ZeebeClientBuilderImpl) new ZeebeClientBuilderImpl()
-            .withProperties(new Properties());
-
-    static final String DEFAULT_AUTH_URL = "https://login.cloud.camunda.io/oauth/token";
+    String DEFAULT_AUTH_URL = "https://login.cloud.camunda.io/oauth/token";
 
     /**
      * Zeebe client broker configuration.
      */
-    @ConfigItem(name = "broker")
-    public BrokerConfig broker = new BrokerConfig();
+    @WithName("broker")
+    BrokerConfig broker();
 
     /**
      * Zeebe client cloud configuration.
      */
-    @ConfigItem(name = "cloud")
-    public CloudConfig cloud = new CloudConfig();
+    @WithName("cloud")
+    CloudConfig cloud();
 
     /**
      * Zeebe client OAuth configuration.
      */
-    @ConfigItem(name = "oauth")
-    public OAuthConfig oauth = new OAuthConfig();
+    @WithName("oauth")
+    OAuthConfig oauth();
 
     /**
      * Zeebe client worker type optional configuration.
      */
-    @ConfigItem(name = "workers")
-    public Map<String, JobHandlerConfig> workers = new HashMap<>();
+    @WithName("workers")
+    Map<String, JobHandlerConfig> workers();
 
     /**
      * Auto-complete configuration for all job handlers
      */
-    @ConfigItem(name = "auto-complete")
-    public AutoCompleteConfig autoComplete = new AutoCompleteConfig();
+    @WithName("auto-complete")
+    AutoCompleteConfig autoComplete();
 
     /**
      * Zeebe client message configuration.
      */
-    @ConfigItem(name = "message")
-    public MessageConfig message = new MessageConfig();
+    @WithName("message")
+    MessageConfig message();
 
     /**
      * Zeebe client security configuration.
      */
-    @ConfigItem(name = "security")
-    public SecurityConfig security = new SecurityConfig();
+    @WithName("security")
+    SecurityConfig security();
 
     /**
      * Zeebe client job configuration.
      */
-    @ConfigItem(name = "job")
-    public JobConfig job = new JobConfig();
+    @WithName("job")
+    JobConfig job();
 
     /**
      * Zeebe client tracing configuration.
      */
-    @ConfigItem(name = "tracing")
-    public TracingConfig tracing = new TracingConfig();
+    @WithName("tracing")
+    TracingConfig tracing();
 
     /**
      * Zeebe client tenant configuration.
      */
-    @ConfigItem(name = "tenant")
-    public TenantConfig tenant = new TenantConfig();
+    @WithName("tenant")
+    TenantConfig tenant();
 
     /**
      * Zeebe client tenant configuration.
      */
-    @ConfigGroup
-    public static class TenantConfig {
+    interface TenantConfig {
 
         /**
          * Zeebe client tenant ID.
          * The tenant identifier which is used for tenant-aware commands when no tenant identifier is set.
          */
-        @ConfigItem(name = "default-tenant-id", defaultValue = CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER)
-        public String defaultTenantId = CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER;
+        @WithName("default-tenant-id")
+        @WithDefault(CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER)
+        String defaultTenantId();
 
         /**
          * Zeebe client default job worker tenant ID's.
          * The tenant identifiers which are used for job-activation commands when no tenant identifiers are set.
          */
-        @ConfigItem(name = "default-job-worker-tenant-ids", defaultValue = CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER)
-        public List<String> defaultJobWorkerTenantIds = Collections
-                .singletonList(CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER);
+        @WithName("default-job-worker-tenant-ids")
+        @WithDefault(CommandWithTenantStep.DEFAULT_TENANT_IDENTIFIER)
+        List<String> defaultJobWorkerTenantIds();
     }
 
     /**
      * Zeebe client broker configuration.
      */
-    @ConfigGroup
-    public static class BrokerConfig {
+    interface BrokerConfig {
 
         /**
          * Zeebe gateway address.
          * Default: localhost:26500
          */
-        @ConfigItem(name = "gateway-address", defaultValue = "localhost:26500")
-        public String gatewayAddress;
+        @WithName("gateway-address")
+        @WithDefault("localhost:26500")
+        String gatewayAddress();
 
         /**
          * Zeebe gateway rest address.
          * Default: localhost:8080
          */
-        @ConfigItem(name = "rest-address", defaultValue = "http://0.0.0.0:8080")
-        public URI restAddress;
+        @WithName("rest-address")
+        @WithDefault("http://0.0.0.0:8080")
+        URI restAddress();
 
         /**
          * Client keep alive duration
          */
-        @ConfigItem(name = "keep-alive", defaultValue = "PT45S")
-        public Duration keepAlive = DEFAULT.getKeepAlive();
+        @WithName("keep-alive")
+        @WithDefault("PT45S")
+        Duration keepAlive();
     }
 
     /**
      * Zeebe client cloud configuration.
      */
-    @ConfigGroup
-    public static class CloudConfig {
+    interface CloudConfig {
 
         /**
          * Cloud cluster ID
          */
-        @ConfigItem(name = "cluster-id")
-        public Optional<String> clusterId = Optional.empty();
+        @WithName("cluster-id")
+        Optional<String> clusterId();
 
         /**
          * Cloud client secret ID
          */
-        @ConfigItem(name = "client-id")
-        public Optional<String> clientId = Optional.empty();
+        @WithName("client-id")
+        Optional<String> clientId();;
 
         /**
          * Specify a client secret to request an access token.
          */
-        @ConfigItem(name = "client-secret")
-        public Optional<String> clientSecret;
+        @WithName("client-secret")
+        Optional<String> clientSecret();
 
         /**
          * Cloud region
          */
-        @ConfigItem(name = "region", defaultValue = "bru-2")
-        public String region = "bru-2";
+        @WithName("region")
+        @WithDefault("bru-2")
+        String region();
 
         /**
          * Cloud base URL
          */
-        @ConfigItem(name = "base-url", defaultValue = "zeebe.camunda.io")
-        public String baseUrl = "zeebe.camunda.io";
+        @WithName("base-url")
+        @WithDefault("zeebe.camunda.io")
+        String baseUrl();
 
         /**
          * Cloud authorization server URL
          */
-        @ConfigItem(name = "auth-url", defaultValue = DEFAULT_AUTH_URL)
-        public String authUrl = DEFAULT_AUTH_URL;
+        @WithName("auth-url")
+        @WithDefault(DEFAULT_AUTH_URL)
+        String authUrl();
 
         /**
          * Cloud port
          */
-        @ConfigItem(name = "port", defaultValue = "443")
-        public int port = 443;
+        @WithName("port")
+        @WithDefault("443")
+        int port();
 
         /**
          * Cloud credentials cache path
          */
-        @ConfigItem(name = "credentials-cache-path")
-        public Optional<String> credentialsCachePath;
+        @WithName("credentials-cache-path")
+        Optional<String> credentialsCachePath();
 
     }
 
     /**
      * Zeebe client message configuration.
      */
-    @ConfigGroup
-    public static class MessageConfig {
+    interface MessageConfig {
 
         /**
          * Client message time to live duration.
          */
-        @ConfigItem(name = "time-to-live", defaultValue = "PT1H")
-        public Duration timeToLive = DEFAULT.getDefaultMessageTimeToLive();
+        @WithName("time-to-live")
+        @WithDefault("PT1H")
+        Duration timeToLive();
     }
 
     /**
      * Zeebe client security configuration.
      */
-    @ConfigGroup
-    public static class SecurityConfig {
+    interface SecurityConfig {
 
         /**
          * Client security plaintext flag.
          */
-        @ConfigItem(name = "plaintext", defaultValue = "true")
-        public boolean plaintext = true;
+        @WithName("plaintext")
+        @WithDefault("true")
+        boolean plaintext();
 
         /**
          * Specify a path to a certificate with which to validate gateway requests.
          */
-        @ConfigItem(name = "cert-path")
-        public Optional<String> certPath = Optional.empty();
+        @WithName("cert-path")
+        Optional<String> certPath();
 
         /**
          * Overrides the authority used with TLS virtual hosting.
          * Specifically, to override hostname verification in
          * the TLS handshake. It does not change what host is actually connected to.
          */
-        @ConfigItem(name = "override-authority")
-        public Optional<String> overrideAuthority = Optional.empty();
+        @WithName("override-authority")
+        Optional<String> overrideAuthority();
     }
 
     /**
      * Zeebe client job configuration.
      */
-    @ConfigGroup
-    public static class JobConfig {
+    interface JobConfig {
 
         /**
          * Client worker maximum active jobs.
          */
-        @ConfigItem(name = "max-jobs-active", defaultValue = "32")
-        public Integer workerMaxJobsActive = DEFAULT.getDefaultJobWorkerMaxJobsActive();
+        @WithName("max-jobs-active")
+        @WithDefault("32")
+        Integer workerMaxJobsActive();
 
         /**
          * Client worker number of threads
          */
-        @ConfigItem(name = "worker-execution-threads", defaultValue = "1")
-        public Integer workerExecutionThreads = DEFAULT.getNumJobWorkerExecutionThreads();
+        @WithName("worker-execution-threads")
+        @WithDefault("1")
+        Integer workerExecutionThreads();
 
         /**
          * Client worker default name
          */
-        @ConfigItem(name = "worker-name", defaultValue = "default")
-        public String workerName = DEFAULT.getDefaultJobWorkerName();
+        @WithName("worker-name")
+        @WithDefault("default")
+        String workerName();
 
         /**
          * Zeebe client request timeout configuration.
          */
-        @ConfigItem(name = "request-timeout", defaultValue = "PT45S")
-        public Duration requestTimeout = DEFAULT.getDefaultRequestTimeout();
+        @WithName("request-timeout")
+        @WithDefault("PT45S")
+        Duration requestTimeout();
 
         /**
          * Client worker global type
          */
-        @ConfigItem(name = "default-type")
-        public Optional<String> defaultType;
+        @WithName("default-type")
+        Optional<String> defaultType();
 
         /**
          * Client job timeout
          */
-        @ConfigItem(name = "timeout", defaultValue = "PT5M")
-        public Duration timeout = DEFAULT.getDefaultJobTimeout();
+        @WithName("timeout")
+        @WithDefault("PT5M")
+        Duration timeout();
 
         /**
          * Client job pool interval
          */
-        @ConfigItem(name = "pool-interval", defaultValue = "PT0.100S")
-        public Duration pollInterval = DEFAULT.getDefaultJobPollInterval();
+        @WithName("pool-interval")
+        @WithDefault("PT0.100S")
+        Duration pollInterval();
 
         /**
          * Sets the backoff supplier. The supplier is called to determine the retry delay after each failed request;
          * the worker then waits until the returned delay has elapsed before sending the next request.
          * Note that this is used only for the polling mechanism - failures in the JobHandler should be handled there,
          * and retried there if need be.
-         *
          * Sets the backoff multiplication factor. The previous delay is multiplied by this factor. Default is 1.6.
          *
          * @see io.camunda.zeebe.client.impl.worker.ExponentialBackoffBuilderImpl
          */
-        @ConfigItem(name = "exp-backoff-factor", defaultValue = "1.6")
-        public double expBackoffFactor = 1.6;
+        @WithName("exp-backoff-factor")
+        @WithDefault("1.6")
+        double expBackoffFactor();
 
         /**
          * Sets the jitter factor. The next delay is changed randomly within a range of +/- this factor.
@@ -297,8 +301,9 @@ public class ZeebeClientRuntimeConfig {
          *
          * @see io.camunda.zeebe.client.impl.worker.ExponentialBackoffBuilderImpl
          */
-        @ConfigItem(name = "exp-jitter-factor", defaultValue = "0.1")
-        public double expJitterFactor = 0.1;
+        @WithName("exp-jitter-factor")
+        @WithDefault("0.1")
+        double expJitterFactor();
 
         /**
          * Sets the maximum retry delay.
@@ -306,8 +311,9 @@ public class ZeebeClientRuntimeConfig {
          *
          * @see io.camunda.zeebe.client.impl.worker.ExponentialBackoffBuilderImpl
          */
-        @ConfigItem(name = "exp-max-delay", defaultValue = "5000")
-        public long expMaxDelay = TimeUnit.SECONDS.toMillis(5);
+        @WithName("exp-max-delay")
+        @WithDefault("5000")
+        long expMaxDelay();
 
         /**
          * Sets the minimum retry delay.
@@ -315,167 +321,172 @@ public class ZeebeClientRuntimeConfig {
          *
          * @see io.camunda.zeebe.client.impl.worker.ExponentialBackoffBuilderImpl
          */
-        @ConfigItem(name = "exp-min-delay", defaultValue = "50")
-        public long expMinDelay = TimeUnit.MILLISECONDS.toMillis(50);
+        @WithName("exp-min-delay")
+        @WithDefault("50")
+        long expMinDelay();
     }
 
     /**
      * Zeebe handler configuration.
      */
-    @ConfigGroup
-    public static class JobHandlerConfig {
+    interface JobHandlerConfig {
 
         /**
          * Zeebe worker enable or disable flag.
          */
-        @ConfigItem(name = "enabled")
-        public Optional<Boolean> enabled;
+        @WithName("enabled")
+        Optional<Boolean> enabled();
 
         /**
          * Zeebe worker handler name.
          */
-        @ConfigItem(name = "name")
-        public Optional<String> name;
+        @WithName("name")
+        Optional<String> name();
 
         /**
          * Zeebe worker timeout.
          */
-        @ConfigItem(name = "timeout")
-        public Optional<Long> timeout;
+        @WithName("timeout")
+        Optional<Long> timeout();
 
         /**
          * Zeebe worker maximum jobs active.
          */
-        @ConfigItem(name = "max-jobs-active")
-        public Optional<Integer> maxJobsActive;
+        @WithName("max-jobs-active")
+        Optional<Integer> maxJobsActive();
 
         /**
          * Zeebe worker request timeout.
          */
-        @ConfigItem(name = "request-timeout")
-        public Optional<Long> requestTimeout;
+        @WithName("request-timeout")
+        Optional<Long> requestTimeout();
 
         /**
          * Zeebe worker poll interval.
          */
-        @ConfigItem(name = "poll-interval")
-        public Optional<Long> pollInterval;
+        @WithName("poll-interval")
+        Optional<Long> pollInterval();
 
     }
 
     /**
      * Zeebe client tracing configuration.
      */
-    @ConfigGroup
-    public static class TracingConfig {
+    interface TracingConfig {
 
         /**
          * List of span names
          */
-        @ConfigItem(name = "attributes")
-        public Optional<List<String>> attributes;
+        @WithName("attributes")
+        Optional<List<String>> attributes();
     }
 
     /**
      * Command configuration will be use only for the auto-completion of job handler.
      */
-    @ConfigGroup
-    public static class AutoCompleteConfig {
+    interface AutoCompleteConfig {
 
         /**
          * Maximum retries for the auto-completion command.
          */
-        @ConfigItem(name = "max-retries", defaultValue = "20")
-        public int maxRetries;
+        @WithName("max-retries")
+        @WithDefault("20")
+        int maxRetries();
 
         /**
          * Maximum retries for the auto-completion command.
          */
-        @ConfigItem(name = "retry-delay", defaultValue = "50")
-        public long retryDelay;
+        @WithName("retry-delay")
+        @WithDefault("50")
+        long retryDelay();
 
         /**
          * Sets the backoff supplier. The supplier is called to determine the retry delay after each failed request;
          * the worker then waits until the returned delay has elapsed before sending the next request.
          * Note that this is used only for the polling mechanism - failures in the JobHandler should be handled there,
          * and retried there if need be.
-         *
          * Sets the backoff multiplication factor. The previous delay is multiplied by this factor. Default is 1.5.
          */
-        @ConfigItem(name = "exp-backoff-factor", defaultValue = "1.5")
-        public double expBackoffFactor = 1.5;
+        @WithName("exp-backoff-factor")
+        @WithDefault("1.5")
+        double expBackoffFactor();
 
         /**
          * Sets the jitter factor. The next delay is changed randomly within a range of +/- this factor.
          * For example, if the next delay is calculated to be 1s and the jitterFactor is 0.1 then the actual next
          * delay can be somewhere between 0.9 and 1.1s. Default is 0.2
          */
-        @ConfigItem(name = "exp-jitter-factor", defaultValue = "0.2")
-        public double expJitterFactor = 0.2;
+        @WithName("exp-jitter-factor")
+        @WithDefault("0.2")
+        double expJitterFactor();
 
         /**
          * Sets the maximum retry delay.
          * Note that the jitter may push the retry delay over this maximum. Default is 1000ms.
          */
-        @ConfigItem(name = "exp-max-delay", defaultValue = "1000")
-        public long expMaxDelay = TimeUnit.SECONDS.toMillis(1);
+        @WithName("exp-max-delay")
+        @WithDefault("1000")
+        long expMaxDelay();
 
         /**
          * Sets the minimum retry delay.
          * Note that the jitter may push the retry delay below this minimum. Default is 50ms.
          */
-        @ConfigItem(name = "exp-min-delay", defaultValue = "50")
-        public long expMinDelay = TimeUnit.MILLISECONDS.toMillis(50);
+        @WithName("exp-min-delay")
+        @WithDefault("50")
+        long expMinDelay();
 
     }
 
     /**
      * Zeebe client OAuth configuration.
      */
-    @ConfigGroup
-    public static class OAuthConfig {
+    interface OAuthConfig {
 
         /**
          * OAuth client secret ID
          */
-        @ConfigItem(name = "client-id")
-        public Optional<String> clientId = Optional.empty();
+        @WithName("client-id")
+        Optional<String> clientId();
 
         /**
          * Specify a client secret to request an access token.
          */
-        @ConfigItem(name = "client-secret")
-        public Optional<String> clientSecret;
+        @WithName("client-secret")
+        Optional<String> clientSecret();
 
         /**
          * Authorization server URL
          */
-        @ConfigItem(name = "auth-url", defaultValue = DEFAULT_AUTH_URL)
-        public String authUrl = DEFAULT_AUTH_URL;
+        @WithName("auth-url")
+        @WithDefault(DEFAULT_AUTH_URL)
+        String authUrl();
 
         /**
          * Credentials cache path
          */
-        @ConfigItem(name = "credentials-cache-path")
-        public Optional<String> credentialsCachePath;
+        @WithName("credentials-cache-path")
+        Optional<String> credentialsCachePath();
 
         /**
          * OAuth connect timeout
          */
-        @ConfigItem(name = "connect-timeout", defaultValue = "PT5S")
-        public Duration connectTimeout;
+        @WithName("connect-timeout")
+        @WithDefault("PT5S")
+        Duration connectTimeout();
 
         /**
          * OAuth read timeout
          */
-        @ConfigItem(name = "read-timeout", defaultValue = "PT5S")
-        public Duration readTimeout;
+        @WithName("read-timeout")
+        @WithDefault("PT5S")
+        Duration readTimeout();
 
         /**
          * Zeebe token audience
          */
-        @ConfigItem(name = "token-audience")
-        public Optional<String> tokenAudience;
+        @WithName("token-audience")
+        Optional<String> tokenAudience();
     }
 
 }

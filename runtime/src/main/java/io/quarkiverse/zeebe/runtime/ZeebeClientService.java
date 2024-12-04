@@ -22,9 +22,9 @@ public class ZeebeClientService {
 
     public ZeebeClientService(ZeebeRuntimeConfig config, JsonMapper jsonMapper,
             @Any Instance<ZeebeClientInterceptor> interceptors) {
-        if (config.active) {
-            log.infof("Creating new zeebe client for %s", config.client.broker.gatewayAddress);
-            ZeebeClientBuilder builder = ZeebeClientBuilderFactory.createBuilder(config.client, jsonMapper);
+        if (config.active()) {
+            log.infof("Creating new zeebe client for %s", config.client().broker().gatewayAddress());
+            ZeebeClientBuilder builder = ZeebeClientBuilderFactory.createBuilder(config.client(), jsonMapper);
             interceptors.forEach(x -> builder.withInterceptors(x::interceptCall));
             client = builder.build();
         } else {

@@ -22,7 +22,7 @@ public class ZeebeDevProcessor {
 
     @BuildStep(onlyIf = IsDevelopment.class)
     void hotReload(ZeebeDevServiceBuildTimeConfig buildTimeConfig, BuildProducer<AdditionalBeanBuildItem> additionalBeans) {
-        if (buildTimeConfig.devMode.watchJobWorker) {
+        if (buildTimeConfig.devMode().watchJobWorker()) {
             additionalBeans.produce(AdditionalBeanBuildItem.unremovableOf(JobWorkerReplacementInterceptor.class));
         }
     }
@@ -32,12 +32,12 @@ public class ZeebeDevProcessor {
             ZeebeDevServiceBuildTimeConfig buildTimeConfig,
             BuildProducer<HotDeploymentWatchedFileBuildItem> watchedPaths) {
 
-        if (!config.resources.enabled) {
+        if (!config.resources().enabled()) {
             return;
         }
 
         // add all bpmn resources
-        if (buildTimeConfig.devMode.watchBpmnFiles) {
+        if (buildTimeConfig.devMode().watchBpmnFiles()) {
             Collection<String> items = resources.getResources();
             if (items != null && !items.isEmpty()) {
                 items.forEach(x -> watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(x)));
@@ -46,12 +46,12 @@ public class ZeebeDevProcessor {
 
         // watch directories for new files
         // add root directory and all subdirectories
-        if (buildTimeConfig.devMode.watchBpmnDir) {
-            watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(config.resources.location));
+        if (buildTimeConfig.devMode().watchBpmnDir()) {
+            watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(config.resources().location()));
 
             try {
                 Enumeration<URL> location = Thread.currentThread().getContextClassLoader()
-                        .getResources(config.resources.location);
+                        .getResources(config.resources().location());
                 if (location.hasMoreElements()) {
                     Files.walk(Path.of(location.nextElement().toURI()))
                             .filter(Files::isDirectory)
@@ -61,7 +61,7 @@ public class ZeebeDevProcessor {
                             .forEach(dir -> watchedPaths.produce(new HotDeploymentWatchedFileBuildItem(dir)));
                 }
             } catch (Exception ex) {
-                throw new RuntimeException("Error find all sub-directories of " + config.resources.location, ex);
+                throw new RuntimeException("Error find all sub-directories of " + config.resources().location(), ex);
             }
         }
     }

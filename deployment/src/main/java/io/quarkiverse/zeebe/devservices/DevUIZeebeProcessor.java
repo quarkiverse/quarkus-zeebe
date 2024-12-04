@@ -33,7 +33,7 @@ public class DevUIZeebeProcessor {
             BuildProducer<MenuPageBuildItem> menuProducer,
             BuildProducer<JsonRPCProvidersBuildItem> rpcProvidersBuildItemBuildProducer) {
 
-        if (!buildTimeConfig.devMode.devUIEnabled || !buildTimeConfig.devService.enabled) {
+        if (!buildTimeConfig.devMode().devUIEnabled() || !buildTimeConfig.devService().enabled()) {
             log.debug(
                     "Not starting dev-ui for Zeebe as it has been disabled in the config or dev-service has been not enabled");
             return;
