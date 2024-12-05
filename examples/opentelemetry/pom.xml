@@ -2,7 +2,7 @@
     <parent>
         <groupId>io.quarkiverse.zeebe</groupId>
         <artifactId>quarkus-zeebe-examples</artifactId>
-        <version>1.6.0</version>
+        <version>999-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
