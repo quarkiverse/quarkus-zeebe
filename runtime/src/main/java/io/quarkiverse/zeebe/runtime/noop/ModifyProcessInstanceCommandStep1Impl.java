@@ -87,4 +87,18 @@ public class ModifyProcessInstanceCommandStep1Impl extends AbstractStep<ModifyPr
         return new ModifyProcessInstanceResponseImpl(GatewayOuterClass.ModifyProcessInstanceResponse.getDefaultInstance());
     }
 
+    @Override
+    public ModifyProcessInstanceCommandStep2 operationReference(long operationReference) {
+        return this;
+    }
+
+    @Override
+    public ModifyProcessInstanceCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public ModifyProcessInstanceCommandStep1 useGrpc() {
+        return this;
+    }
 }

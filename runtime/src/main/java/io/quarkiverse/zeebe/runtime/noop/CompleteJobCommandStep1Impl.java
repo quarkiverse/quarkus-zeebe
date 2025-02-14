@@ -38,4 +38,14 @@ public class CompleteJobCommandStep1Impl extends AbstractStep<CompleteJobRespons
     protected CompleteJobResponse create() {
         return new CompleteJobResponseImpl(GatewayOuterClass.CompleteJobResponse.getDefaultInstance());
     }
+
+    @Override
+    public CompleteJobCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public CompleteJobCommandStep1 useGrpc() {
+        return this;
+    }
 }

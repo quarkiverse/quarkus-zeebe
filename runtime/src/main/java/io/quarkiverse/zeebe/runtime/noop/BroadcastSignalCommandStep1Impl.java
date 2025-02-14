@@ -50,4 +50,13 @@ public class BroadcastSignalCommandStep1Impl extends AbstractStep<BroadcastSigna
         return new BroadcastSignalResponseImpl(GatewayOuterClass.BroadcastSignalResponse.getDefaultInstance());
     }
 
+    @Override
+    public BroadcastSignalCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public BroadcastSignalCommandStep1 useGrpc() {
+        return this;
+    }
 }

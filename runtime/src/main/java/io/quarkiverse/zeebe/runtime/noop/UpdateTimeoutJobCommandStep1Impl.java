@@ -24,4 +24,18 @@ public class UpdateTimeoutJobCommandStep1Impl extends AbstractStep<UpdateTimeout
         };
     }
 
+    @Override
+    public UpdateTimeoutJobCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public UpdateTimeoutJobCommandStep1 useGrpc() {
+        return this;
+    }
+
+    @Override
+    public UpdateTimeoutJobCommandStep2 operationReference(long operationReference) {
+        return this;
+    }
 }

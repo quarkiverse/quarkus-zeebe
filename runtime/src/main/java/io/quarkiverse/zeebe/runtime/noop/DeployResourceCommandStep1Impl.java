@@ -57,4 +57,13 @@ public class DeployResourceCommandStep1Impl extends AbstractStep<DeploymentEvent
         return this;
     }
 
+    @Override
+    public DeployResourceCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public DeployResourceCommandStep1 useGrpc() {
+        return this;
+    }
 }

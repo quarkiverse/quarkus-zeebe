@@ -29,4 +29,19 @@ public class MigrateProcessInstanceCommandStep1Impl extends AbstractStep<Migrate
     protected MigrateProcessInstanceResponse create() {
         return new MigrateProcessInstanceResponseImpl(GatewayOuterClass.MigrateProcessInstanceResponse.getDefaultInstance());
     }
+
+    @Override
+    public MigrateProcessInstanceCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public MigrateProcessInstanceCommandStep1 useGrpc() {
+        return this;
+    }
+
+    @Override
+    public MigrateProcessInstanceCommandFinalStep operationReference(long operationReference) {
+        return this;
+    }
 }

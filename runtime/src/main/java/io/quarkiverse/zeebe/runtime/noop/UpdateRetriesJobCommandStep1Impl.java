@@ -16,4 +16,19 @@ public class UpdateRetriesJobCommandStep1Impl extends AbstractStep<UpdateRetries
         return new UpdateRetriesJobResponse() {
         };
     }
+
+    @Override
+    public UpdateRetriesJobCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public UpdateRetriesJobCommandStep1 useGrpc() {
+        return this;
+    }
+
+    @Override
+    public UpdateRetriesJobCommandStep2 operationReference(long operationReference) {
+        return this;
+    }
 }

@@ -73,4 +73,13 @@ public class PublishMessageCommandStep1Impl extends AbstractStep<PublishMessageR
         return new PublishMessageResponseImpl(GatewayOuterClass.PublishMessageResponse.getDefaultInstance());
     }
 
+    @Override
+    public PublishMessageCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public PublishMessageCommandStep1 useGrpc() {
+        return this;
+    }
 }

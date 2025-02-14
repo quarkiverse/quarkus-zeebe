@@ -60,4 +60,13 @@ public class ActivateJobsCommandStep1Impl extends AbstractStep<ActivateJobsRespo
         return List::of;
     }
 
+    @Override
+    public ActivateJobsCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public ActivateJobsCommandStep1 useGrpc() {
+        return this;
+    }
 }

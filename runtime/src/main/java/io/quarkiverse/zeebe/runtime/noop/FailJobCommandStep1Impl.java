@@ -57,4 +57,13 @@ public class FailJobCommandStep1Impl extends AbstractStep<FailJobResponse>
         return new FailJobResponseImpl(GatewayOuterClass.FailJobResponse.getDefaultInstance());
     }
 
+    @Override
+    public FailJobCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public FailJobCommandStep1 useGrpc() {
+        return this;
+    }
 }

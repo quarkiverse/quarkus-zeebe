@@ -10,4 +10,19 @@ public class DeleteResourceCommandStep1Impl extends AbstractStep<DeleteResourceR
         return new DeleteResourceResponse() {
         };
     }
+
+    @Override
+    public DeleteResourceCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public DeleteResourceCommandStep1 useGrpc() {
+        return this;
+    }
+
+    @Override
+    public DeleteResourceCommandStep1 operationReference(long operationReference) {
+        return this;
+    }
 }

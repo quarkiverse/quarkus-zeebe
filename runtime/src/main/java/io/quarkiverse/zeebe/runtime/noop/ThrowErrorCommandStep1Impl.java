@@ -43,4 +43,13 @@ public class ThrowErrorCommandStep1Impl extends AbstractStep<Void>
         return this;
     }
 
+    @Override
+    public ThrowErrorCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public ThrowErrorCommandStep1 useGrpc() {
+        return this;
+    }
 }

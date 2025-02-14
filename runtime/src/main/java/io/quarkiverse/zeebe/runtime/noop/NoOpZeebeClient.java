@@ -3,7 +3,14 @@ package io.quarkiverse.zeebe.runtime.noop;
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.ZeebeClientConfiguration;
 import io.camunda.zeebe.client.api.command.*;
+import io.camunda.zeebe.client.api.fetch.DecisionDefinitionGetXmlRequest;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.search.query.DecisionDefinitionQuery;
+import io.camunda.zeebe.client.api.search.query.DecisionRequirementsQuery;
+import io.camunda.zeebe.client.api.search.query.FlownodeInstanceQuery;
+import io.camunda.zeebe.client.api.search.query.IncidentQuery;
+import io.camunda.zeebe.client.api.search.query.ProcessInstanceQuery;
+import io.camunda.zeebe.client.api.search.query.UserTaskQuery;
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1;
 import io.camunda.zeebe.client.impl.ZeebeClientBuilderImpl;
 
@@ -170,4 +177,73 @@ public class NoOpZeebeClient implements ZeebeClient {
         return new StreamJobsCommandStep1Impl();
     }
 
+    @Override
+    public CorrelateMessageCommandStep1 newCorrelateMessageCommand() {
+        return new CorrelateMessageCommandStep1Impl();
+    }
+
+    @Override
+    public UpdateJobCommandStep1 newUpdateJobCommand(long jobKey) {
+        return new UpdateJobCommandStep1Impl();
+    }
+
+    @Override
+    public UpdateJobCommandStep1 newUpdateJobCommand(ActivatedJob job) {
+        return new UpdateJobCommandStep1Impl();
+    }
+
+    @Override
+    public ClockPinCommandStep1 newClockPinCommand() {
+        return new ClockPinCommandStep1Impl();
+    }
+
+    @Override
+    public ClockResetCommandStep1 newClockResetCommand() {
+        return new ClockResetCommandStep1Impl();
+    }
+
+    @Override
+    public ProcessInstanceQuery newProcessInstanceQuery() {
+        return new ProcessInstanceQueryImpl();
+    }
+
+    @Override
+    public FlownodeInstanceQuery newFlownodeInstanceQuery() {
+        return new FlownodeInstanceQueryImpl();
+    }
+
+    @Override
+    public UserTaskQuery newUserTaskQuery() {
+        return new UserTaskQueryImpl();
+    }
+
+    @Override
+    public DecisionRequirementsQuery newDecisionRequirementsQuery() {
+        return new DecisionRequirementsQueryImpl();
+    }
+
+    @Override
+    public DecisionDefinitionQuery newDecisionDefinitionQuery() {
+        return new DecisionDefinitionQueryImpl();
+    }
+
+    @Override
+    public DecisionDefinitionGetXmlRequest newDecisionDefinitionGetXmlRequest(long decisionKey) {
+        return new DecisionDefinitionGetXmlRequestImpl();
+    }
+
+    @Override
+    public IncidentQuery newIncidentQuery() {
+        return new IncidentQueryImpl();
+    }
+
+    @Override
+    public CreateUserCommandStep1 newUserCreateCommand() {
+        return new CreateUserCommandStep1Impl();
+    }
+
+    @Override
+    public AddPermissionsCommandStep1 newAddPermissionsCommand(long ownerKey) {
+        return new AddPermissionsCommandStep1Impl();
+    }
 }

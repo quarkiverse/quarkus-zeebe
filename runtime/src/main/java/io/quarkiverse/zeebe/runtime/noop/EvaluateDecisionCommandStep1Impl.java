@@ -56,4 +56,14 @@ public class EvaluateDecisionCommandStep1Impl extends AbstractStep<EvaluateDecis
         return new EvaluateDecisionResponseImpl(new ZeebeObjectMapper(),
                 GatewayOuterClass.EvaluateDecisionResponse.getDefaultInstance());
     }
+
+    @Override
+    public EvaluateDecisionCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public EvaluateDecisionCommandStep1 useGrpc() {
+        return this;
+    }
 }

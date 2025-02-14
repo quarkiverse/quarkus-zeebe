@@ -66,4 +66,9 @@ public class UpdateUserTaskCommandStep1Impl extends AbstractStep<UpdateUserTaskR
         return new UpdateUserTaskResponse() {
         };
     }
+
+    @Override
+    public UpdateUserTaskCommandStep1 priority(Integer priority) {
+        return this;
+    }
 }

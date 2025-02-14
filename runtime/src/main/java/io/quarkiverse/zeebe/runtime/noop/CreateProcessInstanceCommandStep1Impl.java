@@ -76,4 +76,14 @@ public class CreateProcessInstanceCommandStep1Impl extends AbstractStep<ProcessI
     public ProcessInstanceEvent create() {
         return new CreateProcessInstanceResponseImpl(GatewayOuterClass.CreateProcessInstanceResponse.getDefaultInstance());
     }
+
+    @Override
+    public CreateProcessInstanceCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public CreateProcessInstanceCommandStep1 useGrpc() {
+        return this;
+    }
 }

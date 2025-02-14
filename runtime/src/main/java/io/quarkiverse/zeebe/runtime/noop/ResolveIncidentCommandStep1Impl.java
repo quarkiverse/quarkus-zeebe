@@ -11,4 +11,19 @@ public class ResolveIncidentCommandStep1Impl extends AbstractStep<ResolveInciden
         return new ResolveIncidentResponse() {
         };
     }
+
+    @Override
+    public ResolveIncidentCommandStep1 operationReference(long operationReference) {
+        return this;
+    }
+
+    @Override
+    public ResolveIncidentCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public ResolveIncidentCommandStep1 useGrpc() {
+        return this;
+    }
 }

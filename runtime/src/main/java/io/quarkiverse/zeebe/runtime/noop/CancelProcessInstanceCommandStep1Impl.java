@@ -12,4 +12,19 @@ public class CancelProcessInstanceCommandStep1Impl extends AbstractStep<CancelPr
     protected CancelProcessInstanceResponse create() {
         return new CancelProcessInstanceResponseImpl(GatewayOuterClass.CancelProcessInstanceResponse.getDefaultInstance());
     }
+
+    @Override
+    public CancelProcessInstanceCommandStep1 useRest() {
+        return this;
+    }
+
+    @Override
+    public CancelProcessInstanceCommandStep1 useGrpc() {
+        return this;
+    }
+
+    @Override
+    public CancelProcessInstanceCommandStep1 operationReference(long operationReference) {
+        return this;
+    }
 }
