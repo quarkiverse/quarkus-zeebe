@@ -30,8 +30,7 @@ public class DevUIZeebeProcessor {
             BuildProducer<RouteBuildItem> routes,
             BuildProducer<CardPageBuildItem> cardsProducer,
             NonApplicationRootPathBuildItem nonApplicationRootPathBuildItem,
-            BuildProducer<MenuPageBuildItem> menuProducer,
-            BuildProducer<JsonRPCProvidersBuildItem> rpcProvidersBuildItemBuildProducer) {
+            BuildProducer<MenuPageBuildItem> menuProducer) {
 
         if (!buildTimeConfig.devMode().devUIEnabled() || !buildTimeConfig.devService().enabled()) {
             log.debug(
@@ -61,8 +60,11 @@ public class DevUIZeebeProcessor {
         MenuPageBuildItem menuPageBuildItem = new MenuPageBuildItem();
         menuPageBuildItem.addPage(dashboard);
         menuProducer.produce(menuPageBuildItem);
+    }
 
-        rpcProvidersBuildItemBuildProducer.produce(new JsonRPCProvidersBuildItem(ZeebeJsonRPCService.class));
+    @BuildStep
+    JsonRPCProvidersBuildItem createJsonRPCService() {
+        return new JsonRPCProvidersBuildItem(ZeebeJsonRPCService.class);
     }
 
 }
