@@ -26,7 +26,7 @@ import io.quarkus.deployment.builditem.*;
 import io.quarkus.deployment.builditem.DevServicesResultBuildItem.RunningDevService;
 import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
-import io.quarkus.deployment.dev.devservices.GlobalDevServicesConfig;
+import io.quarkus.deployment.dev.devservices.DevServicesConfig;
 import io.quarkus.deployment.logging.LoggingSetupBuildItem;
 import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerAddress;
@@ -55,7 +55,7 @@ public class ZeebeDevServiceProcessor {
     static volatile ZeebeDevServiceCfg cfg;
     static volatile boolean first = true;
 
-    @BuildStep(onlyIfNot = IsNormal.class, onlyIf = { GlobalDevServicesConfig.Enabled.class })
+    @BuildStep(onlyIfNot = IsNormal.class, onlyIf = { DevServicesConfig.Enabled.class })
     public DevServicesResultBuildItem startZeebeContainers(LaunchModeBuildItem launchMode,
             List<DevServicesSharedNetworkBuildItem> devServicesSharedNetworkBuildItem,
             ZeebeDevServiceBuildTimeConfig buildTimeConfig,
@@ -63,7 +63,7 @@ public class ZeebeDevServiceProcessor {
             CuratedApplicationShutdownBuildItem closeBuildItem,
             DockerStatusBuildItem dockerStatusBuildItem,
             BuildProducer<ZeebeDevServicesProviderBuildItem> startResultProducer,
-            LoggingSetupBuildItem loggingSetupBuildItem, GlobalDevServicesConfig devServicesConfig) {
+            LoggingSetupBuildItem loggingSetupBuildItem, DevServicesConfig devServicesConfig) {
 
         ZeebeDevServiceCfg configuration = getConfiguration(buildTimeConfig);
 
@@ -82,7 +82,7 @@ public class ZeebeDevServiceProcessor {
         try {
             devService = startZeebe(dockerStatusBuildItem, configuration, launchMode,
                     !devServicesSharedNetworkBuildItem.isEmpty(),
-                    devServicesConfig.timeout);
+                    devServicesConfig.timeout());
             if (devService == null) {
                 compressor.closeAndDumpCaptured();
             } else {
