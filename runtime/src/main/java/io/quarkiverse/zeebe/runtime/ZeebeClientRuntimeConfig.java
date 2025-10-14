@@ -275,9 +275,9 @@ public interface ZeebeClientRuntimeConfig {
         Duration timeout();
 
         /**
-         * Client job pool interval
+         * Client job poll interval
          */
-        @WithName("pool-interval")
+        @WithName("poll-interval")
         @WithDefault("PT0.100S")
         Duration pollInterval();
 
