@@ -11,9 +11,6 @@
     <name>Quarkus - Zeebe - Integration Tests - Panache</name>
     <description>Quarkus Zeebe integration tests Panache</description>
 
-    <properties>
-        <quarkus.package.type>fast-jar</quarkus.package.type>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>io.quarkiverse.zeebe</groupId>
