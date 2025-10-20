@@ -1,7 +1,7 @@
 # Quarkus Zeebe
 
 
-[![Build](https://github.com/quarkiverse/quarkus-zeebe/workflows/Build/badge.svg?branch=main)](https://github.com/quarkiverse/quarkus-zeebe/actions?query=workflow%3ABuild)
+[![Build](https://github.com/quarkiverse/quarkus-zeebe/workflows/Build/badge.svg)](https://github.com/quarkiverse/quarkus-zeebe/actions/workflows/build.yml)
 [![License](https://img.shields.io/github/license/quarkiverse/quarkus-zeebe.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![Central](https://img.shields.io/maven-central/v/io.quarkiverse.zeebe/quarkus-zeebe-parent?color=green)](https://central.sonatype.com/artifact/io.quarkiverse.zeebe/quarkus-zeebe-parent)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
