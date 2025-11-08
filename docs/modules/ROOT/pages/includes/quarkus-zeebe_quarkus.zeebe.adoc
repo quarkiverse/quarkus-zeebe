@@ -798,6 +798,27 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
+a| [[quarkus-zeebe_quarkus-zeebe-client-workers-disabled]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-workers-disabled[`quarkus.zeebe.client.workers.disabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++quarkus.zeebe.client.workers.disabled+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Allows to disable starting all workers at all.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++QUARKUS_ZEEBE_CLIENT_WORKERS_DISABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++QUARKUS_ZEEBE_CLIENT_WORKERS_DISABLED+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`false`
+
 a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-max-retries]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-max-retries[`quarkus.zeebe.client.auto-complete.max-retries`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++quarkus.zeebe.client.auto-complete.max-retries+++[]

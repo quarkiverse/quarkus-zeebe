@@ -37,6 +37,13 @@ public interface ZeebeClientRuntimeConfig {
     OAuthConfig oauth();
 
     /**
+     * Allows to disable starting all workers at all.
+     */
+    @WithName("workers.disabled")
+    @WithDefault("false")
+    boolean workersDisabled();
+
+    /**
      * Zeebe client worker type optional configuration.
      */
     @WithName("workers")
