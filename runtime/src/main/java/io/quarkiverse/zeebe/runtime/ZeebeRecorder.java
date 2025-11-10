@@ -76,8 +76,9 @@ public class ZeebeRecorder {
         }
 
         // create job workers
-        if (workers != null && !workers.isEmpty()) {
-
+        if (config.client().workersDisabled()) {
+            log.infof("Workers are disabled in general and are not started");
+        } else if (workers != null && !workers.isEmpty()) {
             JobWorkerExceptionHandler handler = Arc.container().instance(JobWorkerExceptionHandler.class).get();
             MetricsRecorder metricsRecorder = Arc.container().instance(MetricsRecorder.class).get();
             TracingRecorder tracingRecorder = Arc.container().instance(TracingRecorder.class).get();
