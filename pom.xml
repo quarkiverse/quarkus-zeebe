@@ -25,7 +25,7 @@
   <properties>
     <quarkus.version>3.20.3</quarkus.version>
     <zeebe.version>8.5.15</zeebe.version>
-    <zeebe.testcontainers.version>3.6.5</zeebe.testcontainers.version>
+    <zeebe.testcontainers.version>3.6.9</zeebe.testcontainers.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <maven.compiler.release>17</maven.compiler.release>
