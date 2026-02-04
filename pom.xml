@@ -26,14 +26,6 @@
     <quarkus.version>3.20.3</quarkus.version>
     <zeebe.version>8.5.15</zeebe.version>
     <zeebe.testcontainers.version>3.6.5</zeebe.testcontainers.version>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <maven.compiler.release>17</maven.compiler.release>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <compiler-plugin.version>3.14.1</compiler-plugin.version>
-    <maven.compiler.parameters>true</maven.compiler.parameters>
-    <surefire-plugin.version>3.5.4</surefire-plugin.version>
     <quarkus-mockserver.version>1.14.0</quarkus-mockserver.version>
   </properties>
   <dependencyManagement>
@@ -102,7 +94,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>${compiler-plugin.version}</version>
+          <version>${version.compiler.plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
