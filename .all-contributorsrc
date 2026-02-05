@@ -23,6 +23,17 @@
       "contributions": [
         "maintenance"
       ]
+    },
+    {
+      "login": "MarcScheib",
+      "name": "Marc Scheib",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5886709?v=4",
+      "profile": "https://github.com/MarcScheib",
+      "contributions": [
+        "code",
+        "test",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
