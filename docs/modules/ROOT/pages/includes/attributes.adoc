@@ -1,5 +1,5 @@
 :project-version: 1.8.0
-:quarkus-version: 3.20.3
+:quarkus-version: 3.27.2
 
 :quarkus-mockserver-url: https://github.com/quarkiverse/quarkus-zeebe
 
