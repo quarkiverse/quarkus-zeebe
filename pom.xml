@@ -24,7 +24,7 @@
   </scm>
   <properties>
     <quarkus.version>3.20.3</quarkus.version>
-    <zeebe.version>8.5.15</zeebe.version>
+    <zeebe.version>8.8.11</zeebe.version>
     <zeebe.testcontainers.version>3.6.5</zeebe.testcontainers.version>
     <quarkus-mockserver.version>1.15.0</quarkus-mockserver.version>
   </properties>
