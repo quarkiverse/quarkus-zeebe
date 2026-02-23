@@ -22,6 +22,7 @@ import io.quarkiverse.zeebe.runtime.metrics.MetricsRecorder;
 import io.quarkiverse.zeebe.runtime.tracing.TracingRecorder;
 import io.quarkiverse.zeebe.runtime.tracing.ZeebeTracing;
 import io.quarkus.arc.Arc;
+import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.runtime.annotations.Recorder;
 
 @Recorder
@@ -29,12 +30,19 @@ public class ZeebeRecorder {
 
     private static final Logger log = Logger.getLogger(ZeebeRecorder.class);
 
+    private final RuntimeValue<ZeebeRuntimeConfig> runtimeConfig;
+
+    public ZeebeRecorder(RuntimeValue<ZeebeRuntimeConfig> runtimeConfig) {
+        this.runtimeConfig = runtimeConfig;
+    }
+
     /**
      * Initialize the producer with the configuration
      */
-    public void init(ZeebeRuntimeConfig config, Collection<String> resources, List<JobWorkerMetadata> workers) {
+    public void init(Collection<String> resources, List<JobWorkerMetadata> workers) {
         // client configuration
         ZeebeClient client = Arc.container().instance(ZeebeClient.class).get();
+        final ZeebeRuntimeConfig config = runtimeConfig.getValue();
 
         // tracing configuration
         if (config.client().tracing().attributes().isPresent()) {
