@@ -312,9 +312,8 @@ public class ZeebeProcessor {
     @BuildStep
     @Record(RUNTIME_INIT)
     @Consume(SyntheticBeansRuntimeInitBuildItem.class)
-    void runtimeInitConfiguration(ZeebeRuntimeConfig runtimeConfig, ZeebeRecorder recorder, ZeebeWorkersBuildItem workers,
-            ZeebeResourcesBuildItem resources) {
-        recorder.init(runtimeConfig, resources.getResources(), workers.getWorkers());
+    void runtimeInitConfiguration(ZeebeRecorder recorder, ZeebeWorkersBuildItem workers, ZeebeResourcesBuildItem resources) {
+        recorder.init(resources.getResources(), workers.getWorkers());
     }
 
     /**
