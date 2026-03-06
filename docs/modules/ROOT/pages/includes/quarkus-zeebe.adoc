@@ -28,7 +28,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-port]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-devservices-port[`quarkus.zeebe.devservices.port`]##
 ifdef::add-copy-button-to-config-props[]
@@ -99,7 +99,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_SHARED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-service-name]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-devservices-service-name[`quarkus.zeebe.devservices.service-name`]##
 ifdef::add-copy-button-to-config-props[]
@@ -122,7 +122,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_SERVICE_NAME+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`zeebe`
+|`+++zeebe+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-image-name]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-devservices-image-name[`quarkus.zeebe.devservices.image-name`]##
 ifdef::add-copy-button-to-config-props[]
@@ -164,7 +164,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_REUSE+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`false`
+|`+++false+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-test-receiver-port]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-devservices-test-receiver-port[`quarkus.zeebe.devservices.test.receiver-port`]##
 ifdef::add-copy-button-to-config-props[]
@@ -208,7 +208,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_TEST_EXPORTER+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-devservices-dev-exporter-enabled]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-devservices-dev-exporter-enabled[`quarkus.zeebe.devservices.dev-exporter.enabled`]##
 ifdef::add-copy-button-to-config-props[]
@@ -229,7 +229,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEVSERVICES_DEV_EXPORTER_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-dev-ui-enabled]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-dev-mode-dev-ui-enabled[`quarkus.zeebe.dev-mode.dev-ui.enabled`]##
 ifdef::add-copy-button-to-config-props[]
@@ -250,7 +250,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_DEV_UI_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-files]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-files[`quarkus.zeebe.dev-mode.watch-bpmn-files`]##
 ifdef::add-copy-button-to-config-props[]
@@ -271,7 +271,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_FILES+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-dir]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-dev-mode-watch-bpmn-dir[`quarkus.zeebe.dev-mode.watch-bpmn-dir`]##
 ifdef::add-copy-button-to-config-props[]
@@ -292,7 +292,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_WATCH_BPMN_DIR+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-dev-mode-watch-job-worker]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-dev-mode-watch-job-worker[`quarkus.zeebe.dev-mode.watch-job-worker`]##
 ifdef::add-copy-button-to-config-props[]
@@ -313,7 +313,7 @@ Environment variable: `+++QUARKUS_ZEEBE_DEV_MODE_WATCH_JOB_WORKER+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-resources-enabled]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-resources-enabled[`quarkus.zeebe.resources.enabled`]##
 ifdef::add-copy-button-to-config-props[]
@@ -334,7 +334,7 @@ Environment variable: `+++QUARKUS_ZEEBE_RESOURCES_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-resources-location]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-resources-location[`quarkus.zeebe.resources.location`]##
 ifdef::add-copy-button-to-config-props[]
@@ -355,7 +355,7 @@ Environment variable: `+++QUARKUS_ZEEBE_RESOURCES_LOCATION+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`bpmn`
+|`+++bpmn+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-metrics-enabled]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-metrics-enabled[`quarkus.zeebe.metrics.enabled`]##
 ifdef::add-copy-button-to-config-props[]
@@ -376,7 +376,7 @@ Environment variable: `+++QUARKUS_ZEEBE_METRICS_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-health-enabled]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-health-enabled[`quarkus.zeebe.health.enabled`]##
 ifdef::add-copy-button-to-config-props[]
@@ -397,7 +397,7 @@ Environment variable: `+++QUARKUS_ZEEBE_HEALTH_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a|icon:lock[title=Fixed at build time] [[quarkus-zeebe_quarkus-zeebe-tracing-enabled]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-tracing-enabled[`quarkus.zeebe.tracing.enabled`]##
 ifdef::add-copy-button-to-config-props[]
@@ -418,7 +418,7 @@ Environment variable: `+++QUARKUS_ZEEBE_TRACING_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-broker-gateway-address]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-broker-gateway-address[`quarkus.zeebe.client.broker.gateway-address`]##
 ifdef::add-copy-button-to-config-props[]
@@ -439,7 +439,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_BROKER_GATEWAY_ADDRESS+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`localhost:26500`
+|`+++localhost:26500+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-broker-rest-address]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-broker-rest-address[`quarkus.zeebe.client.broker.rest-address`]##
 ifdef::add-copy-button-to-config-props[]
@@ -460,7 +460,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_BROKER_REST_ADDRESS+++`
 endif::add-copy-button-to-env-var[]
 --
 |link:https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html[URI]
-|`http://0.0.0.0:8080`
+|`+++http://0.0.0.0:8080+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-broker-keep-alive]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-broker-keep-alive[`quarkus.zeebe.client.broker.keep-alive`]##
 ifdef::add-copy-button-to-config-props[]
@@ -481,7 +481,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_BROKER_KEEP_ALIVE+++`
 endif::add-copy-button-to-env-var[]
 --
 |link:https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html[Duration] link:#duration-note-anchor-quarkus-zeebe_quarkus-zeebe[icon:question-circle[title=More information about the Duration format]]
-|`PT45S`
+|`+++PT45S+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-cluster-id]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-cloud-cluster-id[`quarkus.zeebe.client.cloud.cluster-id`]##
 ifdef::add-copy-button-to-config-props[]
@@ -565,7 +565,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_REGION+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`bru-2`
+|`+++bru-2+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-base-url]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-cloud-base-url[`quarkus.zeebe.client.cloud.base-url`]##
 ifdef::add-copy-button-to-config-props[]
@@ -586,7 +586,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_BASE_URL+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`zeebe.camunda.io`
+|`+++zeebe.camunda.io+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-auth-url]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-cloud-auth-url[`quarkus.zeebe.client.cloud.auth-url`]##
 ifdef::add-copy-button-to-config-props[]
@@ -607,7 +607,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_AUTH_URL+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`https://login.cloud.camunda.io/oauth/token`
+|`+++https://login.cloud.camunda.io/oauth/token+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-port]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-cloud-port[`quarkus.zeebe.client.cloud.port`]##
 ifdef::add-copy-button-to-config-props[]
@@ -628,7 +628,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_CLOUD_PORT+++`
 endif::add-copy-button-to-env-var[]
 --
 |int
-|`443`
+|`+++443+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-cloud-credentials-cache-path]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-cloud-credentials-cache-path[`quarkus.zeebe.client.cloud.credentials-cache-path`]##
 ifdef::add-copy-button-to-config-props[]
@@ -712,7 +712,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_AUTH_URL+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`https://login.cloud.camunda.io/oauth/token`
+|`+++https://login.cloud.camunda.io/oauth/token+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-credentials-cache-path]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-oauth-credentials-cache-path[`quarkus.zeebe.client.oauth.credentials-cache-path`]##
 ifdef::add-copy-button-to-config-props[]
@@ -754,7 +754,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_CONNECT_TIMEOUT+++`
 endif::add-copy-button-to-env-var[]
 --
 |link:https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html[Duration] link:#duration-note-anchor-quarkus-zeebe_quarkus-zeebe[icon:question-circle[title=More information about the Duration format]]
-|`PT5S`
+|`+++PT5S+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-read-timeout]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-oauth-read-timeout[`quarkus.zeebe.client.oauth.read-timeout`]##
 ifdef::add-copy-button-to-config-props[]
@@ -775,7 +775,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_OAUTH_READ_TIMEOUT+++`
 endif::add-copy-button-to-env-var[]
 --
 |link:https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html[Duration] link:#duration-note-anchor-quarkus-zeebe_quarkus-zeebe[icon:question-circle[title=More information about the Duration format]]
-|`PT5S`
+|`+++PT5S+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-oauth-token-audience]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-oauth-token-audience[`quarkus.zeebe.client.oauth.token-audience`]##
 ifdef::add-copy-button-to-config-props[]
@@ -817,7 +817,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_WORKERS_DISABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`false`
+|`+++false+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-max-retries]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-max-retries[`quarkus.zeebe.client.auto-complete.max-retries`]##
 ifdef::add-copy-button-to-config-props[]
@@ -838,7 +838,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_MAX_RETRIES+++`
 endif::add-copy-button-to-env-var[]
 --
 |int
-|`20`
+|`+++20+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-retry-delay]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-retry-delay[`quarkus.zeebe.client.auto-complete.retry-delay`]##
 ifdef::add-copy-button-to-config-props[]
@@ -859,7 +859,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_RETRY_DELAY+++`
 endif::add-copy-button-to-env-var[]
 --
 |long
-|`50`
+|`+++50+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-backoff-factor]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-backoff-factor[`quarkus.zeebe.client.auto-complete.exp-backoff-factor`]##
 ifdef::add-copy-button-to-config-props[]
@@ -880,7 +880,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_BACKOFF_FACTOR+
 endif::add-copy-button-to-env-var[]
 --
 |double
-|`1.5`
+|`+++1.5+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-jitter-factor]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-jitter-factor[`quarkus.zeebe.client.auto-complete.exp-jitter-factor`]##
 ifdef::add-copy-button-to-config-props[]
@@ -901,7 +901,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_JITTER_FACTOR++
 endif::add-copy-button-to-env-var[]
 --
 |double
-|`0.2`
+|`+++0.2+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-max-delay]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-max-delay[`quarkus.zeebe.client.auto-complete.exp-max-delay`]##
 ifdef::add-copy-button-to-config-props[]
@@ -922,7 +922,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_MAX_DELAY+++`
 endif::add-copy-button-to-env-var[]
 --
 |long
-|`1000`
+|`+++1000+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-min-delay]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-auto-complete-exp-min-delay[`quarkus.zeebe.client.auto-complete.exp-min-delay`]##
 ifdef::add-copy-button-to-config-props[]
@@ -943,7 +943,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_AUTO_COMPLETE_EXP_MIN_DELAY+++`
 endif::add-copy-button-to-env-var[]
 --
 |long
-|`50`
+|`+++50+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-message-time-to-live]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-message-time-to-live[`quarkus.zeebe.client.message.time-to-live`]##
 ifdef::add-copy-button-to-config-props[]
@@ -964,7 +964,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_MESSAGE_TIME_TO_LIVE+++`
 endif::add-copy-button-to-env-var[]
 --
 |link:https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html[Duration] link:#duration-note-anchor-quarkus-zeebe_quarkus-zeebe[icon:question-circle[title=More information about the Duration format]]
-|`PT1H`
+|`+++PT1H+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-security-plaintext]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-security-plaintext[`quarkus.zeebe.client.security.plaintext`]##
 ifdef::add-copy-button-to-config-props[]
@@ -985,7 +985,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_SECURITY_PLAINTEXT+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-security-cert-path]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-security-cert-path[`quarkus.zeebe.client.security.cert-path`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1048,7 +1048,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_MAX_JOBS_ACTIVE+++`
 endif::add-copy-button-to-env-var[]
 --
 |int
-|`32`
+|`+++32+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-job-worker-execution-threads]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-job-worker-execution-threads[`quarkus.zeebe.client.job.worker-execution-threads`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1069,7 +1069,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_WORKER_EXECUTION_THREADS+++`
 endif::add-copy-button-to-env-var[]
 --
 |int
-|`1`
+|`+++1+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-job-worker-name]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-job-worker-name[`quarkus.zeebe.client.job.worker-name`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1090,7 +1090,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_WORKER_NAME+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`default`
+|`+++default+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-job-request-timeout]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-job-request-timeout[`quarkus.zeebe.client.job.request-timeout`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1111,7 +1111,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_REQUEST_TIMEOUT+++`
 endif::add-copy-button-to-env-var[]
 --
 |link:https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html[Duration] link:#duration-note-anchor-quarkus-zeebe_quarkus-zeebe[icon:question-circle[title=More information about the Duration format]]
-|`PT45S`
+|`+++PT45S+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-job-default-type]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-job-default-type[`quarkus.zeebe.client.job.default-type`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1153,7 +1153,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_TIMEOUT+++`
 endif::add-copy-button-to-env-var[]
 --
 |link:https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html[Duration] link:#duration-note-anchor-quarkus-zeebe_quarkus-zeebe[icon:question-circle[title=More information about the Duration format]]
-|`PT5M`
+|`+++PT5M+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-job-poll-interval]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-job-poll-interval[`quarkus.zeebe.client.job.poll-interval`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1174,7 +1174,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_POLL_INTERVAL+++`
 endif::add-copy-button-to-env-var[]
 --
 |link:https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html[Duration] link:#duration-note-anchor-quarkus-zeebe_quarkus-zeebe[icon:question-circle[title=More information about the Duration format]]
-|`PT0.100S`
+|`+++PT0.100S+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-job-exp-backoff-factor]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-job-exp-backoff-factor[`quarkus.zeebe.client.job.exp-backoff-factor`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1195,7 +1195,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_BACKOFF_FACTOR+++`
 endif::add-copy-button-to-env-var[]
 --
 |double
-|`1.6`
+|`+++1.6+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-job-exp-jitter-factor]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-job-exp-jitter-factor[`quarkus.zeebe.client.job.exp-jitter-factor`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1216,7 +1216,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_JITTER_FACTOR+++`
 endif::add-copy-button-to-env-var[]
 --
 |double
-|`0.1`
+|`+++0.1+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-job-exp-max-delay]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-job-exp-max-delay[`quarkus.zeebe.client.job.exp-max-delay`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1237,7 +1237,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_MAX_DELAY+++`
 endif::add-copy-button-to-env-var[]
 --
 |long
-|`5000`
+|`+++5000+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-job-exp-min-delay]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-job-exp-min-delay[`quarkus.zeebe.client.job.exp-min-delay`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1258,7 +1258,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_JOB_EXP_MIN_DELAY+++`
 endif::add-copy-button-to-env-var[]
 --
 |long
-|`50`
+|`+++50+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-tracing-attributes]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-tracing-attributes[`quarkus.zeebe.client.tracing.attributes`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1300,7 +1300,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_TENANT_DEFAULT_TENANT_ID+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`<default>`
+|`+++<default>+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-tenant-default-job-worker-tenant-ids]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-tenant-default-job-worker-tenant-ids[`quarkus.zeebe.client.tenant.default-job-worker-tenant-ids`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1321,7 +1321,7 @@ Environment variable: `+++QUARKUS_ZEEBE_CLIENT_TENANT_DEFAULT_JOB_WORKER_TENANT_
 endif::add-copy-button-to-env-var[]
 --
 |list of string
-|`<default>`
+|`+++<default>+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-active]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-active[`quarkus.zeebe.active`]##
 ifdef::add-copy-button-to-config-props[]
@@ -1342,7 +1342,7 @@ Environment variable: `+++QUARKUS_ZEEBE_ACTIVE+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a| [[quarkus-zeebe_quarkus-zeebe-client-workers-workers-enabled]] [.property-path]##link:#quarkus-zeebe_quarkus-zeebe-client-workers-workers-enabled[`quarkus.zeebe.client.workers."workers".enabled`]##
 ifdef::add-copy-button-to-config-props[]

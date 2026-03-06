@@ -1,29 +1,16 @@
 package io.quarkiverse.zeebe.devservices;
 
-import static io.quarkiverse.zeebe.ZeebeProcessor.FEATURE_NAME;
-import static io.quarkus.runtime.LaunchMode.DEVELOPMENT;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.time.Duration;
-import java.util.*;
-import java.util.function.Supplier;
-
-import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.jboss.logging.Logger;
-import org.testcontainers.containers.Network;
-import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.MountableFile;
-
 import io.camunda.zeebe.client.ZeebeClient;
 import io.quarkiverse.zeebe.ZeebeDevServiceBuildTimeConfig;
-import io.quarkus.deployment.IsNormal;
+import io.quarkus.deployment.IsProduction;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.*;
+import io.quarkus.deployment.builditem.CuratedApplicationShutdownBuildItem;
+import io.quarkus.deployment.builditem.DevServicesResultBuildItem;
 import io.quarkus.deployment.builditem.DevServicesResultBuildItem.RunningDevService;
+import io.quarkus.deployment.builditem.DevServicesSharedNetworkBuildItem;
+import io.quarkus.deployment.builditem.DockerStatusBuildItem;
+import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.console.ConsoleInstalledBuildItem;
 import io.quarkus.deployment.console.StartupLogCompressor;
 import io.quarkus.deployment.dev.devservices.DevServicesConfig;
@@ -32,8 +19,27 @@ import io.quarkus.devservices.common.ConfigureUtil;
 import io.quarkus.devservices.common.ContainerAddress;
 import io.quarkus.devservices.common.ContainerLocator;
 import io.quarkus.runtime.configuration.ConfigUtils;
-import io.zeebe.containers.*;
+import io.zeebe.containers.ZeebeContainer;
+import io.zeebe.containers.ZeebePort;
 import io.zeebe.containers.util.HostPortForwarder;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.jboss.logging.Logger;
+import org.testcontainers.containers.Network;
+import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.utility.MountableFile;
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
+import static io.quarkiverse.zeebe.ZeebeProcessor.FEATURE_NAME;
+import static io.quarkus.runtime.LaunchMode.DEVELOPMENT;
 
 public class ZeebeDevServiceProcessor {
 
@@ -55,7 +61,7 @@ public class ZeebeDevServiceProcessor {
     static volatile ZeebeDevServiceCfg cfg;
     static volatile boolean first = true;
 
-    @BuildStep(onlyIfNot = IsNormal.class, onlyIf = { DevServicesConfig.Enabled.class })
+    @BuildStep(onlyIfNot = IsProduction.class, onlyIf = { DevServicesConfig.Enabled.class })
     public DevServicesResultBuildItem startZeebeContainers(LaunchModeBuildItem launchMode,
             List<DevServicesSharedNetworkBuildItem> devServicesSharedNetworkBuildItem,
             ZeebeDevServiceBuildTimeConfig buildTimeConfig,
